@@ -1,0 +1,61 @@
+## Default values.
+replicaCount: 1
+
+##  Enable RBAC
+rbac:
+  ##
+  ## Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  create: true
+  ## Define serviceAccount name. If set to false defaults to fully qualified name or "default"
+  ##
+  name: 
+
+## Image settings
+image:
+  repository: quay.io/checkpoint/cp-resource-management
+  tag: v1.0
+  ## Specify an imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  pullPolicy: IfNotPresent
+
+## Extra environment variables that will be passed onto deployment pods
+env: {}
+
+## Dome9 Credentials
+## Example
+## APISecrete: "c7h2yqt5ksae1ggum35bo1b"
+## APIID: "359e4744-b12b-4d12-b123-bd21620394c9"
+credentials:
+  name: dome9-creds
+  secret: 
+  user: 
+
+## Dome9 cluster ID
+## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
+clusterID: 
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: 
+  seccomp: docker/default
+  apparmor: runtime/default
+
+## Configuration options for nodeSelector, tolerations and affinity for pod
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+nodeSelector: {}
+tolerations: []
+affinity: {}

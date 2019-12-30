@@ -1,0 +1,15 @@
+apiVersion: v1
+appVersion: 1.0
+version: 1.0
+description: A Helm chart for Dome9 inventory uploader
+name: cp-resource-management
+keywords:
+- checkpoint
+- dome9
+- inventory
+- compliance
+home: https://secure.dome9.com/v2/
+icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+maintainers:
+- name: Check Point
+  email: dome9@checkpoint.com
