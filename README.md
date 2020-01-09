@@ -6,7 +6,7 @@ This repository hosts Check Points [Helm Charts](https://helm.sh) for deploying 
 
 The `checkpoint` directory contains the Helm chart source files, while the `repository` directory contains the packaged Helm chart binaries.
 
-To add the 'checkpoint' repo to local repository list, run the following command : 
+To add the 'checkpoint' repo to local repository list, run the following command: 
 ```
 $ helm repo add checkpoint https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/
 ```
