@@ -16,7 +16,10 @@ spec:
     metadata:
       annotations:
         seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
-        # container.apparmor.security.beta.kubernetes.io/cp-resource-management: {{ .Values.podAnnotations.apparmor }}
+        {{- if .Values.podAnnotations.apparmor }}
+        container.apparmor.security.beta.kubernetes.io/cp-resource-management: 
+{{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
+        {{- end }}
       labels:
         app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -56,7 +59,10 @@ spec:
             - name: DOME9_URL
               value: "https://api-cpx.dome9.com"
             - name: CP_KUBERNETES_CLUSTER_ID
-              value: {{ required "Please set the Dome9 ClusterID" .Values.clusterID | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: cp-dome9-configmap
+                  key: clusterID
       volumes:
         - name: secret-volume
           secret:

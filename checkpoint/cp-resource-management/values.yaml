@@ -29,7 +29,6 @@ env: {}
 ## APISecrete: "c7h2yqt5ksae1ggum35bo1b"
 ## APIID: "359e4744-b12b-4d12-b123-bd21620394c9"
 credentials:
-  name: dome9-creds
   secret: 
   user: 
 
@@ -50,9 +49,11 @@ resources: {}
 ## Pod annotations
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
+## It is highly recommended to enable the apparmor feature on your host and add your profile below.
+## It is highly recommended to create a custom seccomp profile and replace the default 'docker/default' profile
 podAnnotations: 
   seccomp: docker/default
-  apparmor: runtime/default
+  apparmor: {}
 
 ## Configuration options for nodeSelector, tolerations and affinity for pod
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
