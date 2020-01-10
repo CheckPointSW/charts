@@ -66,4 +66,4 @@ spec:
       volumes:
         - name: secret-volume
           secret:
-            secretName: dome9-creds              
+            secretName: cp-dome9-creds              
