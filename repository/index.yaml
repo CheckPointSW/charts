@@ -3,7 +3,7 @@ entries:
   cp-resource-management:
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2020-01-10T12:23:14.171956148+02:00"
+    created: "2020-01-16T10:52:31.47815+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -22,7 +22,7 @@ entries:
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2020-01-10T12:23:14.171136096+02:00"
+    created: "2020-01-16T10:52:31.475371+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ae960d64ba79bd5cf91aa5a0fc03b6fc7e85b888a0bbbcd028ebb9cafd14fc4a
     home: https://secure.dome9.com/v2/
@@ -41,7 +41,7 @@ entries:
     version: "1.01"
   - apiVersion: v1
     appVersion: "1"
-    created: "2020-01-10T12:23:14.172764089+02:00"
+    created: "2020-01-16T10:52:31.478567+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -58,4 +58,25 @@ entries:
     urls:
     - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2020-01-10T12:23:14.169549833+02:00"
+  workloads-security:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2020-01-16T10:52:31.478935+03:00"
+    description: A Helm chart for Check Point Workloads security Agent
+    digest: c9c22a6d958f35fe93b7972bb84885b0a345a15d4b9e41aecc93d3dc274df1d5
+    keywords:
+    - monitoring
+    - security
+    - alerting
+    - metric
+    - troubleshooting
+    - run-time
+    maintainers:
+    - email: uladzimir@checkpoint.com
+      name: uladzimir
+    name: workloads-security
+    type: application
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/workloads-security-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-01-16T10:52:31.47473+03:00"

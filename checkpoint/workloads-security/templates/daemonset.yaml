@@ -1,0 +1,92 @@
+{{- if .Values.managementServer.url }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "workloads-security.fullname" . }}
+  labels:
+    app: {{ template "workloads-security.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "workloads-security.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "workloads-security.fullname" . }}
+    spec:
+      serviceAccountName: {{ template "workloads-security.serviceAccountName" .}}
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      initContainers:
+      - name: sysdig-agent-kmodule
+        image: "{{ .Values.image.sysdig.repository }}:{{ .Values.image.sysdig.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host/boot
+          name: boot-vol
+          readOnly: true
+        - mountPath: /host/lib/modules
+          name: modules-vol
+          readOnly: true
+        - mountPath: /host/usr
+          name: usr-vol
+          readOnly: true
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["run-config", "--management-server"]
+        env:
+          - name: LANG
+            value: "C.UTF-8"
+        {{- if .Values.managementServer.url }}
+          - name: SBA_MANAGEMENT_URL
+            value: "{{ .Values.managementServer.url }}"
+        {{- end }}
+        {{- if .Values.managementServer.accessKey }}
+          - name: SBA_MANAGEMENT_KEY
+            value: "{{ .Values.managementServer.accessKey }}"
+        {{- end }}
+        {{- if .Values.managementServer.ignoreSSl }}
+          - name: SBA_MANAGEMENT_IGNORE_SSL
+            value: "{{ .Values.managementServer.ignoreSSl }}"
+        {{- end }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+          readOnly: true  
+        - mountPath: /var/lib/docker
+          name: varlibdocker-vol
+          readOnly: true
+        - mountPath: /host/proc
+          name: proc-vol
+          readOnly: true  
+        - mountPath: /host/dev
+          name: dev-vol
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: boot-vol
+        hostPath:
+          path: /boot
+      - name: modules-vol
+        hostPath:
+          path: /lib/modules
+      - name: usr-vol
+        hostPath:
+          path: /usr
+      - name: proc-vol
+        hostPath:
+          path: /proc
+      - name: varlibdocker-vol
+        hostPath:
+          path: /var/lib/docker
+      - name: dev-vol
+        hostPath:
+          path: /dev
+{{- end }}
