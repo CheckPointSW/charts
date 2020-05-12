@@ -9,7 +9,7 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 rules:
-  - apiGroups: ["", "networking.k8s.io", "policy", "extensions"]
+  - apiGroups: ["", "networking.k8s.io", "policy", "extensions", "rbac.authorization.k8s.io"]
     resources:
       - pods
       - services
@@ -18,5 +18,11 @@ rules:
       - networkpolicies
       - ingresses
       - podsecuritypolicies
+      - roles
+      - rolebindings
+      - clusterroles
+      - clusterrolebindings
+      - serviceaccounts
+      - namespaces
     verbs: ["list","get"]
 {{ end }}

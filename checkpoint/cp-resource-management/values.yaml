@@ -16,7 +16,7 @@ serviceAccount:
 ## Image settings
 image:
   repository: quay.io/checkpoint/cp-resource-management
-  tag: v1.0
+  tag: v1.1.0
   ## Specify an imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   pullPolicy: IfNotPresent
