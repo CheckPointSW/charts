@@ -1,3 +1,4 @@
+{{ if .Values.clusterID }}
 kind: ConfigMap 
 apiVersion: v1 
 metadata:
@@ -7,5 +8,5 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
-  # Configuration values can be set as key-value properties
-  clusterID: {{ required "Please set the Dome9 ClusterID" .Values.clusterID | quote }}
+  clusterID: {{ .Values.clusterID | quote }}
+{{ end }}
