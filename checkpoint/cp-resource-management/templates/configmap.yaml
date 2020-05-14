@@ -2,6 +2,8 @@
 kind: ConfigMap 
 apiVersion: v1 
 metadata:
+  annotations:
+    "helm.sh/hook": "pre-install"
   name: cp-dome9-configmap
   labels:
     app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
