@@ -26,7 +26,7 @@ env: {}
 
 ## Dome9 Credentials
 ## Example
-## APISecret: "c7h2yqt5ksae1ggum35bo1b"
+## APISecrete: "c7h2yqt5ksae1ggum35bo1b"
 ## APIID: "359e4744-b12b-4d12-b123-bd21620394c9"
 credentials:
   secret: 
