@@ -1,19 +1,19 @@
-{{ if .Values.rbac.create }}
+{{ if .Values.rbac.pspEnable }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "cp-resource-management.fullname" . }}
+  name: {{ .Release.Name }}-image-uploader
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
+    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "cp-resource-management.fullname" . }}
+  name: {{ .Release.Name }}-image-uploader
 subjects:
 - kind: ServiceAccount
-  name: {{ template "cp-resource-management.serviceAccountName" . }}
+  name: {{ .Release.Name }}-image-uploader
   namespace: {{ .Release.Namespace }}
 {{ end }}

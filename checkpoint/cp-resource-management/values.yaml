@@ -6,6 +6,7 @@ rbac:
   ##
   ## Specifies whether RBAC resources should be created
   create: true
+  ## Specifies whether a we use a custom PSP - If create is set to false this is ignored.
   pspEnable: false
 
 serviceAccount:
@@ -25,15 +26,15 @@ image:
 ## Extra environment variables that will be passed onto deployment pods
 env: {}
 
-## Dome9 Credentials
+## Check Point CloudGuard Dome9 Credentials
 ## Example
-## APISecret: "c7h2yqt5ksae1ggum35bo1b"
+## APISecrete: "c7h2yqt5ksae1ggum35bo1b"
 ## APIID: "359e4744-b12b-4d12-b123-bd21620394c9"
 credentials:
   secret: 
   user: 
 
-## Dome9 cluster ID
+## Check Point CloudGuard  cluster ID
 ## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
 clusterID: 
 
@@ -50,8 +51,6 @@ resources: {}
 ## Pod annotations
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
-## It is highly recommended to enable the apparmor feature on your host and add your profile below.
-## It is highly recommended to create a custom seccomp profile and replace the default 'docker/default' profile
 podAnnotations: 
   seccomp: docker/default
   apparmor: {}
@@ -61,3 +60,40 @@ podAnnotations:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+## Addons configuration
+## Each addon may be disabled
+addons:
+
+  imageUploader:
+
+    enabled: false
+
+    daemonset:        
+      
+      ## Image settings
+      image:
+        repository: quay.io/checkpoint/images-uploader
+        tag: ea1 
+        ## Specify an imagePullPolicy
+        ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+        pullPolicy: IfNotPresent
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      affinity: {}
+

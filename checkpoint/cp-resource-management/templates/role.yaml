@@ -7,22 +7,51 @@ metadata:
   labels:
     app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
 rules:
-  - apiGroups: ["", "networking.k8s.io", "policy", "extensions", "rbac.authorization.k8s.io"]
+  - apiGroups: 
+    - ""
     resources:
       - pods
       - services
       - nodes
       - nodes/proxy
+    verbs: 
+    - list 
+    - get
+
+  - apiGroups: 
+    - networking.k8s.io
+    resources:
       - networkpolicies
       - ingresses
+    verbs: 
+    - list 
+    - get
+
+  - apiGroups: 
+    - policy
+    - extensions
+    resources:
       - podsecuritypolicies
+    verbs: 
+    - list 
+    - get
+{{- if .Values.rbac.pspEnable }}
+    - use
+    resourceNames:
+    - {{ template "cp-resource-management.fullname" . }}
+{{ end }}
+
+  - apiGroups: 
+    - "rbac.authorization.k8s.io" 
+    resources:
       - roles
       - rolebindings
       - clusterroles
       - clusterrolebindings
       - serviceaccounts
-      - namespaces
-    verbs: ["list","get"]
+    verbs: 
+    - list 
+    - get
 {{ end }}

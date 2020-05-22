@@ -1,0 +1,78 @@
+{{ if .Values.addons.imageUploader.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}-image-uploader
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+        {{- if .Values.podAnnotations.apparmor }}
+        container.apparmor.security.beta.kubernetes.io/cp-resource-management: 
+{{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}-image-uploader 
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    spec:
+      {{- if .Values.rbac.pspEnable }}
+      serviceAccountName: {{ .Release.Name }}-image-uploader{{ end }}      
+      {{- if .Values.addons.imageUploader.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.addons.imageUploader.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageUploader.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.addons.imageUploader.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageUploader.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.addons.imageUploader.daemonset.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageUploader.daemonset.resources }}        
+        resources:          
+{{- toYaml .Values.addons.imageUploader.daemonset.resources | indent 8 }}
+      {{- end }}        
+      containers:
+        - name: {{ .Release.Name }}-image-uploader
+          image: "{{ .Values.addons.imageUploader.daemonset.image.repository }}:{{ .Values.addons.imageUploader.daemonset.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.imageUploader.daemonset.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+            - name: docker-sock-volume
+              mountPath: /var/run/docker.sock
+          command: ["/bin/sh"]
+          args: ["-c", "/imagesUploader"]
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DOME9_URL
+              value: "https://api-cpx.dome9.com"
+            - name: CP_KUBERNETES_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-cp-cloudguard-configmap
+                  key: clusterID
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: cp-cloudguard-creds 
+        - name: docker-sock-volume
+          hostPath:
+            path: /var/run/docker.sock
+            type: File
+{{ end }}
