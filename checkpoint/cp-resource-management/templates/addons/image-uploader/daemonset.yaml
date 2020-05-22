@@ -70,7 +70,7 @@ spec:
       volumes:
         - name: secret-volume
           secret:
-            secretName: cp-cloudguard-creds 
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds 
         - name: docker-sock-volume
           hostPath:
             path: /var/run/docker.sock
