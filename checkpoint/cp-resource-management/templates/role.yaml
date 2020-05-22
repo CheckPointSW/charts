@@ -9,58 +9,30 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 rules:
-  - apiGroups: 
-    - ""
-    resources:
-      - pods
-      - services
-      - nodes
-      - nodes/proxy
-      - sercieaccounts
-      - namepsace
-    verbs: 
-      - list 
-      - get
+  - apiGroups: [""]
+    resources: [ "pods", "services", "nodes", "nodes/proxy", "serviceaccounts", "namespaces" ]
+    verbs: [ "list", "get" ]
 
-  - apiGroups: 
-    - networking.k8s.io
-    resources:
-      - networkpolicies
-    verbs: 
-      - list 
-      - get
+  - apiGroups: [ "networking.k8s.io" ]
+    resources: [ "networkpolicies" ]
+    verbs: [ "list", "get" ]
 
-  - apiGroups:
-    - extensions
-    resources:
-      - ingresses
+  - apiGroups: [ "extensions" ]
+    resources: [ "ingresses" ]
+    verbs: [ "list", "get" ]
+
+  - apiGroups: [ "policy"]
+    resources: [ "podsecuritypolicies" ]
     verbs:
-      - list
-      - get
-
-
-  - apiGroups: 
-    - policy
-    resources:
-      - podsecuritypolicies
-    verbs: 
-      - list 
-      - get
+    - list 
+    - get
 {{- if .Values.rbac.pspEnable }}
-      - use
+    - use
     resourceNames:
       - {{ template "cp-resource-management.fullname" . }}
 {{ end }}
 
-  - apiGroups: 
-    - "rbac.authorization.k8s.io" 
-    resources:
-      - roles
-      - rolebindings
-      - clusterroles
-      - clusterrolebindings
-      - serviceaccounts
-    verbs: 
-      - list 
-      - get
+  - apiGroups: [ "rbac.authorization.k8s.io" ]
+    resources: [ "roles", "rolebindings", "clusterroles", "clusterrolebindings" ]
+    verbs: [ "list", "get" ]
 {{ end }}

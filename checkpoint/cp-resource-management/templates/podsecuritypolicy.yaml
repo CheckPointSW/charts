@@ -18,7 +18,7 @@ spec:
   privileged: false
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
-  allowedHostPaths: false
+  allowedHostPaths: []
   requiredDropCapabilities:
     - ALL
   volumes:
