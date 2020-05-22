@@ -16,31 +16,40 @@ rules:
       - services
       - nodes
       - nodes/proxy
+      - sercieaccounts
+      - namepsace
     verbs: 
-    - list 
-    - get
+      - list 
+      - get
 
   - apiGroups: 
     - networking.k8s.io
     resources:
       - networkpolicies
-      - ingresses
     verbs: 
-    - list 
-    - get
+      - list 
+      - get
+
+  - apiGroups:
+    - extensions
+    resources:
+      - ingresses
+    verbs:
+      - list
+      - get
+
 
   - apiGroups: 
     - policy
-    - extensions
     resources:
       - podsecuritypolicies
     verbs: 
-    - list 
-    - get
+      - list 
+      - get
 {{- if .Values.rbac.pspEnable }}
-    - use
+      - use
     resourceNames:
-    - {{ template "cp-resource-management.fullname" . }}
+      - {{ template "cp-resource-management.fullname" . }}
 {{ end }}
 
   - apiGroups: 
@@ -52,6 +61,6 @@ rules:
       - clusterrolebindings
       - serviceaccounts
     verbs: 
-    - list 
-    - get
+      - list 
+      - get
 {{ end }}
