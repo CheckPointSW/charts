@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    agentVersion: {{ Chart.imageUploadVersion }}
+    agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
 spec:
   selector:
     matchLabels:
