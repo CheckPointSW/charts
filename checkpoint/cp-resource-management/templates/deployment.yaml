@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    agentVersion: {{ Chart.Version }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
