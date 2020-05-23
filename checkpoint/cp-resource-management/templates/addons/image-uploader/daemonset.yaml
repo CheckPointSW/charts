@@ -13,7 +13,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
       app.kubernetes.io/instance: {{ .Release.Name | quote }}
-      agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
   template:
     metadata:
       annotations:
