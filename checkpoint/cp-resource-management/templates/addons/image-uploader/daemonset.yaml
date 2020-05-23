@@ -13,6 +13,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
       app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
   template:
     metadata:
       annotations:
@@ -24,6 +25,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ .Release.Name }}-image-uploader 
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
     spec:
       {{- if .Values.rbac.pspEnable }}
       serviceAccountName: {{ .Release.Name }}-image-uploader{{ end }}      
