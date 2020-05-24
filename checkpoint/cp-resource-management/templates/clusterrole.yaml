@@ -21,7 +21,7 @@ rules:
     resources: [ "ingresses" ]
     verbs: [ "list", "get" ]
 
-  - apiGroups: [ "policy, extensions"]
+  - apiGroups: [ "policy", "extensions"]
     resources: [ "podsecuritypolicies" ]
     verbs:
     - list 
