@@ -26,10 +26,14 @@ rules:
     verbs:
     - list 
     - get
+
 {{- if .Values.rbac.pspEnable }}
+  - apiGroups: [ "policy"]
+    resources: [ "podsecuritypolicies" ]
+    verbs:   
     - use
     resourceNames:
-      - {{ template "cp-resource-management.fullname" . }}
+    - {{ template "cp-resource-management.fullname" . }}
 {{ end }}
 
   - apiGroups: [ "rbac.authorization.k8s.io" ]
