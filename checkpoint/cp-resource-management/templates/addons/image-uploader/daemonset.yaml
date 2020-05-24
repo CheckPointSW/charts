@@ -27,7 +27,8 @@ spec:
         agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
     spec:
       {{- if .Values.rbac.pspEnable }}
-      serviceAccountName: {{ .Release.Name }}-image-uploader{{ end }}      
+      serviceAccountName: {{ .Release.Name }}-image-uploader
+      {{- end }}      
       {{- if .Values.addons.imageUploader.daemonset.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.addons.imageUploader.daemonset.nodeSelector | indent 8 }}

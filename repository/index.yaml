@@ -3,9 +3,9 @@ entries:
   cp-resource-management:
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-05-23T21:45:39.1314701+03:00"
+    created: "2020-05-24T11:59:49.5961131+03:00"
     description: A Helm chart for Check Point Workload Security
-    digest: dcb2191bf43e952884ee16d6740c59db07e786b8e8c78beebf01df4dc3b1cc8b
+    digest: c3b3eab40665d20a7b5f294b106402a3755c664339d6700fe7868d48fd710923
     home: https://secure.dome9.com/v2/
     icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
     keywords:
@@ -25,7 +25,7 @@ entries:
     version: 1.05.3
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-05-23T21:45:39.1304674+03:00"
+    created: "2020-05-24T11:59:49.5946095+03:00"
     description: A Helm chart for Check Point Workload Security
     digest: 50af0919e9928bdaad5c06956b0c3382fdc8358a68c99ae3d847e3b5e62799a4
     home: https://secure.dome9.com/v2/
@@ -47,7 +47,7 @@ entries:
     version: 1.05.2
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-05-23T21:45:39.1244514+03:00"
+    created: "2020-05-24T11:59:49.5921016+03:00"
     description: A Helm chart for Check Point Workload Security
     digest: 523e02eb86ddba0ce7e5bc271bffcba34c51686f848fd57b562dc0ecbe960d03
     home: https://secure.dome9.com/v2/
@@ -69,7 +69,7 @@ entries:
     version: 1.05.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-05-23T21:45:39.1389889+03:00"
+    created: "2020-05-24T11:59:49.5986189+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 46971a687701aa1e3e445261804d9c689c912d67329ac3dcaaf8d081936bda38
     home: https://secure.dome9.com/v2/
@@ -88,7 +88,7 @@ entries:
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-05-23T21:45:39.1184345+03:00"
+    created: "2020-05-24T11:59:49.5890944+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c0a44b67b9c7f3b6bed0a50dd6dfc4a1699e2981070a1f4489c7bac8dbc40463
     home: https://secure.dome9.com/v2/
@@ -107,7 +107,7 @@ entries:
     version: "1.04"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-05-23T21:45:39.1114146+03:00"
+    created: "2020-05-24T11:59:49.5830779+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -126,7 +126,7 @@ entries:
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2020-05-23T21:45:39.1053989+03:00"
+    created: "2020-05-24T11:59:49.5790668+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -145,7 +145,7 @@ entries:
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2020-05-23T21:45:39.0988816+03:00"
+    created: "2020-05-24T11:59:49.5730512+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ae960d64ba79bd5cf91aa5a0fc03b6fc7e85b888a0bbbcd028ebb9cafd14fc4a
     home: https://secure.dome9.com/v2/
@@ -164,7 +164,7 @@ entries:
     version: "1.01"
   - apiVersion: v1
     appVersion: "1"
-    created: "2020-05-23T21:45:39.1450049+03:00"
+    created: "2020-05-24T11:59:49.6016282+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -181,4 +181,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2020-05-23T21:45:39.0913615+03:00"
+generated: "2020-05-24T11:59:49.5705441+03:00"

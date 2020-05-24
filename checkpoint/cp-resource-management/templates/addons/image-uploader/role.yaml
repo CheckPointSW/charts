@@ -1,6 +1,6 @@
 {{ if .Values.rbac.pspEnable }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   name: {{ .Release.Name }}-image-uploader
   namespace: {{ .Release.Namespace }}
@@ -9,13 +9,9 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 rules:
-  - apiGroups: 
-    - policy
-    - extensions
-    resources:
-      - podsecuritypolicies
-    verbs: 
-    - use
-    resourceNames:
+  - apiGroups: [ "policy, extensions"]
+    resources: [ "podsecuritypolicies" ]
+    verbs: [ "use"]
+    resourceNames: 
     - {{ .Release.Name }}-image-uploader
 {{ end }}
