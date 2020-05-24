@@ -9,9 +9,7 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 rules:
-  - apiGroups: 
-    - policy
-    - extensions
+  - apiGroups: [ "policy", "extensions" ]
     resources: [ "podsecuritypolicies" ]
     verbs: [ "use"]
     resourceNames: 

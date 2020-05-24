@@ -56,6 +56,7 @@ spec:
               mountPath: /etc/secret-volume
             - name: docker-sock-volume
               mountPath: /var/run/docker.sock
+              readOnly: true
           command: ["/bin/sh"]
           args: ["-c", "/imagesUploader"]
           env:
