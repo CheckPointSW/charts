@@ -18,7 +18,7 @@ spec:
       annotations:
         seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
         {{- if .Values.podAnnotations.apparmor }}
-        container.apparmor.security.beta.kubernetes.io/cp-resource-management: 
+        container.apparmor.security.beta.kubernetes.io/{{ .Release.Name }}-image-uploader: 
 {{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
         {{- end }}
       labels:
