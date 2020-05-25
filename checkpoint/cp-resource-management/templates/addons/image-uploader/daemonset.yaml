@@ -3,11 +3,12 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ .Release.Name }}-image-uploader
+  annotations:
+    agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
   labels:
     app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
 spec:
   selector:
     matchLabels:
@@ -16,6 +17,7 @@ spec:
   template:
     metadata:
       annotations:
+        agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
         seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
         {{- if .Values.podAnnotations.apparmor }}
         container.apparmor.security.beta.kubernetes.io/{{ .Release.Name }}-image-uploader: 
@@ -24,7 +26,6 @@ spec:
       labels:
         app.kubernetes.io/name: {{ .Release.Name }}-image-uploader 
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
-        agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
     spec:
       {{- if .Values.rbac.pspEnable }}
       serviceAccountName: {{ .Release.Name }}-image-uploader

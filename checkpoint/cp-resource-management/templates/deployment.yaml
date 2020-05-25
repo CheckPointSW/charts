@@ -2,11 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "cp-resource-management.fullname" . }}
+  annotations:
+    agentVersion: {{ .Values.image.tag | quote }}
   labels:
     app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    agentVersion: {{ .Values.image.tag | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -16,6 +17,7 @@ spec:
   template:
     metadata:
       annotations:
+        agentVersion: {{ .Values.image.tag | quote }}
         seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
         {{- if .Values.podAnnotations.apparmor }}
         container.apparmor.security.beta.kubernetes.io/cp-resource-management: 
@@ -24,7 +26,6 @@ spec:
       labels:
         app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
-        agentVersion: {{ .Values.image.tag | quote }}
     spec:
       securityContext:
         runAsUser: 1000
