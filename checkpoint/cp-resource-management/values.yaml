@@ -97,3 +97,34 @@ addons:
         effect: NoSchedule
       affinity: {}
 
+  flowLogs:
+
+    enabled: false
+
+    daemonset:
+
+      ## Image settings
+      image:
+        repository: quay.io/checkpoint/flow_logs
+        tag: demo
+        ## Specify an imagePullPolicy
+        ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+        pullPolicy: IfNotPresent
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      affinity: {}    
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule

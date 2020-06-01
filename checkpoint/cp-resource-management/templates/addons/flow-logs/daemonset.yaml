@@ -1,0 +1,100 @@
+{{ if .Values.addons.flowLogs.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}-flow-logs
+  annotations:
+    agentVersion: {{ .Values.addons.flowLogs.daemonset.image.tag | quote }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      annotations:
+        agentVersion: {{ .Values.addons.flowLogs.daemonset.image.tag | quote }}
+        seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+        {{- if .Values.podAnnotations.apparmor }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Release.Name }}-flow-logs: 
+{{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    spec:
+      {{- if .Values.rbac.pspEnable }}
+      serviceAccountName: {{ .Release.Name }}-flow-logs
+      {{- end }}  
+      {{- if .Values.addons.flowLogs.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.addons.flowLogs.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.flowLogs.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.addons.flowLogs.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.flowLogs.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.addons.flowLogs.daemonset.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.flowLogs.daemonset.resources }}        
+        resources:          
+{{- toYaml .Values.addons.flowLogs.daemonset.resources | indent 8 }}
+      {{- end }}        
+      containers:
+        - name: {{ .Release.Name }}-flow-logs
+          image: "{{ .Values.addons.flowLogs.daemonset.image.repository }}:{{ .Values.addons.flowLogs.daemonset.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.flowLogs.daemonset.image.pullPolicy }}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /var/run/netns
+              name: netns-volume
+              mountPropagation: HostToContainer
+            - mountPath: /var/run/docker.sock
+              name: docker-sock-volume
+            - mountPath: /etc/secret-volume
+              name: secret-volume
+          command: ["/bin/sh"]
+          args: ["-c", "/flow_logs_user"]
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DOME9_URL
+              value: "https://api-cpx.dome9.com"
+            - name: CP_KUBERNETES_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-cp-cloudguard-configmap
+                  key: clusterID
+            - name: CP_FLOW_LOGS_REPORT_PERIOD
+              value: "30"
+            - name: CP_FLOW_LOGS_DISCOVERY_PERIOD
+              value: "60"
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: LOCAL_DEBUG
+              value: "1"   
+            - name: COMPRESS
+              value: "false"
+      terminationGracePeriodSeconds: 30      
+      volumes:
+        - name: netns-volume
+          hostPath:
+            path: /var/run/docker/netns
+            type: Directory
+        - name: docker-sock-volume
+          hostPath:
+            path: /var/run/docker.sock
+            type: File
+        - name: secret-volume
+          secret:
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds
+{{ end }}
