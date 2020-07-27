@@ -2,11 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "cp-resource-management.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   annotations:
     agentVersion: {{ .Values.image.tag | quote }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}

@@ -5,9 +5,10 @@ metadata:
   annotations:
     "helm.sh/hook": "pre-install"
   name: {{ .Release.Name }}-cp-cloudguard-configmap
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 data:
   clusterID: {{ .Values.clusterID | quote }}

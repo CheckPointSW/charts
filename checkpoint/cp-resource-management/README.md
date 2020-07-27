@@ -76,7 +76,7 @@ The following tables list the configurable parameters of this chart and their de
 | `env`                                                      | Additional environmental variables                              | `{}`                                             |
 | `credentials.secret`                                       | CloudGuard Dome9 APISecret                                      | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard Dome9 APIID                                          | `CHANGEME`                                       |
-| `clusterID`                                                | Cluster ID in CloudGuard Dome9 database                         | `CHANGEME`                                       |
+| `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
 | `resources`                                                | Resources required (e.g. CPU, memory)                           | `{}`                                             |
 | `podAnnotations`                                           | Arbitrary non-identifying metadata                              | `{}`                                             |
 | `nodeSelector`                                             | Node labels for pod assignment                                  | `{}`                                             |
