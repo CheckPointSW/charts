@@ -3,7 +3,29 @@ entries:
   cp-resource-management:
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-06T19:18:59.5828597+03:00"
+    created: "2020-07-27T12:37:21.4636982+03:00"
+    description: A Helm chart for CloudGuard Workload Security
+    digest: d59d23f6c81343377927b5389a2282b1ac973ba91f718f245558ea970a8292dc
+    home: https://secure.dome9.com/v2/
+    icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+    keywords:
+    - checkpoint
+    - dome9
+    - cloudgurad
+    - workload security
+    - inventory
+    - compliance
+    - vulnerability assessment
+    maintainers:
+    - email: dome9@checkpoint.com
+      name: Check Point
+    name: cp-resource-management
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.07.0.tgz
+    version: 1.07.0
+  - apiVersion: v1
+    appVersion: v1.1.0
+    created: "2020-07-27T12:37:21.4607034+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: bebb6e83ed371d2501879219a72540a2e7f45518f32ede0c64f7109b5b443033
     home: https://secure.dome9.com/v2/
@@ -18,11 +40,77 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.06.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.06.tgz
     version: "1.06"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-06T19:18:59.5818616+03:00"
+    created: "2020-07-27T12:37:21.4587105+03:00"
+    description: A Helm chart for Check Point Workload Security
+    digest: fca0a9c77b802b089701c437539fecb3643fdc3df0f8747cffea1f22e1f10780
+    home: https://secure.dome9.com/v2/
+    icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+    keywords:
+    - checkpoint
+    - dome9
+    - cloudgurad
+    - workload security
+    - inventory
+    - compliance
+    - vulnerability assessment
+    maintainers:
+    - email: dome9@checkpoint.com
+      name: Check Point
+    name: cp-resource-management
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.05.6.tgz
+    version: 1.05.6
+  - apiVersion: v1
+    appVersion: v1.1.0
+    created: "2020-07-27T12:37:21.4577119+03:00"
+    description: A Helm chart for Check Point Workload Security
+    digest: b3ebb0298cf292d9d1c1bd50d2c7924c532bd4e8036118d4b86d787eba123b34
+    home: https://secure.dome9.com/v2/
+    icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+    keywords:
+    - checkpoint
+    - dome9
+    - cloudgurad
+    - workload security
+    - inventory
+    - compliance
+    - vulnerability assessment
+    maintainers:
+    - email: dome9@checkpoint.com
+      name: Check Point
+    name: cp-resource-management
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.05.5.tgz
+    version: 1.05.5
+  - apiVersion: v1
+    appVersion: v1.1.0
+    created: "2020-07-27T12:37:21.4557168+03:00"
+    description: A Helm chart for Check Point Workload Security
+    digest: 55ff5f25b4f5396064e16b3610888c59db554ab7c7d4d26ea69391ddd6a519da
+    home: https://secure.dome9.com/v2/
+    icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+    keywords:
+    - checkpoint
+    - dome9
+    - cloudgurad
+    - workload security
+    - inventory
+    - compliance
+    - vulnerability assessment
+    maintainers:
+    - email: dome9@checkpoint.com
+      name: Check Point
+    name: cp-resource-management
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.05.4.tgz
+    version: 1.05.4
+  - apiVersion: v1
+    appVersion: v1.1.0
+    created: "2020-07-27T12:37:21.4597069+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ebaf4da8a836f017cb4cbd0012b063e293e3ae805ebddb92ce49d666fe328cf4
     home: https://secure.dome9.com/v2/
@@ -37,11 +125,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.05.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.05.tgz
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-06T19:18:59.5798682+03:00"
+    created: "2020-07-27T12:37:21.4547198+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -56,11 +144,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.03.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.03.tgz
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2020-07-06T19:18:59.5778726+03:00"
+    created: "2020-07-27T12:37:21.4537222+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -75,11 +163,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.02.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.02.tgz
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2020-07-06T19:18:59.5848542+03:00"
+    created: "2020-07-27T12:37:21.464693+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -96,4 +184,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2020-07-06T19:18:59.5728876+03:00"
+generated: "2020-07-27T12:37:21.4497321+03:00"
