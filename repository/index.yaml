@@ -3,7 +3,7 @@ entries:
   cp-resource-management:
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-30T17:00:37.384749+03:00"
+    created: "2020-08-03T15:38:20.8390033+03:00"
     description: A Helm chart for CloudGuard Workload Security
     digest: 8920c6606a6038ee4ed0b1e201fc28ea094b8a0d564b262435273907d7e65e82
     home: https://secure.dome9.com/v2/
@@ -21,11 +21,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.07.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/psp_before_merge_to_master/repository/cp-resource-management-1.07.0.tgz
     version: 1.07.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-30T17:00:37.3837705+03:00"
+    created: "2020-08-03T15:38:20.8369716+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: bebb6e83ed371d2501879219a72540a2e7f45518f32ede0c64f7109b5b443033
     home: https://secure.dome9.com/v2/
@@ -40,11 +40,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.06.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/psp_before_merge_to_master/repository/cp-resource-management-1.06.tgz
     version: "1.06"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-30T17:00:37.3827686+03:00"
+    created: "2020-08-03T15:38:20.8358773+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ebaf4da8a836f017cb4cbd0012b063e293e3ae805ebddb92ce49d666fe328cf4
     home: https://secure.dome9.com/v2/
@@ -59,11 +59,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.05.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/psp_before_merge_to_master/repository/cp-resource-management-1.05.tgz
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-07-30T17:00:37.3817397+03:00"
+    created: "2020-08-03T15:38:20.8349787+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -78,11 +78,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.03.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/psp_before_merge_to_master/repository/cp-resource-management-1.03.tgz
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2020-07-30T17:00:37.3807641+03:00"
+    created: "2020-08-03T15:38:20.8341604+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -97,11 +97,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.02.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/psp_before_merge_to_master/repository/cp-resource-management-1.02.tgz
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2020-07-30T17:00:37.3857746+03:00"
+    created: "2020-08-03T15:38:20.8398545+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -116,6 +116,6 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_psp/repository/cp-resource-management-1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/psp_before_merge_to_master/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2020-07-30T17:00:37.3797335+03:00"
+generated: "2020-08-03T15:38:20.8331732+03:00"
