@@ -3,35 +3,9 @@ entries:
   cp-resource-management:
   - apiVersion: v1
     appVersion: v1.1.0
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.779167+03:00"
-=======
-    created: "2020-08-04T15:07:47.3528973+03:00"
+    created: "2020-08-04T15:15:04.6954259+03:00"
     description: A Helm chart for Check Point Workload Security
-    digest: 4e98bd2621925b85ebf785c8c896268310148e6b891ec6389baabad70cadf07a
-    home: https://secure.dome9.com/v2/
-    icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
-    keywords:
-    - checkpoint
-    - dome9
-    - cloudgurad
-    - workload security
-    - inventory
-    - compliance
-    - vulnerability assessment
-    maintainers:
-    - email: dome9@checkpoint.com
-      name: Check Point
-    name: cp-resource-management
-    urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_flowlogs/repository/cp-resource-management-1.05.7.tgz
-    version: 1.05.7
-  - apiVersion: v1
-    appVersion: v1.1.0
-    created: "2020-08-04T15:07:47.3518942+03:00"
->>>>>>> [comments]
-    description: A Helm chart for Check Point Workload Security
-    digest: 6a4eea94987d6a232fbd4aeb557dfee8e369bd658e2470b67ae98b82fa66f4cd
+    digest: 3c557cfce7063974808ba288dc801bb965f293216f14ffb994d194220a9bf177
     home: https://secure.dome9.com/v2/
     icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
     keywords:
@@ -49,12 +23,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-<<<<<<< HEAD
     - https://raw.githubusercontent.com/CheckPointSW/charts/testing_flowlogs/repository/cp-resource-management-1.6.1.tgz
     version: 1.6.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-08-04T15:13:01.7781647+03:00"
+    created: "2020-08-04T15:15:04.6934193+03:00"
     description: A Helm chart for Check Point Workload Security
     digest: 4274e2bd935920dba2fac3a039db79786570c23a5e151b7e13323969a0a5140d
     home: https://secure.dome9.com/v2/
@@ -78,14 +51,7 @@ entries:
     version: 1.6.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2020-08-04T15:13:01.7761589+03:00"
-=======
-    - https://raw.githubusercontent.com/CheckPointSW/charts/testing_flowlogs/repository/cp-resource-management-1.05.6.tgz
-    version: 1.05.6
-  - apiVersion: v1
-    appVersion: v1.1.0
-    created: "2020-08-04T15:07:47.349888+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6773768+03:00"
     description: A Helm chart for Check Point Workload Security
     digest: b3ebb0298cf292d9d1c1bd50d2c7924c532bd4e8036118d4b86d787eba123b34
     home: https://secure.dome9.com/v2/
@@ -107,11 +73,7 @@ entries:
     version: 1.05.5
   - apiVersion: v1
     appVersion: v1.1.0
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.7751542+03:00"
-=======
-    created: "2020-08-04T15:07:47.3478835+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6713533+03:00"
     description: A Helm chart for Check Point Workload Security
     digest: 55ff5f25b4f5396064e16b3610888c59db554ab7c7d4d26ea69391ddd6a519da
     home: https://secure.dome9.com/v2/
@@ -133,11 +95,7 @@ entries:
     version: 1.05.4
   - apiVersion: v1
     appVersion: v1.1.0
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.7771628+03:00"
-=======
-    created: "2020-08-04T15:07:47.3539+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6793826+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 46971a687701aa1e3e445261804d9c689c912d67329ac3dcaaf8d081936bda38
     home: https://secure.dome9.com/v2/
@@ -156,11 +114,7 @@ entries:
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.7741523+03:00"
-=======
-    created: "2020-08-04T15:07:47.3448701+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6698509+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c0a44b67b9c7f3b6bed0a50dd6dfc4a1699e2981070a1f4489c7bac8dbc40463
     home: https://secure.dome9.com/v2/
@@ -179,11 +133,7 @@ entries:
     version: "1.04"
   - apiVersion: v1
     appVersion: v1.1.0
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.7711451+03:00"
-=======
-    created: "2020-08-04T15:07:47.343366+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6683461+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -202,11 +152,7 @@ entries:
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.770142+03:00"
-=======
-    created: "2020-08-04T15:07:47.3368485+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6668429+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -225,11 +171,7 @@ entries:
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.768638+03:00"
-=======
-    created: "2020-08-04T15:07:47.3067633+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6658398+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ae960d64ba79bd5cf91aa5a0fc03b6fc7e85b888a0bbbcd028ebb9cafd14fc4a
     home: https://secure.dome9.com/v2/
@@ -248,11 +190,7 @@ entries:
     version: "1.01"
   - apiVersion: v1
     appVersion: "1"
-<<<<<<< HEAD
-    created: "2020-08-04T15:13:01.779167+03:00"
-=======
-    created: "2020-08-04T15:07:47.3599145+03:00"
->>>>>>> [comments]
+    created: "2020-08-04T15:15:04.6974313+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -269,8 +207,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/CheckPointSW/charts/testing_flowlogs/repository/cp-resource-management-1.tgz
     version: "1"
-<<<<<<< HEAD
-generated: "2020-08-04T15:13:01.7671339+03:00"
-=======
-generated: "2020-08-04T15:07:47.3047595+03:00"
->>>>>>> [comments]
+generated: "2020-08-04T15:15:04.6643353+03:00"
