@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: v1.1.0
-version: 1.07
-description: A Helm chart for CloudGuard Workload Security
+version: 1.08
+description: A Helm chart for Check Point CloudGuard Workload Security
 name: cp-resource-management
 keywords:
 - checkpoint
