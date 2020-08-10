@@ -1,6 +1,6 @@
-{{ if .Values.rbac.pspEnable }}
+{{ if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRoleBinding
 metadata:
   name: {{ template "cp-resource-management.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -8,10 +8,12 @@ metadata:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
-rules:
-  - apiGroups: [ "policy" ]
-    resources: [ "podsecuritypolicies" ]
-    verbs: [ "use"]
-    resourceNames: 
-    - {{ template "cp-resource-management.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "cp-resource-management.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "cp-resource-management.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
 {{ end }}
