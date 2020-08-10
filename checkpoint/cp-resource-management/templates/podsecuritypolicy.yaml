@@ -1,16 +1,13 @@
 {{ if .Values.rbac.create }}
 {{- if .Values.rbac.pspEnable }}
-{{ if .Capabilities.APIVersions.Has "policy/v1beta1" }}
 apiVersion: policy/v1beta1
-{{ else }}
-apiVersion: extensions/v1beta1
-{{ end -}}
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "cp-resource-management.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}

@@ -5,8 +5,8 @@ metadata:
   name: {{ .Release.Name }}-image-uploader
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

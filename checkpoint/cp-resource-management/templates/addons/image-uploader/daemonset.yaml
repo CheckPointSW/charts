@@ -3,11 +3,12 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ .Release.Name }}-image-uploader
+  namespace: {{ .Release.Namespace }}
   annotations:
     agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 spec:
   selector:

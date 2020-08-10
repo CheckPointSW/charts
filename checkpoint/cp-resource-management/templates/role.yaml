@@ -5,11 +5,11 @@ metadata:
   name: {{ template "cp-resource-management.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 rules:
-  - apiGroups: [ "policy", "extensions" ]
+  - apiGroups: [ "policy" ]
     resources: [ "podsecuritypolicies" ]
     verbs: [ "use"]
     resourceNames: 

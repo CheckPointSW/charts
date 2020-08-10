@@ -1,15 +1,12 @@
 {{- if .Values.rbac.pspEnable }}
-{{ if .Capabilities.APIVersions.Has "policy/v1beta1" }}
 apiVersion: policy/v1beta1
-{{ else }}
-apiVersion: extensions/v1beta1
-{{ end -}}
 kind: PodSecurityPolicy
 metadata:
   name: {{ .Release.Name }}-image-uploader
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}

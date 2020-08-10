@@ -63,31 +63,22 @@ $ helm install my-release -f values.yaml checkpoint/cp-resource-management
 
 The following tables list the configurable parameters of this chart and their default values.
 
-| Parameter                                                  | Description                                                     | Default                                          |
-| ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
-| `replicaCount`                                             | Number of provisioner instances to deployed                     | `1`                                              |
-| `RBAC.create`                                              | Specifies whether RBAC resources should be created              | `true`                                           |
-| `RBAC.pspEnable`                                           | Specifies whether PSP resources should be created               | `false`                                          |
-| `serviceAccount.create`                                    | Specifies whether RBAC resources should be created              | `true`                                           |
-| `serviceAccount.name`                                      | Specifies whether RBAC resources should be created              | ``                                               |
-| `image.repository`                                         | Provisioner image                                               | `quay.io/checkpoint/cp-resource-management`      |
-| `image.tag`                                                | Version of provisioner image                                    | `{TAG_NAME}`                                     |
-| `image.pullPolicy`                                         | Image pull policy                                               | `IfNotPresent`                                   |
-| `env`                                                      | Additional environmental variables                              | `{}`                                             |
-| `credentials.secret`                                       | CloudGuard Dome9 APISecret                                      | `CHANGEME`                                       |
-| `credentials.user`                                         | CloudGuard Dome9 APIID                                          | `CHANGEME`                                       |
-| `clusterID`                                                | Cluster ID in CloudGuard Dome9 database                         | `CHANGEME`                                       |
-| `resources`                                                | Resources required (e.g. CPU, memory)                           | `{}`                                             |
-| `podAnnotations`                                           | Arbitrary non-identifying metadata                              | `{}`                                             |
-| `nodeSelector`                                             | Node labels for pod assignment                                  | `{}`                                             |
-| `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
-| `affinity`                                                 | Affinity settings                                               | `{}`                                             |
-| `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
-| `addons.imageUploader.enabled.daemonset.image.repository`  | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
-| `addons.imageUploader.enableddaemonset.image.tag`          | Version of provisioner image                                    | `{TAG_NAME}`                                     |
-| `addons.imageUploader.enableddaemonset.image.pullPolicy`   | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.imageUploader.enableddaemonset.resources`          | Version of provisioner image                                    | `{}`                                             |
-| `addons.imageUploader.enableddaemonset.nodeSelector`       | Node labels for pod assignment                                  | `{}`                                             |
-| `addons.imageUploader.enableddaemonset.tolerations`        | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
-|                                                            |                                                                 | `effect: NoSchedule`                             |
-| `addons.imageUploader.enableddaemonset.affinity`           | Affinity setting                                                | `{}`                                             |
+| Parameter                                         | Description                                                   | Default                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| `replicaCount`                                    | Number of provisioner instances to deployed                   | `1`                                                         |
+| `RBAC.create`                                     | Specifies whether RBAC resources should be created            | `true`                                                      |
+| `serviceAccount.create`                           | Specifies whether RBAC resources should be created            | `true`                                                      |
+| `serviceAccount.name`                             | Specifies whether RBAC resources should be created            | ``                                                          |
+| `image.repository`                                | Provisioner image                                             | `quay.io/checkpoint/cp-resource-management`                 |
+| `image.tag`                                       | Version of provisioner image                                  | `{TAG_NAME}`                                                |
+| `image.pullPolicy`                                | Image pull policy                                             | `IfNotPresent`                                              |
+| `env`                                             | Additional environmental variables                            | `{}`                                                        |
+| `credentials.name`                                | Dome9 credential secret                                       | `dome9-creds`                                               |
+| `credentials.secret`                              | Dome9 APISecret                                               | `CHANGEME`                                                  |
+| `credentials.user`                                | Dome9 APIID                                                   | `CHANGEME`                                                  |
+| `clusterID`                                       | Cluster Unique identifier in CloudGuard system                | `CHANGEME`                                                  |
+| `resources`                                       | Resources required (e.g. CPU, memory)                         | `{}`                                                        |
+| `podAnnotations`                                  | Arbitrary non-identifying metadata                            | `{}`                                                        |
+| `nodeSelector`                                    | Node labels for pod assignment                                | `{}`                                                        |
+| `tolerations`                                     | List of node taints to tolerate                               | `[]`                                                        |
+| `affinity`                                        | Affinity settings                                             | `{}`                                                        |
