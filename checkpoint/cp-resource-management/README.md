@@ -2,8 +2,8 @@
 
 ## Introduction
 
-This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, and Ingress) and uploads them to [Check Point ClougGuard](https://secure.dome9.com/).
-Check Point ClougGuard provides Compliance, Vulnerability Assessment, Visibility, Monitoring and Threat Hunting capabilities.
+This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ServiceAccount, and Ingress) and uploads their meta-data to [Check Point ClougGuard](https://secure.dome9.com/).
+Check Point ClougGuard provides Compliance, Vulnerability Assessment, Visibility, Monitoring, and Threat Hunting capabilities.
 
 ## Prerequisites
 
@@ -44,7 +44,7 @@ This command removes all the Kubernetes components associated with the chart and
 
 ## Configuration
 
-In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster ID & credentials you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard](https://secure.dome9.com/) website.
+In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard](https://secure.dome9.com/) website.
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. 
 These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
@@ -85,11 +85,20 @@ The following tables list the configurable parameters of this chart and their de
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
 | `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
-| `addons.imageUploader.enabled.daemonset.image.repository`  | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
-| `addons.imageUploader.enableddaemonset.image.tag`          | Version of provisioner image                                    | `{TAG_NAME}`                                     |
-| `addons.imageUploader.enableddaemonset.image.pullPolicy`   | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.imageUploader.enableddaemonset.resources`          | Version of provisioner image                                    | `{}`                                             |
-| `addons.imageUploader.enableddaemonset.nodeSelector`       | Node labels for pod assignment                                  | `{}`                                             |
-| `addons.imageUploader.enableddaemonset.tolerations`        | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+| `addons.imageUploader.daemonset.image.repository`          | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
+| `addons.imageUploader.daemonset.image.tag`                 | Version of provisioner image                                    | `{TAG_NAME}`                                     |
+| `addons.imageUploader.daemonset.image.pullPolicy`          | Image pull policy                                               | `IfNotPresent`                                   |
+| `addons.imageUploader.daemonset.resources`                 | Version of provisioner image                                    | `{}`                                             |
+| `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
-| `addons.imageUploader.enableddaemonset.affinity`           | Affinity setting                                                | `{}`                                             |
+| `addons.imageUploader.enabled.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.enabled`                                  | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
+| `addons.flowLogs.daemonset.image.repository`               | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
+| `addons.flowLogs.daemonset.image.tag`                      | Version of provisioner image                                    | `{TAG_NAME}`                                     |
+| `addons.flowLogs.daemonset.image.pullPolicy`               | Image pull policy                                               | `IfNotPresent`                                   |
+| `addons.flowLogs.daemonset.resources`                      | Version of provisioner image                                    | `{}`                                             |
+| `addons.flowLogs.daemonset.nodeSelector`                   | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.flowLogs.daemonset.tolerations`                    | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+| `addons.flowLogs.daemonset.affinity`                       | Affinity setting                                                | `{}`                                             |

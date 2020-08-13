@@ -84,8 +84,10 @@ spec:
               value: "1"   
             - name: COMPRESS
               value: "false"
-      terminationGracePeriodSeconds: 30      
       volumes:
+        - name: secret-volume
+          secret:
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds
         - name: netns-volume
           hostPath:
             path: /var/run/docker/netns
@@ -94,7 +96,4 @@ spec:
           hostPath:
             path: /var/run/docker.sock
             type: File
-        - name: secret-volume
-          secret:
-            secretName: {{ .Release.Name }}-cp-cloudguard-creds
 {{ end }}
