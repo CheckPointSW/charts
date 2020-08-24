@@ -43,7 +43,6 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.resources }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -53,7 +52,8 @@ spec:
               mountPath: /etc/secret-volume
           command: ["/bin/sh"]
           args: ["-c", "/inventory"]
-          resources:          
+          {{- if .Values.resources }}
+          resources:
 {{- toYaml .Values.resources | indent 12 }}
           {{- end }}
           securityContext:
