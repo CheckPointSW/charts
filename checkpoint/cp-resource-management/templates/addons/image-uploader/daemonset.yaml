@@ -49,7 +49,7 @@ spec:
           imagePullPolicy: {{ .Values.addons.imageUploader.daemonset.image.pullPolicy }}
           {{- if .Values.addons.imageUploader.daemonset.resources }}              
           resources:
-{{- toYaml .Values.addons.imageUploader.daemonset.resources | indent 12 }}
+{{ toYaml .Values.addons.imageUploader.daemonset.resources | indent 12 }}
           {{- end }}  
           securityContext:
             allowPrivilegeEscalation: false

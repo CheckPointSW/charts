@@ -54,7 +54,7 @@ spec:
           args: ["-c", "/inventory"]
           {{- if .Values.resources }}
           resources:
-{{- toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           securityContext:
             runAsNonRoot: true
