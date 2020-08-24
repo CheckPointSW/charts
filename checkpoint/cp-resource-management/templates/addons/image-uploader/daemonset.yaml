@@ -43,14 +43,14 @@ spec:
       tolerations:
 {{ toYaml .Values.addons.imageUploader.daemonset.tolerations | indent 8 }}
       {{- end }}
-      {{- if .Values.addons.imageUploader.daemonset.resources }}        
-        resources:          
-{{- toYaml .Values.addons.imageUploader.daemonset.resources | indent 8 }}
-      {{- end }}        
+      {{- if .Values.addons.imageUploader.daemonset.resources }}              
       containers:
         - name: {{ .Release.Name }}-image-uploader
           image: "{{ .Values.addons.imageUploader.daemonset.image.repository }}:{{ .Values.addons.imageUploader.daemonset.image.tag }}"
           imagePullPolicy: {{ .Values.addons.imageUploader.daemonset.image.pullPolicy }}
+          resources:          
+{{- toYaml .Values.addons.imageUploader.daemonset.resources | indent 12 }}
+          {{- end }}  
           securityContext:
             allowPrivilegeEscalation: false
           volumeMounts:
