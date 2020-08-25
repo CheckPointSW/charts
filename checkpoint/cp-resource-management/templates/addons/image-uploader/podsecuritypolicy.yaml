@@ -15,8 +15,8 @@ spec:
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
   allowedHostPaths:
-   - pathPrefix: /var/run/docker.sock
-     readOnly: true
+    - pathPrefix: /var/run/docker.sock
+      readOnly: true
   requiredDropCapabilities:
     - ALL
   volumes:
