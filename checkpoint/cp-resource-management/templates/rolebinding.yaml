@@ -13,11 +13,11 @@ roleRef:
   kind: Role
   name: {{ template "cp-resource-management.fullname" . }}
 subjects:
-- kind: ServiceAccount
-{{ if .Values.serviceAccount.create }}
-  name: {{ template "cp-resource-management.serviceAccountName" . }}
-{{ else }}
-  name: {{ .Values.serviceAccount.Name | quote }}
-{{ end }}
-  namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+{{- if .Values.serviceAccount.create }}
+    name: {{ template "cp-resource-management.serviceAccountName" . }}
+{{- else }}
+    name: {{ .Values.serviceAccount.Name | quote }}
+{{- end }}
+    namespace: {{ .Release.Namespace }}
 {{ end }}
