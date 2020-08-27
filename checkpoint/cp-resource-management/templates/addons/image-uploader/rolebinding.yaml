@@ -13,7 +13,7 @@ roleRef:
   kind: Role
   name: {{ .Release.Name }}-image-uploader
 subjects:
-- kind: ServiceAccount
-  name: {{ .Release.Name }}-image-uploader
-  namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-image-uploader
+    namespace: {{ .Release.Namespace }}
 {{ end }}
