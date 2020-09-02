@@ -74,17 +74,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Release.Name }}-cp-cloudguard-configmap
                   key: clusterID
-            - name: CP_FLOW_LOGS_REPORT_PERIOD
-              value: "30"
-            - name: CP_FLOW_LOGS_DISCOVERY_PERIOD
-              value: "60"
-            - name: LOG_LEVEL
-              value: "debug"
-            - name: LOCAL_DEBUG
-              value: "1"   
-            - name: COMPRESS
-              value: "false"
-      terminationGracePeriodSeconds: 30      
       volumes:
         - name: netns-volume
           hostPath:
@@ -93,7 +82,7 @@ spec:
         - name: docker-sock-volume
           hostPath:
             path: /var/run/docker.sock
-            type: File
+            type: Socket
         - name: secret-volume
           secret:
             secretName: {{ .Release.Name }}-cp-cloudguard-creds
