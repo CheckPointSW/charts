@@ -111,6 +111,9 @@ addons:
         ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
         pullPolicy: IfNotPresent
 
+      ## Log Level values: error, warn, info, debug, trace
+      logLevel: info
+
       ## Configure resource requests and limits
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
       resources: {}

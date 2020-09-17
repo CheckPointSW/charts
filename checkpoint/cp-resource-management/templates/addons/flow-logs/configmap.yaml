@@ -1,0 +1,16 @@
+{{ if .Values.addons.flowLogs.enabled }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}-flow-logs-configmap
+  namespace: {{ .Release.Namespace }}
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+data:
+  flowlogsConfig.json: |
+    {
+      "LOG_LEVEL": "{{ .Values.addons.flowLogs.daemonset.logLevel }}"
+    }
+{{ end }}
