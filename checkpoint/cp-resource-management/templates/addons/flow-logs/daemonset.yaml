@@ -74,6 +74,9 @@ spec:
                   name: {{ .Release.Name }}-cp-cloudguard-configmap
                   key: clusterID
       volumes:
+        - name: secret-volume
+          secret:
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds
         - name: netns-volume
           hostPath:
             path: /var/run/docker/netns
@@ -82,9 +85,6 @@ spec:
           hostPath:
             path: /var/run/docker.sock
             type: Socket
-        - name: secret-volume
-          secret:
-            secretName: {{ .Release.Name }}-cp-cloudguard-creds
         - name: config-volume
           configMap:
             name: {{ .Release.Name }}-flow-logs-configmap
