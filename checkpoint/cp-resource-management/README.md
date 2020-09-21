@@ -70,14 +70,14 @@ The following tables list the configurable parameters of this chart and their de
 | `RBAC.pspEnable`                                           | Specifies whether PSP resources should be created               | `false`                                          |
 | `serviceAccount.create`                                    | Specifies whether RBAC resources should be created              | `true`                                           |
 | `serviceAccount.name`                                      | Specifies whether RBAC resources should be created              | ``                                               |
-| `image.repository`                                         | Agengt image                                                    | `quay.io/checkpoint/cp-resource-management`      |
+| `image.repository`                                         | Agent image                                                     | `quay.io/checkpoint/cp-resource-management`      |
 | `image.tag`                                                | Image version                                                   | `{TAG_NAME}`                                     |
 | `image.pullPolicy`                                         | Image pull policy                                               | `IfNotPresent`                                   |
 | `env`                                                      | Additional environmental variables                              | `{}`                                             |
 | `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
-| `resources`                                                | Resources required (e.g. CPU, memory)                           | `{}`                                             |
+| `resources`                                                | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `podAnnotations`                                           | Arbitrary non-identifying metadata                              | `{}`                                             |
 | `nodeSelector`                                             | Node labels for pod assignment                                  | `{}`                                             |
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
@@ -86,7 +86,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.imageUploader.daemonset.image.repository`          | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.imageUploader.daemonset.image.tag`                 | Agent version                                                   | `{TAG_NAME}`                                     |
 | `addons.imageUploader.daemonset.image.pullPolicy`          | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.imageUploader.daemonset.resources`                 | Restricting agent resources                                     | `{}`                                             |
+| `addons.imageUploader.daemonset.resources`                 | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
@@ -96,7 +96,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.flowLogs.daemonset.image.repository`               | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.flowLogs.daemonset.image.tag`                      | Agent version                                                   | `{TAG_NAME}`                                     |
 | `addons.flowLogs.daemonset.image.pullPolicy`               | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.flowLogs.daemonset.resources`                      | Restricting agent resources                                     | `{}`                                             |
+| `addons.flowLogs.daemonset.resources`                      | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.flowLogs.daemonset.nodeSelector`                   | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.flowLogs.daemonset.tolerations`                    | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
