@@ -65,13 +65,13 @@ The following tables list the configurable parameters of this chart and their de
 
 | Parameter                                                  | Description                                                     | Default                                          |
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
-| `replicaCount`                                             | Number of provisioner instances to deployed                     | `1`                                              |
+| `replicaCount`                                             | Number of agent instances to deployed                           | `1`                                              |
 | `RBAC.create`                                              | Specifies whether RBAC resources should be created              | `true`                                           |
 | `RBAC.pspEnable`                                           | Specifies whether PSP resources should be created               | `false`                                          |
 | `serviceAccount.create`                                    | Specifies whether RBAC resources should be created              | `true`                                           |
 | `serviceAccount.name`                                      | Specifies whether RBAC resources should be created              | ``                                               |
-| `image.repository`                                         | Provisioner image                                               | `quay.io/checkpoint/cp-resource-management`      |
-| `image.tag`                                                | Version of provisioner image                                    | `{TAG_NAME}`                                     |
+| `image.repository`                                         | Agengt image                                                    | `quay.io/checkpoint/cp-resource-management`      |
+| `image.tag`                                                | Image version                                                   | `{TAG_NAME}`                                     |
 | `image.pullPolicy`                                         | Image pull policy                                               | `IfNotPresent`                                   |
 | `env`                                                      | Additional environmental variables                              | `{}`                                             |
 | `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
@@ -83,20 +83,20 @@ The following tables list the configurable parameters of this chart and their de
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
 | `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
-| `addons.imageUploader.enabled.daemonset.image.repository`  | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
-| `addons.imageUploader.enabled.daemonset.image.tag`         | Version of provisioner image                                    | `{TAG_NAME}`                                     |
-| `addons.imageUploader.enabled.daemonset.image.pullPolicy`  | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.imageUploader.enabled.daemonset.resources`         | Version of provisioner image                                    | `{}`                                             |
-| `addons.imageUploader.enabled.daemonset.nodeSelector`      | Node labels for pod assignment                                  | `{}`                                             |
-| `addons.imageUploader.enabled.daemonset.tolerations`       | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+| `addons.imageUploader.daemonset.image.repository`          | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
+| `addons.imageUploader.daemonset.image.tag`                 | Agent version                                                   | `{TAG_NAME}`                                     |
+| `addons.imageUploader.daemonset.image.pullPolicy`          | Image pull policy                                               | `IfNotPresent`                                   |
+| `addons.imageUploader.daemonset.resources`                 | Restricting agent resources                                     | `{}`                                             |
+| `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
 | `addons.imageUploader.enabled.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
 | `addons.flowLogs.enabled`                                  | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.flowLogs.daemonset.logLevel`                       | The logging level                                               | `info`                                           |
-| `addons.flowLogs.daemonset.image.repository`               | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
-| `addons.flowLogs.daemonset.image.tag`                      | Version of provisioner image                                    | `{TAG_NAME}`                                     |
+| `addons.flowLogs.daemonset.image.repository`               | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
+| `addons.flowLogs.daemonset.image.tag`                      | Agent version                                                   | `{TAG_NAME}`                                     |
 | `addons.flowLogs.daemonset.image.pullPolicy`               | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.flowLogs.daemonset.resources`                      | Version of provisioner image                                    | `{}`                                             |
+| `addons.flowLogs.daemonset.resources`                      | Restricting agent resources                                     | `{}`                                             |
 | `addons.flowLogs.daemonset.nodeSelector`                   | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.flowLogs.daemonset.tolerations`                    | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
