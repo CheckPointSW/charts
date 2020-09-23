@@ -1,0 +1,68 @@
+# The namespace used by the below example resources.
+# Need to change namespace if you are using a different namespace.
+# To expose the Ingress controller pods, you can use a different service configuration, according to this guide:
+# https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress
+  namespace: default 
+spec:
+  selector:
+   matchLabels:
+     app: nginx-ingress
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: nginx-ingress
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress
+    spec:
+      containers:
+      - args:
+        - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+        - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        image: {{.Values.image.nginxCtlCpRepo}}
+        imagePullPolicy: IfNotPresent
+        name: nginx-ingress-container
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - args:
+        - --fog
+        - https://i2-agents.cloud.ngen.checkpoint.com
+        - --token
+        - {{.Values.nanoToken}}
+        command:
+        - /cp-nano-agent
+        image: {{.Values.image.cpRepo}}
+        imagePullPolicy: IfNotPresent
+        name: cp-agent-container
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
