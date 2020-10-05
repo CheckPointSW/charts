@@ -75,4 +75,4 @@ The following tables list the configurable parameters of this chart and their de
 | `nodeSelector`                                    | Node labels for pod assignment                                | `{}`                                                        |
 | `tolerations`                                     | List of node taints to tolerate                               | `[]`                                                        |
 | `affinity`                                        | Affinity settings                                             | `{}`                                                        |
-| `proxy`                                           | Proxy settings (e.g. http://my-proxy.com:443)                 | `{}`                                                        |
+| `proxy`                                           | Proxy settings (e.g. http://my-proxy.com:8080)                | `{}`                                                        |
