@@ -63,7 +63,7 @@ spec:
                 configMapKeyRef:
                   name: cp-dome9-configmap
                   key: clusterID
-{{- if .Values.proxy }}
+            {{- if .Values.proxy }}
             - name: HTTPS_PROXY
               value: "{{ .Values.proxy }}"             
             - name: NO_PROXY
