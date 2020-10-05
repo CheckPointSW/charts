@@ -67,6 +67,12 @@ spec:
                 configMapKeyRef:
                   name: {{ .Release.Name }}-cp-cloudguard-configmap
                   key: clusterID
+            {{- if .Values.proxy }}
+            - name: HTTPS_PROXY
+              value: "{{ .Values.proxy }}"             
+            - name: NO_PROXY
+              value: "kubernetes.default.svc"
+            {{- end }}              
       volumes:
         - name: secret-volume
           secret:

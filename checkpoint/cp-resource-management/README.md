@@ -82,6 +82,7 @@ The following tables list the configurable parameters of this chart and their de
 | `nodeSelector`                                             | Node labels for pod assignment                                  | `{}`                                             |
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
+| `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.imageUploader.daemonset.image.repository`          | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.imageUploader.daemonset.image.tag`                 | Agent version                                                   | `{TAG_NAME}`                                     |
