@@ -63,6 +63,12 @@ spec:
                 configMapKeyRef:
                   name: cp-dome9-configmap
                   key: clusterID
+{{- if .Values.proxy }}
+            - name: HTTPS_PROXY
+              value: "{{ .Values.proxy }}"             
+            - name: NO_PROXY
+              value: "kubernetes.default.svc"
+            {{- end }}              
       volumes:
         - name: secret-volume
           secret:
