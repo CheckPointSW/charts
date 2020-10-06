@@ -112,7 +112,7 @@ addons:
       ## Image settings
       image:
         repository: quay.io/checkpoint/flow_logs
-        tag: ea_0.1.0
+        tag: 0.1.1
         ## Specify an imagePullPolicy
         ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
         pullPolicy: IfNotPresent
