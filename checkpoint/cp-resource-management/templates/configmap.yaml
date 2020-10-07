@@ -1,12 +1,13 @@
 {{ if .Values.clusterID }}
-kind: ConfigMap 
-apiVersion: v1 
+kind: ConfigMap
+apiVersion: v1
 metadata:
-  name: cp-dome9-configmap
+  name: {{ .Release.Name }}-cp-cloudguard-configmap
+  namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
 data:
   clusterID: {{ .Values.clusterID | quote }}
 {{ end }}

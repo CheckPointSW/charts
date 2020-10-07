@@ -2,19 +2,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "cp-resource-management.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ .Values.image.tag | quote }}
   labels:
-    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
   template:
     metadata:
       annotations:
+        agentVersion: {{ .Values.image.tag | quote }}
         seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
         {{- if .Values.podAnnotations.apparmor }}
         container.apparmor.security.beta.kubernetes.io/cp-resource-management: 
@@ -22,11 +26,11 @@ spec:
         {{- end }}
       labels:
         app.kubernetes.io/name: {{ template "cp-resource-management.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
       securityContext:
         runAsUser: 1000
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "cp-resource-management.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "cp-resource-management.fullname" . }}{{ else }}{{ .Values.serviceAccount.Name | quote }}{{ end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -39,10 +43,6 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-{{- if .Values.resources }}
-      resources:          
-{{- toYaml .Values.resources | indent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -52,6 +52,10 @@ spec:
               mountPath: /etc/secret-volume
           command: ["/bin/sh"]
           args: ["-c", "/inventory"]
+          {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          {{- end }}
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
@@ -61,7 +65,7 @@ spec:
             - name: CP_KUBERNETES_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:
-                  name: cp-dome9-configmap
+                  name: {{ .Release.Name }}-cp-cloudguard-configmap
                   key: clusterID
             {{- if .Values.proxy }}
             - name: HTTPS_PROXY
@@ -72,4 +76,4 @@ spec:
       volumes:
         - name: secret-volume
           secret:
-            secretName: cp-dome9-creds              
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds              
