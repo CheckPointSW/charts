@@ -47,10 +47,6 @@ spec:
         - name: {{ .Release.Name }}-image-uploader
           image: "{{ .Values.addons.imageUploader.daemonset.image.repository }}:{{ .Values.addons.imageUploader.daemonset.image.tag }}"
           imagePullPolicy: {{ .Values.addons.imageUploader.daemonset.image.pullPolicy }}
-          {{- if .Values.addons.imageUploader.daemonset.resources }}              
-          resources:
-{{ toYaml .Values.addons.imageUploader.daemonset.resources | indent 12 }}
-          {{- end }}  
           securityContext:
             allowPrivilegeEscalation: false
           volumeMounts:
@@ -61,6 +57,10 @@ spec:
               readOnly: true
           command: ["/bin/sh"]
           args: ["-c", "/imagesUploader"]
+          {{- if .Values.addons.imageUploader.daemonset.resources }}
+          resources:
+{{ toYaml .Values.addons.imageUploader.daemonset.resources | indent 12 }}
+          {{- end }}
           env:
             - name: MY_NODE_NAME
               valueFrom:
@@ -86,5 +86,5 @@ spec:
         - name: docker-sock-volume
           hostPath:
             path: /var/run/docker.sock
-            type: File
+            type: Socket
 {{ end }}
