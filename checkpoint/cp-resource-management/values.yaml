@@ -61,6 +61,12 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+## Proxy settings 
+## Examples:
+## proxy: http://example.com:443
+## proxy: $HTTPS_PROXY
+proxy: {}
+
 ## Addons configuration
 ## Each addon may be disabled
 addons:

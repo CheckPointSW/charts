@@ -82,6 +82,7 @@ The following tables list the configurable parameters of this chart and their de
 | `nodeSelector`                                             | Node labels for pod assignment                                  | `{}`                                             |
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
+| `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.imageUploader.enabled.daemonset.image.repository`  | Provisioner image                                               | `quay.io/checkpoint/images-uploader`             |
 | `addons.imageUploader.enableddaemonset.image.tag`          | Version of provisioner image                                    | `{TAG_NAME}`                                     |
@@ -91,3 +92,4 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.imageUploader.enableddaemonset.tolerations`        | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
 | `addons.imageUploader.enableddaemonset.affinity`           | Affinity setting                                                | `{}`                                             |
+
