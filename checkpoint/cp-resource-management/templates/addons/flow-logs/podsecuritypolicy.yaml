@@ -14,7 +14,7 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
 spec:
-  privileged: true
+  privileged: false
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
   allowedHostPaths:
@@ -23,7 +23,9 @@ spec:
    - pathPrefix: /var/run/netns
      readOnly: false
   requiredDropCapabilities:
-    - ALL
+    - SYS_ADMIN
+    - SYS_RESOURCE
+    - NET_ADMIN
   volumes:
     - 'secret'  
     - 'configMap'

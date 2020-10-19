@@ -66,8 +66,8 @@ The following tables list the configurable parameters of this chart and their de
 | Parameter                                                  | Description                                                     | Default                                          |
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `replicaCount`                                             | Number of agent instances to deployed                           | `1`                                              |
-| `RBAC.create`                                              | Specifies whether RBAC resources should be created              | `true`                                           |
-| `RBAC.pspEnable`                                           | Specifies whether PSP resources should be created               | `false`                                          |
+| `rbac.create`                                              | Specifies whether RBAC resources should be created              | `true`                                           |
+| `rbac.pspEnable`                                           | Specifies whether PSP resources should be created               | `false`                                          |
 | `serviceAccount.create`                                    | Specifies whether RBAC resources should be created              | `true`                                           |
 | `serviceAccount.name`                                      | Specifies whether RBAC resources should be created              | ``                                               |
 | `image.repository`                                         | Agent image                                                     | `quay.io/checkpoint/cp-resource-management`      |
