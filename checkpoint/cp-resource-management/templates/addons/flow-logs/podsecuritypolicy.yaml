@@ -22,7 +22,7 @@ spec:
      readOnly: true
    - pathPrefix: /var/run/netns
      readOnly: false
-  requiredDropCapabilities:
+  allowedCapabilities:
     - SYS_ADMIN
     - SYS_RESOURCE
     - NET_ADMIN
