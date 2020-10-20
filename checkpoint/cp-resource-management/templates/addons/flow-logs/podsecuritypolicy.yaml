@@ -20,8 +20,8 @@ spec:
   allowedHostPaths:
    - pathPrefix: /var/run/docker.sock
      readOnly: true
-   - pathPrefix: /var/run/netns
-     readOnly: false
+   - pathPrefix: /var/run/docker/netns
+     readOnly: true
   allowedCapabilities:
     - SYS_ADMIN
     - SYS_RESOURCE

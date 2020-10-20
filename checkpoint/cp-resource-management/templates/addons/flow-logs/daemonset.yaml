@@ -51,8 +51,10 @@ spec:
             - mountPath: /var/run/netns
               name: netns-volume
               mountPropagation: HostToContainer
+              readOnly: true
             - mountPath: /var/run/docker.sock
               name: docker-sock-volume
+              readOnly: true
             - mountPath: /etc/secret-volume
               name: secret-volume
           command: ["/bin/sh"]
