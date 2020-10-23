@@ -1,4 +1,4 @@
-{{ if .Values.addons.flowLogs.enabled }}
+{{ if .Values.addons.flowLogs.enable }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

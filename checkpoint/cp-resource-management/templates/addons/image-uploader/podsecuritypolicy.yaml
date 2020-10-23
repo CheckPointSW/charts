@@ -1,4 +1,5 @@
-{{- if .Values.rbac.pspEnable }}
+{{ if .Values.addons.imageUploader.enable }}
+{{ if .Values.rbac.pspEnable }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
@@ -43,4 +44,5 @@ spec:
       - min: 1
         max: 65535
   readOnlyRootFilesystem: false
-{{- end }}
+{{ end }}
+{{ end }}

@@ -3,7 +3,7 @@
 ## Introduction
 
 This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ServiceAccount, and Ingress) and uploads their meta-data to [Check Point ClougGuard](https://secure.dome9.com/).
-Check Point ClougGuard provides Compliance, Vulnerability Assessment, Visibility, Monitoring and Threat Hunting capabilities.
+Check Point ClougGuard provides Posture Management, Image Assurance, Visibility, Monitoring and Threat Hunting capabilities.
 
 ## Prerequisites
 
@@ -16,20 +16,31 @@ Check Point ClougGuard provides Compliance, Vulnerability Assessment, Visibility
 To install the chart with the chosen release name (e.g. `my-release`), run:
 
 ```bash
-$ helm repo add checkpoint https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/
-$ helm install my-release checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
+$ helm repo add checkpoint-ea https://raw.githubusercontent.com/CheckPointSW/charts/ea/repository/
+$ helm install asset-mgmt checkpoint-ea/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
 ```
 
-These are the additional optional flags for available add-ons:
+These are the additional optional flags for to enable add-ons:
 
 ```bash
 $ 
-$ --set addons.imageUploader.enabled 
+$ --set addons.imageUploader.enable=true 
 ```
 
-This command deploys a CloudGuard Resource Management agent.
+This command deploys a CloudGuard Resource Management agent as well as optional add-ons.
+
 
 > **Tip**: List all releases using `helm list`
+
+
+## Upgradeing the chart
+
+To upgrade the deployment and/or to add/remove additional feature run:
+
+```bash
+$ helm repo update
+$ helm upgrade asset-mgmt checkpoint/cp-resource-management --set addons.imageUploader.enable=[true/false] --set addons.flowLogs.enable=[true/false] --reuse-values --namespace=[Namespace]
+```
 
 ## Uninstalling the Chart
 
@@ -47,10 +58,10 @@ In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster 
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+Specify each parameter using `--set key=value[,key=value]` or `--set-string key=value[,key=value]` to `helm install`. For example,
 
 ```bash
-$ helm install my-release --set varname=true checkpoint/cp-resource-management
+$ helm install my-release --set varname=true --set-string varname="string" checkpoint/cp-resource-management
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
@@ -83,7 +94,7 @@ The following tables list the configurable parameters of this chart and their de
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
-| `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
+| `addons.imageUploader.enable`                              | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.imageUploader.daemonset.image.repository`          | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.imageUploader.daemonset.image.tag`                 | Agent version                                                   | `{TAG_NAME}`                                     |
 | `addons.imageUploader.daemonset.image.pullPolicy`          | Image pull policy                                               | `IfNotPresent`                                   |
@@ -91,8 +102,8 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
-| `addons.imageUploader.enabled.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
-| `addons.flowLogs.enabled`                                  | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
+| `addons.imageUploader.enable.daemonset.affinity`           | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.enable`                                   | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.flowLogs.daemonset.logLevel`                       | The logging level                                               | `info`                                           |
 | `addons.flowLogs.daemonset.image.repository`               | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.flowLogs.daemonset.image.tag`                      | Agent version                                                   | `{TAG_NAME}`                                     |

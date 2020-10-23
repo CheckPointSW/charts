@@ -1,4 +1,4 @@
-{{ if .Values.addons.imageUploader.enabled }}
+{{ if .Values.addons.imageUploader.enable }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

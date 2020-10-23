@@ -1,4 +1,4 @@
-{{ if .Values.addons.flowLogs.enabled }}
+{{ if .Values.addons.flowLogs.enable }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
