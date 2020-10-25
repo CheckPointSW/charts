@@ -1,5 +1,5 @@
-{{ if .Values.addons.flowLogs.enable }}
-{{ if .Values.rbac.pspEnable }}
+{{ if .Values.addons.flowLogs.enabled }}
+{{ if .Values.rbac.pdpEnabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

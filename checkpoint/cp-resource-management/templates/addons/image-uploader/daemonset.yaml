@@ -1,4 +1,4 @@
-{{ if .Values.addons.imageUploader.enable }}
+{{ if .Values.addons.imageUploader.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -28,7 +28,7 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}-image-uploader 
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.rbac.pspEnable }}
+      {{- if .Values.rbac.pdpEnabled }}
       serviceAccountName: {{ .Release.Name }}-image-uploader
       {{- end }}      
       {{- if .Values.addons.imageUploader.daemonset.nodeSelector }}

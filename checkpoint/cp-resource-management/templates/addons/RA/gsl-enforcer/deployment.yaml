@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-gsl-enforcer
+  annotations:
+    agentVersion: {{ .Values.addons.imageUploader.daemonset.image.tag | quote }}
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-gsl-enforcer
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-gsl-enforcer
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        agentVersion: {{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.image.tag | quote }}
+        seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+        {{- if .Values.podAnnotations.apparmor }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Release.Name }}-gsl-enforcer: 
+{{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}-gsl-enforcer
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    spec:
+      {{- if .Values.rbac.pdpEnabled }}
+      serviceAccountName: {{ .Release.Name }}-gsl-enforcer
+      {{- end }}      
+      {{- if .Values.addons.runtimeAssurance.gslEnforcer.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.addons.runtimeAssurance.gslEnforcer.deployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.runtimeAssurance.gslEnforcer.deployment.affinity }}
+      affinity:
+{{ toYaml .Values.addons.runtimeAssurance.gslEnforcer.deployment.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.runtimeAssurance.gslEnforcer.deployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.addons.runtimeAssurance.gslEnforcer.deployment.tolerations | indent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 1000
+      serviceAccountName: {{ .Release.Name }}-gsl-engine
+      containers:
+        - name: gsl-engine
+          image: "{{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.gslEngine.image.repository }}:{{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.gslEngine.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.gslEngine.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "node /gsl-engine/index.js"]
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+        - name: webhook
+          image: "{{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.webhook.image.repository }}:{{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.webhook.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.webhook.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/enforcer"]
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/certs
+              readOnly: true
+            - name: logs
+              mountPath: /tmp
+        - name: {{ .Release.Name }}-daemon-sidecar-fluentbit
+          image: "{{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.fluentbit.image.repository }}:{{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.fluentbit.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.runtimeAssurance.gslEnforcer.deployment.fluentbit.image.pullPolicy }}
+          volumeMounts:
+            - name: config-volume-fluentbit
+              mountPath: /fluent-bit/etc/fluent-bit.conf
+              subPath: fluent-bit.conf
+            - name: logs
+              mountPath: /tmp
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: gsl-enforcer-certs
+        - name: config-volume-fluentbit
+          configMap:
+            name: fluentbit-config
+        - name: logs
+          emptyDir: {}
+      imagePullSecrets:
+        - name: chkp-ronys-pull-secret

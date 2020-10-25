@@ -1,4 +1,4 @@
-{{ if .Values.addons.flowLogs.enable }}
+{{ if .Values.addons.flowLogs.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -27,7 +27,7 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.rbac.pspEnable }}
+      {{- if .Values.rbac.pdpEnabled }}
       serviceAccountName: {{ .Release.Name }}-flow-logs
       {{- end }}  
       {{- if .Values.addons.flowLogs.daemonset.nodeSelector }}

@@ -24,7 +24,7 @@ These are flags to enable the additional optional add-ons:
 
 ```bash
 $ 
-$ --set addons.imageUploader.enable=true 
+$ --set addons.imageUploader.enabled=true 
 ```
 
 This command deploys a CloudGuard Resource Management agent as well as optional add-ons.
@@ -39,7 +39,7 @@ To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set addons.imageUploader.enable=[true/false] --set addons.flowLogs.enable=[true/false] --namespace=[Namespace]
+$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set addons.imageUploader.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --namespace=[Namespace]
 ```
 
 ## Uninstalling the Chart
@@ -78,7 +78,7 @@ The following tables list the configurable parameters of this chart and their de
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `replicaCount`                                             | Number of agent instances to deployed                           | `1`                                              |
 | `rbac.create`                                              | Specifies whether RBAC resources should be created              | `true`                                           |
-| `rbac.pspEnable`                                           | Specifies whether PSP resources should be created               | `false`                                          |
+| `rbac.pdpEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
 | `serviceAccount.create`                                    | Specifies whether RBAC resources should be created              | `true`                                           |
 | `serviceAccount.name`                                      | Specifies whether RBAC resources should be created              | ``                                               |
 | `image.repository`                                         | Agent image                                                     | `quay.io/checkpoint/cp-resource-management`      |
@@ -94,7 +94,7 @@ The following tables list the configurable parameters of this chart and their de
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
-| `addons.imageUploader.enable`                              | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
+| `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.imageUploader.daemonset.image.repository`          | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.imageUploader.daemonset.image.tag`                 | Agent version                                                   | `{TAG_NAME}`                                     |
 | `addons.imageUploader.daemonset.image.pullPolicy`          | Image pull policy                                               | `IfNotPresent`                                   |
@@ -102,8 +102,8 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
-| `addons.imageUploader.enable.daemonset.affinity`           | Affinity setting                                                | `{}`                                             |
-| `addons.flowLogs.enable`                                   | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
+| `addons.imageUploader.enabled.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.enabled`                                  | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.flowLogs.daemonset.logLevel`                       | The logging level                                               | `info`                                           |
 | `addons.flowLogs.daemonset.image.repository`               | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.flowLogs.daemonset.image.tag`                      | Agent version                                                   | `{TAG_NAME}`                                     |
