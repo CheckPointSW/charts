@@ -20,7 +20,7 @@ $ helm repo add checkpoint-ea https://raw.githubusercontent.com/CheckPointSW/cha
 $ helm install asset-mgmt checkpoint-ea/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
 ```
 
-These are the additional optional flags for to enable add-ons:
+These are flags to enable the additional optional add-ons:
 
 ```bash
 $ 
@@ -39,7 +39,7 @@ To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade asset-mgmt checkpoint/cp-resource-management --set addons.imageUploader.enable=[true/false] --set addons.flowLogs.enable=[true/false] --namespace=[Namespace]
+$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set addons.imageUploader.enable=[true/false] --set addons.flowLogs.enable=[true/false] --namespace=[Namespace]
 ```
 
 ## Uninstalling the Chart
