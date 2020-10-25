@@ -57,6 +57,8 @@ spec:
               readOnly: true
             - mountPath: /etc/secret-volume
               name: secret-volume
+            - mountPath: /etc/cpconfig
+              name: config-volume              
           command: ["/bin/sh"]
           args: ["-c", "/flow_logs_user"]
           {{- if .Values.addons.flowLogs.daemonset.resources }}        

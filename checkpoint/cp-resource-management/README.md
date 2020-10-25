@@ -33,13 +33,13 @@ This command deploys a CloudGuard Resource Management agent as well as optional 
 > **Tip**: List all releases using `helm list`
 
 
-## Upgradeing the chart
+## Upgrading the chart
 
 To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade asset-mgmt checkpoint/cp-resource-management --set addons.imageUploader.enable=[true/false] --set addons.flowLogs.enable=[true/false] --reuse-values --namespace=[Namespace]
+$ helm upgrade asset-mgmt checkpoint/cp-resource-management --set addons.imageUploader.enable=[true/false] --set addons.flowLogs.enable=[true/false] --namespace=[Namespace]
 ```
 
 ## Uninstalling the Chart
