@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 data:
-  flowlogsConfig.json: |
+  flowlogs_config.json: |
     {
       "LOG_LEVEL": "{{ .Values.addons.flowLogs.daemonset.logLevel }}"
     }
