@@ -27,7 +27,7 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}-flow-logs
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.rbac.pdpEnabled }}
+      {{- if .Values.rbac.pspEnabled }}
       serviceAccountName: {{ .Release.Name }}-flow-logs
       {{- end }}  
       {{- if .Values.addons.flowLogs.daemonset.nodeSelector }}

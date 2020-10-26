@@ -78,7 +78,7 @@ The following tables list the configurable parameters of this chart and their de
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `replicaCount`                                             | Number of agent instances to deployed                           | `1`                                              |
 | `rbac.create`                                              | Specifies whether RBAC resources should be created              | `true`                                           |
-| `rbac.pdpEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
+| `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
 | `serviceAccount.create`                                    | Specifies whether RBAC resources should be created              | `true`                                           |
 | `serviceAccount.name`                                      | Specifies whether RBAC resources should be created              | ``                                               |
 | `image.repository`                                         | Agent image                                                     | `quay.io/checkpoint/cp-resource-management`      |
@@ -102,7 +102,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
-| `addons.imageUploader.enabled.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
+| `addons.imageUploader.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
 | `addons.flowLogs.enabled`                                  | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
 | `addons.flowLogs.daemonset.logLevel`                       | The logging level                                               | `info`                                           |
 | `addons.flowLogs.daemonset.image.repository`               | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
