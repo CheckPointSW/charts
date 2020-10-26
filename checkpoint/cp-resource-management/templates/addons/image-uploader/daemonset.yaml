@@ -28,7 +28,7 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}-image-uploader 
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
-      {{- if .Values.rbac.pdpEnabled }}
+      {{- if .Values.rbac.pspEnabled }}
       serviceAccountName: {{ .Release.Name }}-image-uploader
       {{- end }}      
       {{- if .Values.addons.imageUploader.daemonset.nodeSelector }}

@@ -7,7 +7,7 @@ rbac:
   ## Specifies whether RBAC resources should be created
   create: true
   ## Specifies whether a we use a custom PSP - If create is set to false this is ignored.
-  pdpEnabled: false
+  pspEnabled: false
 
 serviceAccount:
   create: true
