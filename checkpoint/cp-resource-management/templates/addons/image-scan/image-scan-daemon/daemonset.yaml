@@ -1,0 +1,77 @@
+{{ if .Values.addons.imageScan.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}-image-scan-daemon
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ .Values.addons.imageScan.version | quote }}
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-image-scan-daemon
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-image-scan-daemon
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  template:
+    metadata:
+      annotations:
+        agentVersion: {{ .Values.addons.imageScan.version | quote }}
+        seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+        {{- if .Values.podAnnotations.apparmor }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Release.Name }}-image-scan-daemon: 
+{{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}-image-scan-daemon 
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    spec:
+      securityContext:
+        runAsUser: 17112
+      {{- if .Values.rbac.pspEnabled }}
+      serviceAccountName: {{ .Release.Name }}-image-scan-daemon-serviceaccount
+      {{- end }}      
+      {{- if .Values.addons.imageScan.daemonset.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.addons.imageScan.daemonset.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageScan.daemonset.affinity }}
+      affinity:
+{{ toYaml .Values.addons.imageScan.daemonset.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageScan.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.addons.imageScan.daemonset.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Release.Name }}-image-scan-daemon
+          image: "{{ .Values.addons.imageScan.daemonset.image.repository }}:{{ .Values.addons.imageScan.daemonset.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.imageScan.daemonset.image.pullPolicy }}
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: docker-sock-volume
+              mountPath: /var/run/docker.sock
+              readOnly: true
+          command: ["/bin/sh"]
+          args: ["-c", "/node_agent"]
+          ports:
+            - containerPort: 80
+          {{- if .Values.addons.imageScan.daemonset.resources }}              
+          resources:
+{{ toYaml .Values.addons.imageScan.daemonset.resources | indent 12 }}
+          {{- end }}  
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: docker-sock-volume
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+{{ end }}

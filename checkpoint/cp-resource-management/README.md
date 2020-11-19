@@ -20,11 +20,11 @@ $ helm repo add checkpoint-ea https://raw.githubusercontent.com/CheckPointSW/cha
 $ helm install asset-mgmt checkpoint-ea/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
 ```
 
-These are flags to enable the additional optional add-ons:
+These are the additional optional flags for to enable add-ons:
 
 ```bash
 $ 
-$ --set addons.imageUploader.enabled=true 
+$ --set addons.imageScan.enabled=true 
 ```
 
 This command deploys a CloudGuard Resource Management agent as well as optional add-ons.
@@ -39,7 +39,7 @@ To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set addons.imageUploader.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --namespace=[Namespace]
+$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set addons.imageScan.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --namespace=[Namespace]
 ```
 
 ## Uninstalling the Chart
@@ -94,16 +94,16 @@ The following tables list the configurable parameters of this chart and their de
 | `tolerations`                                              | List of node taints to tolerate                                 | `[]`                                             |
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
-| `addons.imageUploader.enabled`                             | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
-| `addons.imageUploader.daemonset.image.repository`          | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
-| `addons.imageUploader.daemonset.image.tag`                 | Agent version                                                   | `{TAG_NAME}`                                     |
-| `addons.imageUploader.daemonset.image.pullPolicy`          | Image pull policy                                               | `IfNotPresent`                                   |
-| `addons.imageUploader.daemonset.resources`                 | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
-| `addons.imageUploader.daemonset.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
-| `addons.imageUploader.daemonset.tolerations`               | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+| `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
+| `addons.imageScan.daemonset.image.repository`              | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
+| `addons.imageScan.daemonset.image.tag`                     | Agent version                                                   | `{TAG_NAME}`                                     |
+| `addons.imageScan.daemonset.image.pullPolicy`              | Image pull policy                                               | `IfNotPresent`                                   |
+| `addons.imageScan.daemonset.resources`                     | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.imageScan.daemonset.nodeSelector`                  | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.imageScan.daemonset.tolerations`                   | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
 |                                                            |                                                                 | `effect: NoSchedule`                             |
-| `addons.imageUploader.daemonset.affinity`          | Affinity setting                                                | `{}`                                             |
-| `addons.flowLogs.enabled`                                  | Specifies whether the Image Uploader addon should be installed  | `false`                                          |
+| `addons.imageScan.daemonset.affinity`                      | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.enabled`                                  | Specifies whether the Flow Logs addon should be installed       | `false`                                          |
 | `addons.flowLogs.daemonset.logLevel`                       | The logging level                                               | `info`                                           |
 | `addons.flowLogs.daemonset.image.repository`               | Agent image                                                     | `quay.io/checkpoint/images-uploader`             |
 | `addons.flowLogs.daemonset.image.tag`                      | Agent version                                                   | `{TAG_NAME}`                                     |

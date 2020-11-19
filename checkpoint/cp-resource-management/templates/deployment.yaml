@@ -29,7 +29,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
       securityContext:
-        runAsUser: 1000
+        runAsUser: 17112
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "cp-resource-management.fullname" . }}{{ else }}{{ .Values.serviceAccount.Name | quote }}{{ end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
@@ -57,11 +57,11 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           securityContext:
-            runAsNonRoot: true
+            privileged: false
             allowPrivilegeEscalation: false
           env:
             - name: DOME9_URL
-              value: "https://api-cpx.dome9.com"
+              value: {{ .Values.cloudguardURL | quote }}
             - name: CP_KUBERNETES_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:
@@ -76,4 +76,4 @@ spec:
       volumes:
         - name: secret-volume
           secret:
-            secretName: {{ .Release.Name }}-cp-cloudguard-creds              
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds
