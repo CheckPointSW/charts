@@ -57,6 +57,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           securityContext:
+            runAsNonRoot: true
             allowPrivilegeEscalation: false
           env:
             - name: DOME9_URL
