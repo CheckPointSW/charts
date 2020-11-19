@@ -43,7 +43,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 17112
-      serviceAccountName: {{ .Release.Name }}-image-scan-serviceaccount
+      serviceAccountName: {{ .Release.Name }}-image-scan
       containers:
         - name: {{ .Release.Name }}-image-scan
           image: "{{ .Values.addons.imageScan.deployment.image.repository }}:{{ .Values.addons.imageScan.deployment.image.tag }}"

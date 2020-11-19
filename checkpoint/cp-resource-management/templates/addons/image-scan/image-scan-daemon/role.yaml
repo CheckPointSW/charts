@@ -1,22 +1,19 @@
 {{ if .Values.addons.imageScan.enabled }}
+{{ if .Values.rbac.pspEnabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Release.Name }}-image-scan
+  name: {{ .Release.Name }}-image-scan-daemon
   namespace: {{ .Release.Namespace }}
   labels:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    app.kubernetes.io/name: {{ .Release.Name }}-image-scan
+    app.kubernetes.io/name: {{ .Release.Name }}-image-scan-daemon
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
 rules:
-  - apiGroups: [ "" ]
-    resources: [ "pods" ]
-    verbs: [ "list", "get"]
-  {{- if .Values.rbac.pspEnabled }}
   - apiGroups: [ "policy" ]
     resources: [ "podsecuritypolicies" ]
     verbs: [ "use"]
     resourceNames: 
-    - {{ .Release.Name }}-image-scan
-  {{- end }}
+    - {{ .Release.Name }}-image-scan-daemon
+{{ end }}
 {{ end }}

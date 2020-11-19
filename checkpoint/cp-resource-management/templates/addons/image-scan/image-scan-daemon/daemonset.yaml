@@ -31,7 +31,7 @@ spec:
       securityContext:
         runAsUser: 17112
       {{- if .Values.rbac.pspEnabled }}
-      serviceAccountName: {{ .Release.Name }}-image-scan-daemon-serviceaccount
+      serviceAccountName: {{ .Release.Name }}-image-scan-daemon
       {{- end }}      
       {{- if .Values.addons.imageScan.daemonset.nodeSelector }}
       nodeSelector:
