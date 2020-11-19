@@ -28,8 +28,6 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}-image-scan-daemon 
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
     spec:
-      securityContext:
-        runAsUser: 17112
       {{- if .Values.rbac.pspEnabled }}
       serviceAccountName: {{ .Release.Name }}-image-scan-daemon
       {{- end }}      
@@ -50,7 +48,6 @@ spec:
           image: "{{ .Values.addons.imageScan.daemonset.image.repository }}:{{ .Values.addons.imageScan.daemonset.image.tag }}"
           imagePullPolicy: {{ .Values.addons.imageScan.daemonset.image.pullPolicy }}
           securityContext:
-            privileged: false
             allowPrivilegeEscalation: false
           volumeMounts:
             - name: docker-sock-volume

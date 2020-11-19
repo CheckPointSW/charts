@@ -49,7 +49,6 @@ spec:
           image: "{{ .Values.addons.imageScan.deployment.image.repository }}:{{ .Values.addons.imageScan.deployment.image.tag }}"
           imagePullPolicy: {{ .Values.addons.imageScan.deployment.image.pullPolicy }}
           securityContext:
-            privileged: false
             allowPrivilegeEscalation: false
           volumeMounts:
             - name: secret-volume
