@@ -1,13 +1,13 @@
-{{ if .Values.addons.imageUploader.enabled }}
+{{ if .Values.addons.imageScan.enabled }}
 {{ if .Values.rbac.pspEnabled }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ .Release.Name }}-image-uploader
+  name: {{ .Release.Name }}-image-scan
   namespace: {{ .Release.Namespace }}
   labels:
     helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    app.kubernetes.io/name: {{ .Release.Name }}-image-uploader
+    app.kubernetes.io/name: {{ .Release.Name }}-image-scan
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
@@ -15,20 +15,17 @@ spec:
   privileged: false
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
-  allowedHostPaths:
-    - pathPrefix: /var/run/docker.sock
-      readOnly: true
   requiredDropCapabilities:
     - ALL
   volumes:
     - 'secret'  
     - 'configMap'
-    - 'hostPath'    
   hostNetwork: false
   hostIPC: false
   hostPID: false
   runAsUser:
-    rule: 'RunAsAny'
+    # Require the container to run without root privileges.
+    rule: 'MustRunAsNonRoot'
   seLinux:
     # This policy assumes the nodes are using AppArmor rather than SELinux.
     rule: 'RunAsAny'

@@ -1,0 +1,87 @@
+{{ if .Values.addons.imageScan.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-image-scan
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ .Values.addons.imageScan.version  | quote }}
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/name: {{ .Release.Name }}-image-scan
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}-image-scan
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        agentVersion: {{ .Values.addons.imageScan.version | quote }}
+        seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+        {{- if .Values.podAnnotations.apparmor }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Release.Name }}-image-scan: 
+{{ toYaml .Values.podAnnotations.apparmor | indent 10 }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}-image-scan
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    spec:
+      {{- if .Values.addons.imageScan.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.addons.imageScan.deployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageScan.deployment.affinity }}
+      affinity:
+{{ toYaml .Values.addons.imageScan.deployment.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.addons.imageScan.deployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.addons.imageScan.deployment.tolerations | indent 8 }}
+      {{- end }}
+      securityContext:
+        runAsUser: 17112
+      serviceAccountName: {{ .Release.Name }}-image-scan
+      containers:
+        - name: {{ .Release.Name }}-image-scan
+          image: "{{ .Values.addons.imageScan.deployment.image.repository }}:{{ .Values.addons.imageScan.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.addons.imageScan.deployment.image.pullPolicy }}
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+          command: ["/bin/sh"]
+          args: ["-c", "/central_agent"]
+          env:
+            - name: DOME9_URL
+              value: https://api-cpx.dome9.com
+            - name: CP_KUBERNETES_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-cp-cloudguard-configmap
+                  key: clusterID
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_AGENT_SELECTOR
+              value: "app.kubernetes.io/name={{ .Release.Name }}-image-scan-daemon"
+            {{- if .Values.proxy }}
+            - name: HTTPS_PROXY
+              value: "{{ .Values.proxy }}"
+            - name: NO_PROXY
+              value: "kubernetes.default.svc"
+            {{- end }}
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: {{ .Release.Name }}-cp-cloudguard-creds
+{{ end }}

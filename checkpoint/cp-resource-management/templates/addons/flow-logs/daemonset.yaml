@@ -71,7 +71,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: DOME9_URL
-              value: "https://api-cpx.dome9.com"
+              value: https://api-cpx.dome9.com
             - name: CP_KUBERNETES_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:

@@ -6,7 +6,7 @@ rbac:
   ##
   ## Specifies whether RBAC resources should be created
   create: true
-  ## Specifies whether a we use a custom PSP - If create is set to false this is ignored.
+  ## Specifies whether we use a custom PSP - If create is set to false this is ignored.
   pspEnabled: false
 
 serviceAccount:
@@ -71,16 +71,20 @@ proxy: {}
 ## Each addon may be disabled
 addons:
 
-  imageUploader:
+
+## Image Scan Add-on 
+  imageScan:
 
     enabled: false
+
+    version: 0.2.0
 
     daemonset:        
       
       ## Image settings
       image:
-        repository: quay.io/checkpoint/images-uploader
-        tag: ea1 
+        repository: quay.io/checkpoint/imagescan-node
+        tag: 0.2.0
         ## Specify an imagePullPolicy
         ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
         pullPolicy: IfNotPresent
@@ -103,6 +107,34 @@ addons:
         effect: NoSchedule
       affinity: {}
 
+    deployment:        
+      
+      ## Image settings
+      image:
+        repository: quay.io/checkpoint/imagescan-central
+        tag: 0.2.0
+        ## Specify an imagePullPolicy
+        ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+        pullPolicy: IfNotPresent
+      
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+
+## Flow Logs Add-on 
   flowLogs:
 
     enabled: false
