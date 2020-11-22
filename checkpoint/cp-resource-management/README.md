@@ -39,7 +39,7 @@ To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set addons.imageScan.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --namespace=[Namespace]
+$ helm upgrade asset-mgmt checkpoint-ea/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --set addons.imageScan.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --namespace=[Namespace]
 ```
 
 ## Uninstalling the Chart
@@ -95,6 +95,7 @@ The following tables list the configurable parameters of this chart and their de
 | `affinity`                                                 | Affinity settings                                               | `{}`                                             |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
+| `addons.imageScan.version`                                 | Image Scan addon version                                        | `0.2.0`                                          |
 | `addons.imageScan.daemonset.image.repository`              | Agent image                                                     | `quay.io/checkpoint/imagescan-node`              |
 | `addons.imageScan.daemonset.image.tag`                     | Agent version                                                   | `{TAG_NAME}`                                     |
 | `addons.imageScan.daemonset.image.pullPolicy`              | Image pull policy                                               | `IfNotPresent`                                   |
