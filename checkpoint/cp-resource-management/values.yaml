@@ -67,7 +67,6 @@ affinity: {}
 ## proxy: $HTTPS_PROXY
 proxy: {}
 
-cloudguardURL: https://api-cpx.dome9.com
 ## Addons configuration
 ## Each addon may be disabled
 addons:
@@ -78,7 +77,7 @@ addons:
 
     enabled: false
 
-    version: ea1
+    version: 0.2.0
 
     daemonset:        
       

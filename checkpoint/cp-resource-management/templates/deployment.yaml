@@ -61,7 +61,7 @@ spec:
             allowPrivilegeEscalation: false
           env:
             - name: DOME9_URL
-              value: {{ .Values.cloudguardURL | quote }}
+              value: https://api-cpx.dome9.com
             - name: CP_KUBERNETES_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:

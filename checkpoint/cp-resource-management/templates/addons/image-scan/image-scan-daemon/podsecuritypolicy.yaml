@@ -18,8 +18,8 @@ spec:
   allowedHostPaths:
     - pathPrefix: /var/run/docker.sock
       readOnly: true
-  requiredDropCapabilities:
-    - ALL
+  allowedCapabilities:
+    - 'NET_BIND_SERVICE'
   volumes:
     - 'hostPath'
     - 'secret'  

@@ -58,7 +58,7 @@ spec:
           args: ["-c", "/central_agent"]
           env:
             - name: DOME9_URL
-              value: {{ .Values.cloudguardURL }}
+              value: https://api-cpx.dome9.com
             - name: CP_KUBERNETES_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:
