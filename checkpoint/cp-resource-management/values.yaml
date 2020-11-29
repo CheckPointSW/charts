@@ -77,14 +77,14 @@ addons:
 
     enabled: false
 
-    version: 0.2.0
+    version: 0.2.1
 
     daemonset:        
       
       ## Image settings
       image:
         repository: quay.io/checkpoint/imagescan-node
-        tag: 0.2.0
+        tag: 0.2.1
         ## Specify an imagePullPolicy
         ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
         pullPolicy: IfNotPresent
@@ -112,7 +112,7 @@ addons:
       ## Image settings
       image:
         repository: quay.io/checkpoint/imagescan-central
-        tag: 0.2.0
+        tag: 0.2.1
         ## Specify an imagePullPolicy
         ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
         pullPolicy: IfNotPresent
