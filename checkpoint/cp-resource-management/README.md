@@ -1,15 +1,15 @@
-#  Check Point Cloudguard Dome9 agents
+#  Check Point Cloudguard agents
 
 ## Introduction
 
-This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, and Ingress) and uploads them to [Check Point ClougGuard Dome9](https://secure.dome9.com/).
-Check Point ClougGuard Dome9 provides Compliance, Visibility, Monitoring and Threat Hunting capabilities.
+This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ServiceAccount, and Ingress) and uploads their meta-data to [Check Point ClougGuard](https://secure.dome9.com/).
+Check Point ClougGuard provides Posture Management, Visibility, Monitoring and Threat Hunting capabilities.
 
 ## Prerequisites
 
 - Kubernetes 1.12+
 - Helm 3.0+
-- A Check Point ClougGuard Dome9 account and API key
+- A Check Point ClougGuard account and API key
 
 ## Installing the Chart
 
@@ -17,10 +17,10 @@ To install the chart with the chosen release name (e.g. `my-release`), run:
 
 ```bash
 $ helm repo add checkpoint https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/
-$ helm install asset-mgmt checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard Dome9 API Key] --set-string credentials.secret=[CloudGuard Dome9 API Secret] --set-string clusterID=[Dome9 Cluster ID] --namespace=[Namespace] --create-namespace
+$ helm install asset-mgmt checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
 ```
 
-This command deploys a Dome9 Resource Management agent.
+This command deploys a CloudGuard Resource Management agent.
 
 > **Tip**: List all releases using `helm list`
 
@@ -45,9 +45,9 @@ This command removes all the Kubernetes components associated with the chart and
 
 ## Configuration
 
-In order to get the [Check Point ClougGuard Dome9](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard Dome9](https://secure.dome9.com/) website.
+In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard](https://secure.dome9.com/) website.
 
-Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and Dome9 directives that map to environment variables.
+Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
 
 Specify each parameter to `helm install` using `--set key=value[,key=value]` or `--set-string key=value[,key=value]`. For example,
 
@@ -76,8 +76,8 @@ The following tables list the configurable parameters of this chart and their de
 | `image.tag`                                                | Image version                                                   | `{TAG_NAME}`                                     |
 | `image.pullPolicy`                                         | Image pull policy                                               | `IfNotPresent`                                   |
 | `env`                                                      | Additional environmental variables                              | `{}`                                             |
-| `credentials.secret`                                       | CloudGuard Dome9 APISecret                                      | `CHANGEME`                                       |
-| `credentials.user`                                         | CloudGuard Dome9 APIID                                          | `CHANGEME`                                       |
+| `credentials.secret`                                       | CloudGuard API Secret                                           | `CHANGEME`                                       |
+| `credentials.user`                                         | CloudGuard API ID                                               | `CHANGEME`                                       |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
 | `resources`                                                | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `podAnnotations`                                           | Arbitrary non-identifying metadata                              | `{}`                                             |
