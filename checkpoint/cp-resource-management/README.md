@@ -17,7 +17,7 @@ To install the chart with the chosen release name (e.g. `my-release`), run:
 
 ```bash
 $ helm repo add checkpoint https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/
-$ helm install asset-mgmt checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
+$ helm install asset-mgmt checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard API ID] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace] --create-namespace
 ```
 
 This command deploys a CloudGuard Resource Management agent.
@@ -30,7 +30,7 @@ To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade asset-mgmt checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard API Key] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace]
+$ helm upgrade asset-mgmt checkpoint/cp-resource-management --set-string credentials.user=[CloudGuard API ID] --set-string credentials.secret=[CloudGuard API Secret] --set-string clusterID=[Cluster ID] --namespace=[Namespace]
 ```
 
 ## Uninstalling the Chart
@@ -49,7 +49,8 @@ In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster 
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
 
-Specify each parameter to `helm install` using `--set key=value[,key=value]` or `--set-string key=value[,key=value]`. For example,
+Specify each parameter using flags. For boolean parameters use the '--set' flag and for strings use the '--set-string' flag.
+For example,
 
 ```bash
 $ helm install asset-mgmt --set varname=true --set-string varname="string" checkpoint/cp-resource-management
