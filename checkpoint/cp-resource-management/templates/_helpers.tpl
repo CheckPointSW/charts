@@ -26,3 +26,17 @@ If release name contains chart name it will be used as a full name.
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{- define "dome9.url" -}}
+{{- $region := default "us1" .Values.region -}}
+{{- if eq $region "us1" -}}
+{{- printf "https://api-cpx.dome9.com" -}}
+{{- else if eq $region "eu1" -}}
+{{- printf "https://api-cpx.eu1.dome9.com" -}}
+{{- else if eq $region "ap1" -}}
+{{- printf "https://api-cpx.ap1.dome9.com" -}}
+{{- else -}}
+{{- $err := printf "\n\nERROR: Invalid region -- %s" .Values.region -}}
+{{- fail $err -}}
+{{- end -}}
+{{- end -}}
