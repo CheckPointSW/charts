@@ -1,0 +1,10 @@
+{{- $config := fromYaml (include "admission.enforcer.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: admissioncontrol.cloudguard.checkpoint.com/v1
+kind: DetectionRule
+metadata:
+  name: statefulset
+spec:
+  rulebase_id: ""
+  rules: []
+{{ end }}

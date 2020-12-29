@@ -1,0 +1,18 @@
+{{- $config := fromYaml (include "inventory.agent.config" .) -}}
+{{- if .Values.rbac.pspEnabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "agent.resource.name" $config }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "agent.service.account.name" $config }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

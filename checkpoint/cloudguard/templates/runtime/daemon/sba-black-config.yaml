@@ -1,0 +1,764 @@
+{{- $config := fromYaml (include "runtime.daemon.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" $config }}-sba-black
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+
+data:
+  black.rl: |
+    global READ_MASK = 1;
+    global WRITE_MASK = 2;
+    global CREAT_MASK = 4;
+    global TRUNC_MASK = 256;
+
+    global SYS_OPEN = 2;
+    global SYS_EXECVE = 59;
+    global SYS_RENAME = 82;
+    global SYS_MKDIR = 83;
+    global SYS_CREAT = 85;
+    global SYS_PTRACE = 101;
+    global SYS_OPENAT = 257;
+    global SYS_MKDIRAT = 258;
+    global SYS_RENAMEAT = 264;
+    global SYS_SIGNAL_DELIVER = 333;
+
+    global SIGNAL_SIGSEGV = 11;
+    global SIGNAL_SIGABRT = 6;
+
+    global BINARY_DIRECTORIES = {
+     "/usr/local/sbin",
+     "/usr/local/bin",
+     "/usr/sbin",
+     "/usr/bin",
+     "/sbin",
+     "/bin",
+     "/boot",
+     "/etc"
+    };
+
+    global NETWORK_UTILS = {
+      "arp",
+      "ifconfig",
+      "netstat",
+      "ping",
+      "tcpdump",
+      "trap",
+      "tshark"
+    };
+
+    global FILE_TRANSFER_UTILS = {
+      "certutil",
+      "rsync",
+      "scp",
+      "sftp",
+      "ssh",
+      "wget",
+      "curl",
+      "ftp"
+    };
+
+    global COMPRESSION_UTILS = {
+      "gunzip",
+      "gzip",
+      "tar",
+      "unzip",
+      "zip"
+    };
+
+    global USERS_ADMINISTRATION_UTILS = {
+      "users",
+      "useradd",
+      "usermod",
+      "userdel",
+      "groupadd",
+      "groupmod",
+      "groupdel"
+    };
+
+    global PACKAGE_UTILS = {
+      "rpm_binaries",
+      "deb_binaries",
+      "update-alternat",
+      "gem",
+      "pip",
+      "pip3",
+      "sane-utils.post",
+      "alternatives",
+      "chef-client",
+      "apk"
+    };
+
+    global SHELL_BINARIES = {
+      "bash",
+      "csh",
+      "ksh",
+      "sh",
+      "tcsh",
+      "zsh",
+      "dash"
+    };
+
+    global SSH_UTILS = {
+      "sshd",
+      "sftp-server",
+      "ssh-agent",
+      "ssh",
+      "scp",
+      "sftp",
+      "ssh-keygen",
+      "ssh-keysign",
+      "ssh-keyscan",
+      "ssh-add"
+    };
+
+    global LOG_FILE_NAMES = {
+      "syslog",
+      "auth.log",
+      "secure",
+      "kern.log",
+      "cron",
+      "user.log",
+      "dpkg.log",
+      "last.log",
+      "yum.log",
+      "access_log",
+      "mysql.log",
+      "mysqld.log"
+    };
+
+    global LOG_FILE_DIRECTORIES = {
+      "/var/log",
+      "/dev/log"
+    };
+
+    global SHELL_CONFIG_FILE_NAMES = {
+      ".zshenv",
+      ".zprofile",
+      ".zshrc",
+      ".zlogin",
+      ".zlogout"
+    };
+
+    global SHELL_CONFIG_FILE_PATHS = {
+      "/etc/profile",
+      "/etc/bashrc",
+      "/etc/csh.cshrc",
+      "/etc/csh.login",
+      "/etc/zsh"
+    };
+
+    global SYSTEM_CONFIG_FILE_NAMES = {
+      "rc.local"
+    };
+
+    global SYSTEM_CONFIG_FILE_PATHS = {
+      "/etc/init.d/runlevels"
+    };
+
+    global KERNEL_MODULE_UTILS = {
+      "lsmod",
+      "insmod",
+      "rmmod"
+    };
+
+    global DELETE_BINARIES = {
+      "shred",
+      "rm",
+      "mv"
+    };
+
+    global FILESYSTEM_UTILS = {
+      "shred",
+      "mkfs",
+      "mke2fs"
+    };
+
+    global FILESYSTEM_PROGRAMS = {
+      "blkid",
+      "rename_device",
+      "update_engine",
+      "sgdisk"
+    };
+
+    global COMMON_DEV_FILES = {
+      "/dev/null",
+      "/dev/stdin",
+      "/dev/stdout",
+      "/dev/stderr",
+      "/dev/random",
+      "/dev/urandom",
+      "/dev/console",
+      "/dev/kmsg"
+    };
+
+    global SENSITIVE_FILES = {
+      "shadow",
+      "sudoers",
+      "pam.conf"
+    };
+
+    global SENSITIVE_DIRS = {
+      "/etc/sudoers.d",
+      "/etc/pam.d"
+    };
+
+    global GREP_COMMANDS = {
+      "grep",
+      "egre",
+      "fgrep"
+    };
+
+    global DB_PROGRAMS = {
+      "mysqld",
+      "postgres",
+      "sqlplus"
+    };
+
+    global MONITORED_DIRS = {
+      "/boot",
+      "/lib",
+      "/lib64",
+      "/usr/lib",
+      "/usr/local/lib",
+      "/usr/local/sbin",
+      "/usr/local/bin",
+      "/root/.ssh",
+      "/etc/cardserver"
+    };
+
+    global RPM_UTILS = {
+      "dnf",
+      "rpm",
+      "rpmkey",
+      "yum",
+      "75-system-updat",
+      "rhsmcertd-worke",
+      "subscription-ma",
+      "repoquery",
+      "rpmkeys",
+      "rpmq",
+      "yum-cron",
+      "yum-config-mana",
+      "yum-debug-dump",
+      "abrt-action-sav",
+      "rpmdb_stat",
+      "microdnf",
+      "rhn_check",
+      "yumdb",
+      "probe_rpminfo",
+      "probe_rpmverify",
+      "probe_rpmverifyfile",
+      "probe_rpmverifypackage"
+    };
+
+    global ROOT_SENSITIVE_FILES = {
+      "/root/.monit.state",
+      "/root/.auth_tokens",
+      "/root/.bash_history",
+      "/root/.ash_history",
+      "/root/.aws/credentials",
+      "/root/.viminfo.tmp",
+      "/root/.lesshst",
+      "/root/.bzr.log",
+      "/root/.gitconfig.lock",
+      "/root/.babel.json",
+      "/root/.localstack",
+      "/root/.node_repl_history",
+      "/root/.mongorc.js",
+      "/root/.dbshell",
+      "/root/.augeas/history",
+      "/root/.rnd",
+      "/root/.wget-hsts",
+      "/health",
+      "/exec.fifo"
+    };
+
+    @description
+    "monitor tampering with apparmor configuration"
+    apparmor:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         (event.fs.target_directory is "/etc/apparmor.d");
+    }
+
+    @description
+    "monitor tampering with binary directories"
+    binary_directories:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.syscall_id is SYS_MKDIR) or
+       (event.syscall_id is SYS_MKDIRAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         (startswith("/bin", event.fs.target_path) or
+          startswith("/sbin", event.fs.target_path) or
+          startswith("/usr/bin", event.fs.target_path) or
+          startswith("/usr/sbin", event.fs.target_path)) and
+            (process.name not in PACKAGE_UTILS);
+    }
+
+    @disabled
+    @description
+    "clear log activities"
+    clear_log_activities:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         (event.fs.flags & TRUNC_MASK) and
+           ((event.fs.target_directory in LOG_FILE_DIRECTORIES) or
+            (event.fs.target_filename in LOG_FILE_NAMES));
+    }
+
+    @disabled
+    @description
+    "monitor attempts to use compression tools"
+    compressors:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in COMPRESSION_UTILS);
+    }
+
+    @disabled
+    @description
+    "create hidden files or directories"
+    create_hidden_files_or_directories:
+    {
+      ((event.syscall_id is SYS_MKDIR) and
+        ("/." in event.fs.target_path)) or
+      (((event.syscall_id is SYS_RENAME) or
+        (event.syscall_id is SYS_RENAMEAT) or
+        (event.fs.flags & WRITE_MASK)) and
+          (event.fs.flags & CREAT_MASK) and
+            ("/." in event.fs.target_path));
+    }
+
+    @description
+    "monitor db programs"
+    db_programs:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (process.name in DB_PROGRAMS) and
+           !(event.ps.name in DB_PROGRAMS) and
+       !(("postgres" is process.name) and
+               ("sh" is event.ps.name));
+    }
+
+    @description
+    "delete bash history"
+    delete_bash_history:
+    {
+      ((event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in DELETE_BINARIES) and
+           ("bash_history" in event.ps.args)) or
+      (((event.syscall_id is SYS_RENAME) or
+        (event.syscall_id is SYS_RENAMEAT) or
+        (event.fs.flags & WRITE_MASK)) and
+          (event.fs.flags & TRUNC_MASK) and
+            ("bash_history" in event.fs.target_filename));
+    }
+
+    @disabled
+    @description
+    "monitor tampering with dev filesystem"
+    dev_filesystem:
+    {
+      ((event.syscall_id is SYS_CREAT) or
+       (((event.syscall_id is SYS_OPEN) or
+         (event.syscall_id is SYS_OPENAT)) and
+           (event.fs.flags & CREAT_MASK))) and
+        (startswith("/dev/", event.fs.target_path)) and
+          !(process.name in FILESYSTEM_PROGRAMS) and
+            !(event.fs.target_path in COMMON_DEV_FILES) and
+        !("/dev/shm" is event.fs.target_directory) and
+                !startswith("/dev/tty", event.fs.target_path);
+    }
+
+    @description
+    "monitor tampering with selinux configuration"
+    disable_selinux1:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         ("/etc/selinux/config" is event.fs.target_path);
+    }
+
+    @description
+    "monitor tampering with selinux configuration"
+    disable_selinux2:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        ("setenforce" is event.ps.name);
+    }
+
+    @disabled
+    @description
+    "monitor attempts to use encoding tools"
+    encode:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        ("base64" is event.ps.name);
+    }
+
+    @description
+    "monitor attempts to use encryption tools"
+    encrypt:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        ("gpg" is event.ps.name);
+    }
+
+    @description
+    "monitor tampering with system binaries"
+    file_integrity:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         (("/var/spool/cron/crontabs" is event.fs.target_directory) or
+          (startswith("/home/", event.fs.target_path) and (".bashrc" is event.fs.target_filename)) or
+          (startswith("/home/", event.fs.target_path) and (".bash_profile" is event.fs.target_filename)) or
+          (startswith("/lib/systemd/system", event.fs.target_path)));
+    }
+
+    @disabled
+    @description
+    "monitor attempts to use file transfer tools"
+    file_transfer_tools:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in FILE_TRANSFER_UTILS);
+    }
+
+    @description
+    "monitor tampering with bootloader configuration"
+    grub_modify:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+        ("/etc/grub.conf" is event.fs.target_path);
+    }
+
+    @disabled
+    @description
+    "monitor attempts to load / unload kernel modules"
+    kernel_modules_load_unload:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in KERNEL_MODULE_UTILS);
+    }
+
+    @description
+    "hide/modify filesystem drives"
+    modify_filesystem:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in FILESYSTEM_UTILS);
+    }
+
+    @disabled
+    @description
+    "monitor tampering with monitored dir"
+    monitored_dir:
+    {
+        ((event.fs.flags & WRITE_MASK) and
+                (event.fs.target_directory in MONITORED_DIRS)
+                or
+                (startswith('/home', process.path) and '.ssh' in process.name)
+            and
+            !(("mkinitramfs" is process.name or "update-initramf" is process.name) and
+                "/boot" is event.fs.target_directory))
+        and
+        !(event.ps.name in PACKAGE_UTILS)
+        and
+        !(("update-ssh-keys" is process.name) and
+            startswith("/home/core/.ssh", process.path))
+        and
+        !(("exe" is event.ps.name) and
+            ("/var/lib/docker" in event.ps.args) and
+            ("dockerd" is process.name or "docker" is process.name))
+        and
+        !(startswith("python get-pip.py", process.args))
+        and
+        !(startswith("python /var/lib/waagent/", process.args))
+        and
+        !(("google_accounts" is process.name) and
+            ((startswith('/home', process.path) and startswith('.ssh', process.path))))
+        and
+        !(("cloud-init" is process.name) and
+            ((startswith('/home', process.path) and startswith('.ssh', process.path))));
+    }
+
+    @description
+    "monitor attempts to use network tools"
+    network_tools:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in NETWORK_UTILS);
+    }
+
+    @description
+    "monitor tampering with package repository"
+    package_repository:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         (("sources.list" is event.fs.target_filename) or
+          ("/etc/apt/sources.list.d" is event.fs.target_directory) or
+          ("/etc/yum.repos.d" is event.fs.target_directory)) and
+            (process.name not in PACKAGE_UTILS);
+    }
+
+    @description
+    "monitor password/key lookups"
+    password_key_lookups:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (((event.ps.name in GREP_COMMANDS) and
+             (("BEGIN PRIVATE" in event.ps.args) or
+              ("BEGIN RSA PRIVATE" in event.ps.args) or
+              ("BEGIN DSA PRIVATE" in event.ps.args) or
+              ("BEGIN EC PRIVATE" in event.ps.args) or
+              (" pass " in event.ps.args) or
+              (" ssh " in event.ps.args) or
+              (" user " in event.ps.args))) or
+           (("find" is event.ps.name) and
+             (("id_rsa" in event.ps.args) or
+              ("id_dsa" in event.ps.args))));
+    }
+
+    @description
+    "monitor debug attempts"
+    ptrace:
+    {
+      event.syscall_id is SYS_PTRACE;
+    }
+
+    @description
+    "read ssh information"
+    read_ssh_information:
+    {
+      (event.fs.flags & READ_MASK) and
+        (((event.fs.target_directory is "/home") and
+          (".ssh" in event.fs.target_path)) or
+         ((event.fs.target_directory is "/root/.ssh") and
+           (process.name not in SSH_UTILS)));
+    }
+
+    @disabled
+    @description
+    "monitor tampering with root directories"
+    root_dirs:
+    {
+        (event.fs.flags & WRITE_MASK) and
+        (('/' is event.fs.target_directory) or (startswith ("/root", process.path)))
+        and
+        !(event.fs.target_path in ROOT_SENSITIVE_FILES)
+        and
+        !((startswith ("/root/.oracle_jre_usage", process.path)) or
+            (startswith ("/root/.ssh", process.path)) or
+            (startswith ("/root/.subversion", process.path)) or
+            (startswith ("/root/.nami", process.path)))
+        and
+        !("exe" is event.ps.name and
+            "/var/lib/docker" in event.ps.args)
+        and
+        !("gugent" is event.ps.name and
+            "GuestAgent.log" is event.fs.target_path)
+        and
+        !("dse-entrypoint" is event.ps.name and
+            "/root/tmp__" is event.fs.target_path)
+        and
+        !("java" is event.ps.name and
+            "jar /zap" in event.ps.args and
+            startswith("/root/.ZAP", event.fs.target_path))
+        and
+        !("airflow" is event.ps.name and
+            startswith("/root/airflow", event.fs.target_path))
+        and
+        !("rpm" is event.ps.name and
+            "/root/.rpmdb" is event.fs.target_directory)
+        and
+        !("java" is event.ps.name and
+            "classpath /usr/local/apache-maven" in event.ps.args and
+            startswith("/root/.groovy", event.fs.target_path))
+        and
+        !("chef-client" is event.ps.name and
+            startswith("/root/.chef", event.fs.target_path))
+        and
+       !(("kubectl" is process.name or "oc" is process.name) and
+            startswith("/root/.kube", event.fs.target_path))
+        and
+        !(("java" is event.ps.name and "cassandra.jar" in event.ps.args) and
+            "/root/.cassandra" is event.fs.target_directory)
+        and
+        !(startswith("/root/orcexec.", event.fs.target_path)
+            or startswith("/root/.m2", event.fs.target_path)
+            or startswith("/root/.npm", event.fs.target_path)
+            or startswith("/root/.pki", event.fs.target_path)
+            or startswith("/root/.ivy2", event.fs.target_path)
+            or startswith("/root/.config/Cypress", event.fs.target_path)
+            or startswith("/root/.config/pulse", event.fs.target_path)
+            or startswith("/root/.config/configstore", event.fs.target_path)
+            or startswith("/root/jenkins/workspace", event.fs.target_path)
+            or startswith("/root/.jenkins", event.fs.target_path)
+            or startswith("/root/.cache", event.fs.target_path)
+            or startswith("/root/.sbt", event.fs.target_path)
+            or startswith("/root/.java", event.fs.target_path)
+            or startswith("/root/.glide", event.fs.target_path)
+            or startswith("/root/.sonar", event.fs.target_path)
+            or startswith("/root/.v8flag", event.fs.target_path)
+            or startswith("/root/infaagent", event.fs.target_path)
+            or startswith("/root/.local/lib/python", event.fs.target_path)
+            or startswith("/root/.pm2", event.fs.target_path)
+            or startswith("/root/.gnupg", event.fs.target_path)
+            or startswith("/root/.pgpass", event.fs.target_path)
+            or startswith("/root/.theano", event.fs.target_path)
+            or startswith("/root/.gradle", event.fs.target_path)
+            or startswith("/root/.android", event.fs.target_path)
+            or startswith("/root/.ansible", event.fs.target_path)
+            or startswith("/root/.crashlytics", event.fs.target_path)
+            or startswith("/root/.dbus", event.fs.target_path)
+            or startswith("/root/.composer", event.fs.target_path)
+            or startswith("/root/.gconf", event.fs.target_path)
+            or startswith("/root/.nv", event.fs.target_path)
+            or startswith("/root/.local/share/jupyter", event.fs.target_path)
+            or startswith("/root/oradiag_root", event.fs.target_path)
+            or startswith("/root/workspace", event.fs.target_path)
+            or startswith("/root/jvm", event.fs.target_path)
+            or startswith("/root/.node-gyp", event.fs.target_path))
+        and
+        !("/root/.bash_history" is event.fs.target_path);
+    }
+
+    @description
+    "monitor tampering with rpm database"
+    rpm_database:
+    {
+        (event.fs.flags & WRITE_MASK) and
+        (startswith("/var/lib/rpm", process.path) or "/var/lib/rpm" is event.fs.target_directory)
+        and
+        !(process.name in RPM_UTILS)
+        and
+        !(("python" is process.name or "python3" is process.name or "pypy" is process.name) and
+            "ansible" in process.args)
+        and
+        !(("python" is process.name or "python3" is process.name or "pypy" is process.name) and
+            ("yum-dump.py" in process.args or "python /usr/bin/chef-monitor.py" is process.args))
+        and
+        !(("exe" is event.ps.name) and
+            ("/var/lib/docker" in event.ps.args) and
+            ("dockerd" is process.name or "docker" is process.name));
+    }
+
+    @description
+    "schedule cron jobs"
+    schedule_cron_jobs:
+    {
+      ((event.syscall_id is SYS_EXECVE) and
+        ("crontab" is event.ps.name)) or
+      (((event.syscall_id is SYS_RENAME) or
+        (event.syscall_id is SYS_RENAMEAT) or
+        (event.fs.flags & WRITE_MASK)) and
+          (startswith("/etc/cron", event.fs.target_path)));
+    }
+
+    @description
+    "monitor setuid or setgid attempts"
+    setuid_or_setgid:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        ("chmod" is event.ps.name) and
+          (("+s" in event.ps.args) or
+           ("4777" in event.ps.args));
+    }
+
+    @description
+    "monitor tampering with shell configuration"
+    shell_configuration:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         ((event.fs.target_filename in SHELL_CONFIG_FILE_NAMES) or
+          (event.fs.target_path in SHELL_CONFIG_FILE_PATHS) or
+          ("/etc/zsh" is event.fs.target_directory)) and
+            (process.name not in SHELL_BINARIES);
+    }
+
+    @description
+    "monitor attempts to read shell configuration file"
+    shell_configuration_file:
+    {
+      (event.fs.flags & READ_MASK) and
+        ((event.fs.target_filename in SHELL_CONFIG_FILE_NAMES) or
+         (event.fs.target_path in SHELL_CONFIG_FILE_PATHS) or
+         ("/etc/zsh" is event.fs.target_directory)) and
+           (process.name not in SHELL_BINARIES);
+    }
+
+    @description
+    "monitor tampering with system configuration"
+    system_configuration:
+    {
+      ((event.syscall_id is SYS_RENAME) or
+       (event.syscall_id is SYS_RENAMEAT) or
+       (event.fs.flags & WRITE_MASK)) and
+         ((event.fs.target_filename in SYSTEM_CONFIG_FILE_NAMES) or
+          (event.fs.target_path in SYSTEM_CONFIG_FILE_PATHS));
+    }
+
+    @description
+    "monitor attempts to use systemctl"
+    systemctl:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        ("systemctl" is event.ps.name) and
+          (!startswith("status", event.ps.args));
+    }
+
+    @disabled
+    @description
+    "monitor tampering with trusted files"
+    trusted_files:
+    {
+      startswith("/etc", event.fs.target_path) and
+        ((event.fs.target_filename in SENSITIVE_FILES) or
+         (event.fs.target_directory in SENSITIVE_DIRS));
+    }
+
+    @disabled
+    @description
+    "monitor unexpected process faults"
+    unexpected_process_sigabrt:
+    {
+      (event.syscall_id is SYS_SIGNAL_DELIVER) and
+        (event.debug.signal is SIGNAL_SIGABRT);
+    }
+
+    @disabled
+    @description
+    "monitor unexpected process faults"
+    unexpected_process_sigsegv:
+    {
+      (event.syscall_id is SYS_SIGNAL_DELIVER) and
+        (event.debug.signal is SIGNAL_SIGSEGV);
+    }
+
+    @description
+    "monitor attempts to tamper with users and groups"
+    user_group_admin:
+    {
+      (event.syscall_id is SYS_EXECVE) and
+        (event.ps.name in USERS_ADMINISTRATION_UTILS);
+    }
+{{- end -}}

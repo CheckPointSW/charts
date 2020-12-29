@@ -1,0 +1,20 @@
+apiVersion: v2
+appVersion: v1.3.1
+version: 2.0.1
+description: A Helm chart for Check Point CloudGuard Workload Security
+name: cloudguard
+keywords:
+- check point
+- cloudguard
+- workload security
+- inventory
+- posture management
+- vulnerability assessment
+- image assurance
+- flow logs
+- log.ic
+home: https://secure.dome9.com/v2/
+icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+maintainers:
+- name: Check Point
+  email: dome9@checkpoint.com

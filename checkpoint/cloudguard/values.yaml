@@ -1,0 +1,393 @@
+### Cluster-wide parameters
+
+## Check Point CloudGuard Credentials
+## Example
+## API Secret: "c7h2yqt5ksae1ggum35bo1b"
+## API ID: "359e4744-b12b-4d12-b123-bd21620394c9"
+credentials:
+  secret: 
+  user: 
+
+## Check Point CloudGuard  cluster ID
+## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
+clusterID:
+
+## CloudGuard region: US [default], EU, AP
+region: US
+
+rbac:
+  ## Specifies whether a custom PSP should be defined
+  pspEnabled: false
+
+## Image registry settings (quay.io for EA, docker hub for GA)
+imageRegistry: quay.io/checkpoint
+## Name of the Secret with access credentials to the image registry
+imageRegistryCredendtialsSecretName: ""
+
+## Image Pull Policy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+imagePullPolicy: IfNotPresent
+
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: 
+  seccomp: docker/default
+  apparmor: {}
+
+## Proxy settings 
+## Examples:
+## proxy: http://example.com:443
+## proxy: $HTTPS_PROXY
+proxy: {}
+
+### Inventory agent settings
+inventory:
+  agent:
+    version: 1.2.0
+
+    ## Specify custom image ("" to use default)
+    image: ""
+
+    ## Specify existing service account name ("" to create)
+    serviceAccountName: ""
+
+    replicaCount: 1
+
+    ## Extra environment variables passed to the container
+    env: []
+
+    ## Configure resource requests and limits
+    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    resources: {}
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+    ## Configuration options for nodeSelector, tolerations and affinity for pod
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+### Addons configuration
+### Each addon may be disabled
+addons:
+
+## Image Scan Add-on
+  imageScan:
+    enabled: false
+    daemon:
+      version: 0.2.2
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+      affinity: {}
+
+    engine:
+      version: 0.2.2
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+
+## Flow Logs Add-on
+  flowLogs:
+    enabled: false
+    daemon:
+      version: 0.1.1
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Log Level values: error, warn, info, debug, trace
+      logLevel: info
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      affinity: {}    
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+
+
+## Admission Control Add-on 
+  admissionControl:
+    enabled: false
+    policy:
+      version: 0.1.0
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      affinity: {}    
+      tolerations: []
+
+      fluentbit:
+        version: 1.5.6-cp
+
+        ## Specify custom image ("" to use default)
+        image: ""
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi    
+
+    enforcer:
+      version: 0.1.0
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      replicaCount: 2
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      gsl:
+        version: 0.1.0
+
+        ## Specify custom image ("" to use default)
+        image: ""
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+      fluentbit:
+        version: 1.5.6-cp
+
+        ## Specify custom image ("" to use default)
+        image: ""
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      affinity: {}    
+      tolerations: []
+
+
+## Runtime Protection Add-on 
+  runtimeProtection:
+    enabled: false
+    EKS: false
+    BPF: true
+
+    daemon:
+      ## Main container settings
+      version: 0.1.0
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        requests:
+          cpu: 250m
+          memory: 1Gi
+        limits:
+          cpu: 500m
+          memory: 1Gi
+
+      ## Sidecars
+      probe:
+        version: 0.27.1
+
+        ## Specify custom image ("" to use default)
+        image: ""
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+#          requests:
+#            cpu: 100m
+#            memory: 128Mi
+#          limits:
+#            cpu: 100m
+#            memory: 128Mi
+
+      fluentbit:
+        version: 1.5.6-cp
+
+        ## Specify custom image ("" to use default)
+        image: ""
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector:
+        beta.kubernetes.io/os: linux        
+      affinity: {}    
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+
+    policy:
+      ## Main container settings
+      version: 0.1.0
+
+      ## Specify custom image ("" to use default)
+      image: ""
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      affinity: {}    
+      tolerations: []       

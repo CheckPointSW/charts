@@ -1,0 +1,142 @@
+{{- $config := fromYaml (include "runtime.daemon.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" $config }}-sba
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+data:
+  config.json: |-
+    {
+      "version": {
+          "major": 1,
+          "minor": 1
+      },
+      "event_sampler" : {
+        "enabled": false,
+        "proc_rate" : 10,
+        "fs_rate" : 10,
+        "net_rate" : 10,
+        "debug_rate" : 10,
+        "logs_per_second" : 0,
+        "duplicate_logs_per_second" : 1
+      },
+      "edr": {
+          "enabled": false,
+          "ignore_host_events": false,
+          "auth_url": "https://cloudinfra-gw.portal.checkpoint.com/auth/external",
+          "threat_hunt": {
+              "url": "https://us-east4-chkp-gcp-rnd-threat-hunt-box.cloudfunctions.net/prod-gcp-contractprovider",
+              "client_id": "SqhpAAWV6K/V/oHv4JvT3TGtzoMXVq/2ydNCrDV9wsBhenwODYoolyeTYbJLPUsvQ6p3EcHJ0gU44FMPLeIHPQ==",
+              "access_key": "cc0dxWBqK5B5k3znFPgsuAvoFH2aJyWaDothloh7iwOTkWVi8F3jLQO/XNGWozif6GzuycBzwqV0MO14LFIA7w=="
+          },
+          "data_tube": {
+              "url": "https://europe-west1-datatube-240519.cloudfunctions.net",
+              "client_id": "nZuvPHYiDDxyIuuo9Kw/BO23BTqNs+j4pO2gpiN9W53pUEuK0CDwNXGqRtD+T0MVeIURXP7++caPwRbaj/X9lQ==",
+              "access_key": "/fprln1bZtEEx3UDtRCEtDLQpkpjaZ0IEKnj+ief4lK3lhMGa1hje22FyGtLuo463+TLHm2tQsekNrAbk6yOpg=="
+          },
+          "debug": {
+              "log_records": false,
+              "dump_uploaded_records": false
+          },
+          "md5": true,
+          "exclude_processes": []
+      },
+      "appcontrol": {
+          "enabled": true,
+          "sensors": ["proc", "fs", "net", "debug"],
+          "ignore_host_events" : true,
+          "kill_containers": false,
+          "must_see_image_load": false,
+          "must_see_image_unload": false,
+          "policies_directory" : "/var",
+          "exclude_processes" : [
+              "/usr/bin/docker-containerd-shim",
+              "/usr/bin/containerd-shim",
+              "/usr/bin/docker-runc",
+              "/usr/sbin/runc",
+              "/usr/bin/runc",
+              "/usr/bin/docker-containerd",
+              "/usr/bin/containerd",
+              "/usr/bin/dockerd",
+              "/usr/local/bin/dockerd",
+              "/usr/bin/sysdig-prob-loader"
+          ]
+      },
+      "bg": {
+          "enabled": true,
+          "kill_containers": false,
+          "debug": false,
+          "modules_list": [
+              "/kube_cfg/black.rl",
+              "/kube_cfg/cve.rl",
+              "/kube_cfg/malware.rl"
+          ],
+          "exclude_processes" : [
+              "/usr/bin/docker-containerd-shim",
+              "/usr/bin/containerd-shim",
+              "/usr/bin/docker-runc",
+              "/usr/sbin/runc",
+              "/usr/bin/runc",
+              "/usr/bin/docker-containerd",
+              "/usr/bin/containerd",
+              "/usr/bin/dockerd",
+              "/usr/local/bin/dockerd",
+              "/usr/bin/sysdig-prob-loader"
+          ]
+      },
+      "baseline": {
+          "enabled": true,
+          "ignore_host_events" : true,
+          "must_see_image_load": false,
+          "must_see_image_unload": false,
+          "learn_timeout": 86400,
+          "policies_destination" : "/var",
+          "exclude_processes" : [],
+          "workloads_monitoring": [   
+              {
+                  "selector": {
+                      "namespace": "*",
+                      "pod_name_prefix": "*",
+                      "image_name": "*",
+                      "custom_label": "*"
+                  },
+                  "overrides": {
+                      "enabled": true
+                  }
+              }
+          ]
+      },
+      "log": {
+          "level":"INFO",
+          "uploader": {
+              "enabled" : false,
+              "tag": "default-config",
+              "interval_secs": 3600
+          }
+      },
+      "telemetry" : {
+          "url": "https://gwevents.checkpoint.com/gwstats/services/antimalware/1_0_0/log"
+      },
+      "stats":{
+          "flush_period_sec": 1800,
+          "enable_profiling": false,
+          "enable_libsba_stats": true
+      },
+      "sensors": {
+          "filter_out_twin_events": true,
+          "ignore_processes": ["cpla"],
+          "offline_events_file_path": ""
+      },
+      "network": {
+          "verify_ssl": false,
+          "proxies": {
+              "http": null,
+              "https": null
+          }
+      }
+    }
+
+{{- end -}}

@@ -1,0 +1,39 @@
+{{- $config := fromYaml (include "admission.policy.config" .) -}}
+{{ if $config.featureConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" $config }}-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush       5
+        Daemon      Off
+        Log_Level   trace
+    [INPUT]
+        Name            exec
+        Command         find /metric -type f | xargs cat 
+        Tag             metrics
+        Buf_Size        8mb
+        Interval_Sec    60
+        Interval_NSec   0
+    [OUTPUT]
+        Name            http
+        Match           metrics
+        #Format         json_stream
+        Format          json_lines
+        Host            ${CP_KUBERNETES_DOME9_URL}
+        Uri             ${CP_KUBERNETES_ADMISSION_CONTROL_METRIC_URI}
+        Header          Kubernetes-Account ${CP_KUBERNETES_CLUSTER_ID}
+        Header          Agent-Version    {{ $config.agentConfig.version }}
+        Header          Node-Name        ${NODE_NAME}
+        Compress        gzip
+        http_User       ${CP_KUBERNETES_USER}
+        http_Passwd     ${CP_KUBERNETES_PASS}
+        Port            443        
+        tls             On
+        tls.verify      On
+{{- end -}}
