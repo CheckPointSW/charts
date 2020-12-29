@@ -41,10 +41,9 @@ spec:
           mountPath: /etc/servercert
         - name: clientcert-volume
           mountPath: /etc/clientcert
-        command: ["/bin/sh"]
-        args: ["-c", "/node_agent"]
+        command: ["/node_agent"]
         ports:
-        - containerPort: 80
+        - containerPort: 8443
         {{- if $config.agentConfig.resources }}
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10 }}

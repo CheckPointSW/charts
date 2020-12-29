@@ -75,7 +75,7 @@ spec:
         args:
         - run-config
         - -d
-        - /kube_cfg/config.json
+        - /etc/checkpoint/cpsba/awl_config_dome9.json
         {{- if $config.agentConfig.resources }}
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
@@ -127,18 +127,6 @@ spec:
           mountPath: /sysdig
           readOnly: true
         {{- end }}
-        - name: config-volume
-          mountPath: /kube_cfg/config.json
-          subPath: config.json
-        - name: cve-rl
-          mountPath: /kube_cfg/cve.rl
-          subPath: cve.rl
-        - name: black-rl
-          mountPath: /kube_cfg/black.rl
-          subPath: black.rl
-        - name: malware-rl
-          mountPath: /kube_cfg/malware.rl
-          subPath: malware.rl
         - name: sys-vol
           mountPath: /sys/kernel/debug/
           readOnly: true
@@ -204,16 +192,4 @@ spec:
       - name: host-etc-vol
         hostPath:
           path: /etc
-      - name: config-volume
-        configMap:
-          name: {{ template "agent.resource.name" $config }}-sba
-      - name: cve-rl
-        configMap:
-          name: {{ template "agent.resource.name" $config }}-sba-cve
-      - name: black-rl
-        configMap:
-          name: {{ template "agent.resource.name" $config }}-sba-black
-      - name: malware-rl
-        configMap:
-          name: {{ template "agent.resource.name" $config }}-sba-malware
 {{- end }}
