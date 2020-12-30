@@ -77,11 +77,15 @@ The following tables list the configurable parameters of this chart and their de
 | Parameter                                                  | Description                                                     | Default                                          |
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
-| `region`                                                   | CloudGuard region (US, EU or AP)                                | `US`                                             |
+| `region`                                                   | CloudGuard region (us1, eu1 or ap1)                             | `us1`                                            |
 | `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
 | `imagePullPolicy`                                          | Image pull policy                                               | `IfNotPresent`                                   |
-| `imageRegistryCredendtialsSecretName`                      | Name of the Secret containing image registry access credentials | ``                                               |
+| `imageRegistry.url`                                        | Image registry                                                  | `quay.io`                                        |
+| `imageRegistry.org`                                        | Image registry organization                                     | `checkpoint`                                     |
+| `imageRegistry.authEnabled`                                | Whether or not Image Registry access is password-protected      | `true`                                            |
+| `imageRegistry.user`                                       | Image registry username                                         | ``                                               |
+| `imageRegistry.password`                                   | Image registry password                                         | ``                                               |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
 | `podAnnotations`                                           | Common non-identifying metadata                                 | `{}`                                             |

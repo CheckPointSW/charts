@@ -30,21 +30,21 @@
 
 {{- /* Full path to the image of the main container of the provided agent */ -}}
 {{- define "agent.main.image" -}}
-{{- $defaultImage := printf "%s/consec-%s-%s:%s" .Values.imageRegistry .featureName .agentName .agentConfig.version }}
+{{- $defaultImage := printf "%s/%s/consec-%s-%s:%s" .Values.imageRegistry.url .Values.imageRegistry.org .featureName .agentName .agentConfig.version }}
 {{- default $defaultImage .agentConfig.image }}
 {{- end -}}
 
 {{- /* Full path to the image of a provided side-car container */ -}}
 {{- define "agent.sidecar.image" -}}
 {{- $containerConfig := get .agentConfig .containerName }}
-{{- $defaultImage := printf "%s/consec-%s-%s:%s" .Values.imageRegistry .featureName .containerName $containerConfig.version }}
+{{- $defaultImage := printf "%s/%s/consec-%s-%s:%s" .Values.imageRegistry.url .Values.imageRegistry.org .featureName .containerName $containerConfig.version }}
 {{- default $defaultImage $containerConfig.image }}
 {{- end -}}
 
 {{- /* Full path to the fluentbit image used in agent with provided config */ -}}
 {{- define "agent.fluentbit.image" -}}
 {{- $containerConfig := .agentConfig.fluentbit }}
-{{- $defaultImage := printf "%s/consec-fluentbit:%s" .Values.imageRegistry $containerConfig.version }}
+{{- $defaultImage := printf "%s/%s/consec-fluentbit:%s" .Values.imageRegistry.url .Values.imageRegistry.org $containerConfig.version }}
 {{- default $defaultImage $containerConfig.image }}
 {{- end -}}
 
@@ -85,8 +85,10 @@ affinity:
 tolerations:
 {{ toYaml .agentConfig.tolerations | indent 2 }}
 {{- end }}
+{{- if .Values.imageRegistry.authEnabled }}
 imagePullSecrets:
-- name: {{ required "imageRegistryCredendtialsSecretName is required -- the name of the Secret containing image registry access credentials." .Values.imageRegistryCredendtialsSecretName }}
+- name: {{ .Release.Name }}-regcred
+{{- end -}}
 {{- end -}}
 
 
@@ -162,20 +164,31 @@ crt: {{ $cert.Cert | b64enc }}
 key: {{ $cert.Key | b64enc }}
 {{- end -}}
 
+{{/*
+  Return backend URL
+*/}}
 {{- define "dome9.url" -}}
 {{- if $.Values.cloudguardURL -}}
 {{- printf "%s" $.Values.cloudguardURL -}}
 {{- else -}}
-{{- $region := default "us1" (lower $.Values.region) -}}
-{{- if has $region (list "us1" "us") -}}
+{{- $region := lower $.Values.region -}}
+{{- if has $region (list "us" "us1") -}}
 {{- printf "https://api-cpx.dome9.com" -}}
-{{- else if has $region (list "eu1" "eu") -}}
-{{- printf "https://api-cpx.eu1.dome9.com" -}}
-{{- else if has $region (list "ap1" "ap") -}}
-{{- printf "https://api-cpx.ap1.dome9.com" -}}
+{{- else if has $region (list "eu1" "ap1") -}}
+{{- printf "https://api-cpx.%s.dome9.com" $region -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid region: %s (should be one of: 'US' [default], 'EU', 'AP')"  .Values.region -}}
+{{- $err := printf "\n\nERROR: Invalid region: %s (should be one of: 'us1' [default], 'eu1', 'ap1')"  .Values.region -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+  Generate the .dockerconfigjson file unencoded.
+*/}}
+{{- define "dockerconfigjson.b64enc" }}
+    {{- $err := "Must disable .imageRegistry.authEnabled or specify .imageRegistry.user and .password" -}}
+    {{- $user := required $err .Values.imageRegistry.user -}}
+    {{- $pass := required $err .Values.imageRegistry.password -}}
+    {{- printf "{\"auths\":{\"%s\":{\"auth\":\"%s\"}}}" .Values.imageRegistry.url (printf "%s:%s" $user $pass | b64enc) | b64enc }}
+{{- end }}

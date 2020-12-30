@@ -53,10 +53,8 @@ spec:
           value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
         - name: RELEASE_NAME
           value: {{ .Release.Name }}
-{{- if .Values.region }}
         - name: CLOUDGUARD_REGION
-          value: {{ .Values.region | trunc 2 | quote }}
-{{- end }}
+          value: {{ .Values.region }}
       volumes:
       - name: secret-volume
         secret:

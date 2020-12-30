@@ -12,17 +12,20 @@ credentials:
 ## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
 clusterID:
 
-## CloudGuard region: US [default], EU, AP
-region: US
+## CloudGuard region: us1 [default], eu1, ap1
+region: us1
 
 rbac:
   ## Specifies whether a custom PSP should be defined
   pspEnabled: false
 
 ## Image registry settings (quay.io for EA, docker hub for GA)
-imageRegistry: quay.io/checkpoint
-## Name of the Secret with access credentials to the image registry
-imageRegistryCredendtialsSecretName: ""
+imageRegistry:
+  url: quay.io
+  org: checkpoint
+  authEnabled: true
+  user: ""
+  password: ""
 
 ## Image Pull Policy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 imagePullPolicy: IfNotPresent
