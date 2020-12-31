@@ -32,5 +32,5 @@ rules:
     verbs: [ "list", "get" ]
 
   - apiGroups: [ "batch" ]
-    resources: [ "cronjobs", "jobs" ]
+    resources: [ "cronjobs" ]
     verbs: [ "list", "get" ]

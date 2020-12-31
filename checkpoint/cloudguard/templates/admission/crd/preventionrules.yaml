@@ -1,7 +1,9 @@
+{{- $config := fromYaml (include "admission.enforcer.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: detectionrules.admissioncontrol.cloudguard.checkpoint.com
+  name: preventionrules.admissioncontrol.cloudguard.checkpoint.com
 spec:
   group: admissioncontrol.cloudguard.checkpoint.com
   versions:
@@ -24,6 +26,7 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
   scope: Namespaced
   names:
-    plural: detectionrules
-    singular: detectionrule
-    kind: DetectionRule
+    plural: preventionrules
+    singular: preventionrule
+    kind: PreventionRule
+{{- end -}}
