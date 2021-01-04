@@ -30,22 +30,22 @@
 
 {{- /* Full path to the image of the main container of the provided agent */ -}}
 {{- define "agent.main.image" -}}
-{{- $defaultImage := printf "%s/%s/consec-%s-%s:%s" .Values.imageRegistry.url .Values.imageRegistry.org .featureName .agentName .agentConfig.version }}
-{{- default $defaultImage .agentConfig.image }}
+{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image .agentConfig.tag }}
+{{- default $image .agentConfig.fullImage }}
 {{- end -}}
 
 {{- /* Full path to the image of a provided side-car container */ -}}
 {{- define "agent.sidecar.image" -}}
 {{- $containerConfig := get .agentConfig .containerName }}
-{{- $defaultImage := printf "%s/%s/consec-%s-%s:%s" .Values.imageRegistry.url .Values.imageRegistry.org .featureName .containerName $containerConfig.version }}
-{{- default $defaultImage $containerConfig.image }}
+{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $containerConfig.tag }}
+{{- default $image $containerConfig.fullImage }}
 {{- end -}}
 
 {{- /* Full path to the fluentbit image used in agent with provided config */ -}}
 {{- define "agent.fluentbit.image" -}}
 {{- $containerConfig := .agentConfig.fluentbit }}
-{{- $defaultImage := printf "%s/%s/consec-fluentbit:%s" .Values.imageRegistry.url .Values.imageRegistry.org $containerConfig.version }}
-{{- default $defaultImage $containerConfig.image }}
+{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $containerConfig.tag }}
+{{- default $image $containerConfig.fullImage }}
 {{- end -}}
 
 {{- /* Labels commonly used in our k8s resources */ -}}
@@ -62,7 +62,7 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 
 {{- /* Pod annotations commonly used in agents */ -}}
 {{- define "common.pod.annotations" -}}
-agentVersion: {{ .agentConfig.version }}
+agentVersion: {{ .agentConfig.tag }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- if .Values.podAnnotations.apparmor }}
 container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name" . }}:

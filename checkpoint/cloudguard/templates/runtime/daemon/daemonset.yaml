@@ -6,7 +6,7 @@ metadata:
   name: {{ template "agent.resource.name" $config }}
   namespace: {{ .Release.Namespace }}
   annotations:
-    agentVersion: {{ $config.agentConfig.version }}
+    agentVersion: {{ $config.agentConfig.tag }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 spec:
@@ -137,9 +137,9 @@ spec:
         env:
 {{ include "fluentd.env" $config | indent 8 }}
         - name: CP_KUBERNETES_RUNTIME_ALERT_URI
-          value: {{ template "cloudguardURL_path" . }}runtimealert/alert
+          value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
         - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
-          value: {{ template "cloudguardURL_path" . }}runtimealert/profiling
+          value: {{ template "cloudguardURL_path" . }}runtimeevent/profiling
         {{- if $config.agentConfig.fluentbit.resources }}
         resources:
 {{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}

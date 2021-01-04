@@ -1,19 +1,19 @@
 ### Cluster-wide parameters
 
-## Check Point CloudGuard Credentials
-## Example
-## API Secret: "c7h2yqt5ksae1ggum35bo1b"
-## API ID: "359e4744-b12b-4d12-b123-bd21620394c9"
-credentials:
-  secret: 
-  user: 
-
 ## Check Point CloudGuard  cluster ID
-## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
+## Example: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 clusterID:
 
 ## CloudGuard region: us1 [default], eu1, ap1
 region: us1
+
+## Check Point CloudGuard Credentials
+## Example
+## API Secret: "abcdefghijklmnopqrstvuwxyz"
+## API ID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+credentials:
+  secret: 
+  user: 
 
 rbac:
   ## Specifies whether a custom PSP should be defined
@@ -22,13 +22,12 @@ rbac:
 ## Image registry settings (quay.io for EA, docker hub for GA)
 imageRegistry:
   url: quay.io
-  org: checkpoint
   authEnabled: true
-  user: ""
-  password: ""
+  user: 
+  password: 
 
-## Image Pull Policy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-imagePullPolicy: IfNotPresent
+## Image Pull Policy.
+imagePullPolicy: Always
 
 ## Pod annotations
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -46,10 +45,10 @@ proxy: {}
 ### Inventory agent settings
 inventory:
   agent:
-    version: 1.2.0
 
-    ## Specify custom image ("" to use default)
-    image: ""
+    ## Specify image and tag
+    image: checkpoint/consec-inventory-agent
+    tag: 1.2.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -83,10 +82,10 @@ addons:
   imageScan:
     enabled: false
     daemon:
-      version: 0.2.2
 
-      ## Specify custom image ("" to use default)
-      image: ""
+      ## Specify image and tag
+      image: checkpoint/consec-imagescan-daemon
+      tag: 0.2.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -116,10 +115,9 @@ addons:
       affinity: {}
 
     engine:
-      version: 0.2.2
-
-      ## Specify custom image ("" to use default)
-      image: ""
+      ## Specify image and tag
+      image: checkpoint/consec-imagescan-engine
+      tag: 0.2.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -148,10 +146,9 @@ addons:
   flowLogs:
     enabled: false
     daemon:
-      version: 0.1.1
-
-      ## Specify custom image ("" to use default)
-      image: ""
+      ## Specify image and tag
+      image: checkpoint/consec-flowlogs-daemon
+      tag: 0.1.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -175,22 +172,21 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector: {}
-      affinity: {}    
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       - key: node-role.kubernetes.io/control-plane
         effect: NoSchedule
+      affinity: {}
 
 
 ## Admission Control Add-on 
   admissionControl:
     enabled: false
     policy:
-      version: 0.1.0
-
-      ## Specify custom image ("" to use default)
-      image: ""
+      ## Specify image and tag
+      image: checkpoint/consec-admission-policy
+      tag: 0.1.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -211,14 +207,13 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector: {}
-      affinity: {}    
+      affinity: {}
       tolerations: []
 
       fluentbit:
-        version: 1.5.6-cp
-
-        ## Specify custom image ("" to use default)
-        image: ""
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.5.6-cp
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -231,10 +226,9 @@ addons:
         #    memory: 128Mi    
 
     enforcer:
-      version: 0.1.0
-
-      ## Specify custom image ("" to use default)
-      image: ""
+      ## Specify image and tag
+      image: checkpoint/consec-admission-enforcer
+      tag: 0.1.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -255,10 +249,9 @@ addons:
       #    memory: 128Mi  
 
       gsl:
-        version: 0.1.0
-
-        ## Specify custom image ("" to use default)
-        image: ""
+        ## Specify image and tag
+        image: checkpoint/consec-admission-gsl
+        tag: 0.1.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -271,10 +264,9 @@ addons:
         #    memory: 128Mi  
 
       fluentbit:
-        version: 1.5.6-cp
-
-        ## Specify custom image ("" to use default)
-        image: ""
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.5.6-cp
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -289,8 +281,8 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector: {}
-      affinity: {}    
       tolerations: []
+      affinity: {}
 
 
 ## Runtime Protection Add-on 
@@ -301,10 +293,9 @@ addons:
 
     daemon:
       ## Main container settings
-      version: 0.1.0
-
-      ## Specify custom image ("" to use default)
-      image: ""
+      ## Specify image and tag
+      image: checkpoint/consec-runtime-daemon
+      tag: 0.1.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -316,18 +307,17 @@ addons:
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
       resources:
         requests:
-          cpu: 250m
-          memory: 1Gi
+          cpu: 100m
+          memory: 250Mi
         limits:
           cpu: 500m
           memory: 1Gi
 
       ## Sidecars
       probe:
-        version: 0.27.1
-
-        ## Specify custom image ("" to use default)
-        image: ""
+        ## Specify image and tag
+        image: checkpoint/consec-runtime-probe
+        tag: 0.27.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -340,10 +330,9 @@ addons:
 #            memory: 128Mi
 
       fluentbit:
-        version: 1.5.6-cp
-
-        ## Specify custom image ("" to use default)
-        image: ""
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.5.6-cp
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -359,19 +348,19 @@ addons:
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
         beta.kubernetes.io/os: linux        
-      affinity: {}    
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       - key: node-role.kubernetes.io/control-plane
         effect: NoSchedule
+      affinity: {}
 
     policy:
       ## Main container settings
-      version: 0.1.0
 
       ## Specify custom image ("" to use default)
-      image: ""
+      image: checkpoint/consec-runtime-policy
+      tag: 0.1.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -392,5 +381,5 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector: {}
-      affinity: {}    
       tolerations: []       
+      affinity: {}

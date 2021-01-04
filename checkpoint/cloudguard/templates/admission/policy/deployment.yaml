@@ -6,7 +6,7 @@ metadata:
   name: {{ template "agent.resource.name" $config }}
   namespace: {{ .Release.Namespace }}
   annotations:
-    agentVersion: {{ $config.agentConfig.version }}
+    agentVersion: {{ $config.agentConfig.tag }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 spec:

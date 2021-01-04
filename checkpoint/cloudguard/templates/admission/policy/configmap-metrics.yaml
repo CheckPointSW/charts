@@ -28,7 +28,7 @@ data:
         Host            ${CP_KUBERNETES_DOME9_URL}
         Uri             ${CP_KUBERNETES_ADMISSION_CONTROL_METRIC_URI}
         Header          Kubernetes-Account ${CP_KUBERNETES_CLUSTER_ID}
-        Header          Agent-Version    {{ $config.agentConfig.version }}
+        Header          Agent-Version    {{ $config.agentConfig.tag }}
         Header          Node-Name        ${NODE_NAME}
         Compress        gzip
         http_User       ${CP_KUBERNETES_USER}
