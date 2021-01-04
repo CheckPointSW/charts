@@ -91,7 +91,7 @@ The following tables list the configurable parameters of this chart and their de
 | Parameter                                                  | Description                                                     | Default                                          |
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
-| `region`                                                   | CloudGuard region (us1, eu1 or ap1)                             | `us1`                                            |
+| `datacenter`                                               | CloudGuard datacenter (usea1 (default), euwe1 etc.)             | `usea1`                                          |
 | `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
 | `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |

@@ -165,20 +165,44 @@ key: {{ $cert.Key | b64enc }}
 {{- end -}}
 
 {{/*
+  Return Dome9 subdomain in format xxN e.g. us1, eu1, ap3 etc.
+*/}}
+{{- define "dome9.subdomain" -}}
+{{- $datacenter := lower $.Values.datacenter -}}
+{{- if has $datacenter (list "us" "us1" "usea1") -}}
+{{- printf "us1" -}}
+{{- else if has $datacenter (list "eu" "eu1" "euwe1") -}}
+{{- printf "eu1" -}}
+{{- else if has $datacenter (list "ap1" "apse1") -}}
+{{- printf "ap1" -}}
+{{- else if has $datacenter (list "ap2" "apse2") -}}
+{{- printf "ap2" -}}
+{{- else if has $datacenter (list "ap" "ap3" "apso1") -}}
+{{- printf "ap3" -}}
+{{- else if has $datacenter (list "ap4" "apne1") -}}
+{{- printf "ap4" -}}
+{{- else if has $datacenter (list "ap5" "apea1") -}}
+{{- printf "ap5" -}}
+{{- else if has $datacenter (list "ca" "ca1" "cace1") -}}
+{{- printf "ca1" -}}
+{{- else -}}
+{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1', 'apne1', 'apea1', 'cace1')"  $.Values.datacenter -}}
+{{- fail $err -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
   Return backend URL
 */}}
 {{- define "dome9.url" -}}
 {{- if $.Values.cloudguardURL -}}
 {{- printf "%s" $.Values.cloudguardURL -}}
 {{- else -}}
-{{- $region := lower $.Values.region -}}
-{{- if has $region (list "us" "us1") -}}
+{{- $subdomain := (include "dome9.subdomain" .) -}}
+{{- if eq $subdomain "us1" -}}
 {{- printf "https://api-cpx.dome9.com" -}}
-{{- else if has $region (list "eu1" "ap1") -}}
-{{- printf "https://api-cpx.%s.dome9.com" $region -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid region: %s (should be one of: 'us1' [default], 'eu1', 'ap1')"  .Values.region -}}
-{{- fail $err -}}
+{{- printf "https://api-cpx.%s.dome9.com" $subdomain -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

@@ -4,8 +4,8 @@
 ## Example: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 clusterID:
 
-## CloudGuard region: us1 [default], eu1, ap1
-region: us1
+## CloudGuard datacenter: usea1 [default], euwe1, apso1 etc.
+datacenter: usea1
 
 ## Check Point CloudGuard Credentials
 ## Example
