@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "admission.enforcer.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- $tls := fromYaml (include "gsl-enforcer.gen-certs" .) -}}
+{{- $tls := fromYaml (include "generate.selfsigned.cert" $config) -}}
 {{ template "gsl-enforcer-secret" dict "config" $config "tls" $tls }}
 ---
 {{ template "gsl-enforcer-webhook-configuration" dict "config" $config "crt" $tls.crt }}

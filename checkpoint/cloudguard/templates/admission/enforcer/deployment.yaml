@@ -17,7 +17,9 @@ spec:
   template:
     metadata:
       annotations:
-{{ include "common.pod.annotations" $config | indent 8 }} 
+{{ include "common.pod.annotations" $config | indent 8 }}
+        # adding it so workload will be restarted to be updated with a certificate that was re-generated
+        timestamp: {{ now | quote }}
       labels:
 {{ include "common.labels" $config | indent 8 }}
     spec:

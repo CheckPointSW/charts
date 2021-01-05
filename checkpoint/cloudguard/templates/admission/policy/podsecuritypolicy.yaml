@@ -20,7 +20,7 @@ spec:
   volumes:
   - 'secret'  
   - 'configMap'
-  - 'validatingWebhookConfiguration'
+  - 'emptyDir'
   hostNetwork: false
   hostIPC: false
   hostPID: false
