@@ -18,8 +18,8 @@ webhooks:
       caBundle: {{ .crt }}
     rules:
       - operations: ["CREATE","UPDATE", "DELETE", "CONNECT"]
-        apiGroups: ["", "apps"]
-        apiVersions: ["v1"]
+        apiGroups: ["", "apps", "rbac.authorization.k8s.io", "networking.k8s.io", "batch", "policy"]
+        apiVersions: ["v1", "v1beta1"]
         resources: ["pods","pods/attach","pods/exec","pods/portforward",
                     "deployments",
                     "replicationcontrollers",

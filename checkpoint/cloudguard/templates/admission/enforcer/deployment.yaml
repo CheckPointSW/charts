@@ -105,7 +105,9 @@ spec:
         configMap:
           name: {{ template "agent.resource.name" $config }}-alerts
       - name: logs
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Mi
       - name: metrics
         emptyDir: {}
 {{- end -}}
