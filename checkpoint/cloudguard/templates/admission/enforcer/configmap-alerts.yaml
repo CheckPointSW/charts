@@ -12,7 +12,7 @@ data:
     [SERVICE]
         Flush       5
         Daemon      Off
-        Log_Level   trace
+        Log_Level   info
     [INPUT]
         Name             tail
         Path             admission/alerts/alerts.log
