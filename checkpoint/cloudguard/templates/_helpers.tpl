@@ -150,6 +150,13 @@ imagePullSecrets:
   valueFrom:
     fieldRef:
       fieldPath: spec.nodeName
+
+{{- if .Values.proxy }}
+- name: HTTP_PROXY
+  value: "{{ .Values.proxy }}"
+- name: NO_PROXY
+  value: "kubernetes.default.svc"
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -165,12 +172,12 @@ key: {{ $cert.Key | b64enc }}
 {{- end -}}
 
 {{/*
-  Return Dome9 subdomain in format xxN e.g. us1, eu1, ap3 etc.
+  Return Dome9 subdomain in format xxN e.g. "eu1", "ap3" etc. For us* only return an empty string
 */}}
 {{- define "dome9.subdomain" -}}
 {{- $datacenter := lower $.Values.datacenter -}}
 {{- if has $datacenter (list "us" "us1" "usea1") -}}
-{{- printf "us1" -}}
+{{- printf "" -}}
 {{- else if has $datacenter (list "eu" "eu1" "euwe1") -}}
 {{- printf "eu1" -}}
 {{- else if has $datacenter (list "ap1" "apse1") -}}
@@ -199,7 +206,7 @@ key: {{ $cert.Key | b64enc }}
 {{- printf "%s" $.Values.cloudguardURL -}}
 {{- else -}}
 {{- $subdomain := (include "dome9.subdomain" .) -}}
-{{- if eq $subdomain "us1" -}}
+{{- if eq $subdomain "" -}}
 {{- printf "https://api-cpx.dome9.com" -}}
 {{- else -}}
 {{- printf "https://api-cpx.%s.dome9.com" $subdomain -}}

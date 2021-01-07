@@ -12,7 +12,7 @@ data:
     [SERVICE]
         Flush       5
         Daemon      Off
-        Log_Level   trace
+        Log_Level   info
     [INPUT]
         Name            exec
         Command         find /metric -type f | xargs cat 
