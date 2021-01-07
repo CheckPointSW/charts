@@ -1,0 +1,15 @@
+{{- $config := fromYaml (include "flowlogs.daemon.config" .) -}}
+{{ if $config.featureConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+data:
+  flowlogs_config.json: |
+    {
+      "LOG_LEVEL": "{{ $config.agentConfig.logLevel }}"
+    }
+{{ end }}

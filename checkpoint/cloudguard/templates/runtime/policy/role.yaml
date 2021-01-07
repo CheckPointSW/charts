@@ -1,0 +1,21 @@
+{{- $config := fromYaml (include "runtime.policy.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+rules:
+- apiGroups: ["runtimeprotection.cloudguard.checkpoint.com"]
+  resources: ["denylists", "profilingconfigs", "allowlists"]
+  verbs: ["update", "list", "create", "delete"]
+{{- if .Values.rbac.pspEnabled }}
+- apiGroups: [ "policy" ]
+  resources: [ "podsecuritypolicies" ]
+  verbs: [ "use"]
+  resourceNames:
+  - {{ template "agent.resource.name" $config }}
+{{- end -}}
+{{- end -}}

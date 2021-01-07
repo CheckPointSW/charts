@@ -1,0 +1,195 @@
+{{- $config := fromYaml (include "runtime.daemon.config" .) }}
+{{- if $config.featureConfig.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ $config.agentConfig.tag }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "common.labels" $config | indent 6 }}
+  template:
+    metadata:
+      annotations:
+{{ include "common.pod.annotations" $config | indent 8 }}
+      labels:
+{{ include "common.labels" $config | indent 8 }}
+    spec:
+{{ include "common.pod.properties" $config | indent 6 }}
+      hostNetwork: true
+      initContainers:
+      # probe (sysdig)
+      - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
+        name: {{ $containerConfig.containerName }}
+        image: {{ template "agent.sidecar.image" $containerConfig }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: true
+        {{- if $config.agentConfig.probe.resources }}
+        resources:
+{{ toYaml $config.agentConfig.probe.resources | indent 10}}
+        {{- end }}
+        env:
+        {{- if .Values.addons.runtimeProtection.BPF }}
+        - name: HOME
+          value: "/sysdig"
+        - name: SYSDIG_BPF_PROBE
+          value: ""
+        {{- if $config.featureConfig.EKS }}
+        - name: SYSDIG_BPF_USE_LOCAL_KERNEL_SOURCES
+          value: "true"
+        {{- end }}
+        {{- end }}
+        volumeMounts:
+        - name: boot-vol
+          mountPath: /host/boot
+          readOnly: true
+        - name: modules-vol
+          mountPath: /host/lib/modules
+          readOnly: true
+        - name: usr-vol
+          mountPath: /host/usr
+          readOnly: true
+        - name: host-etc-vol
+          mountPath: /host/etc
+          readOnly: true
+        - name: host-proc-vol
+          mountPath: /host/proc
+          readOnly: true
+        - name: host-dev-vol
+          mountPath: /host/dev
+        {{- if .Values.addons.runtimeProtection.BPF }}
+        - name: sysdig-probe-vol
+          mountPath: /sysdig
+        {{- end }}
+      containers:
+      # Main container
+      - name: {{ $config.agentName }}
+        image: {{ template "agent.main.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }} 
+        args:
+        - run-config
+        - -d
+        - /etc/checkpoint/cpsba/awl_config_dome9.json
+        {{- if $config.agentConfig.resources }}
+        resources:
+{{ toYaml $config.agentConfig.resources | indent 10 }}
+        {{- end }}
+        env:
+{{ include "user.defined.env" $config | indent 8 }}
+        - name: LANG
+          value: C.UTF-8
+## TODO : Temporary solution for internal deployment - should omit #############################################################
+        - name: CP_KUBERNETES_CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-cp-cloudguard-configmap
+              key: clusterID
+        - name: SBA_MANAGEMENT_URL
+          value: https://{{ .Release.Name }}/$(CP_KUBERNETES_CLUSTER_ID)
+###############################################################################################################################
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- if $config.featureConfig.BPF }}
+        - name: SYSDIG_BPF_PROBE
+          value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
+        {{- end }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: rp4c-alerts
+          mountPath: /rp4c/alerts
+        - name: rp4c-profiling
+          mountPath: /rp4c/profiling
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+          readOnly: true
+        - name: varlibdocker-vol
+          mountPath: /var/lib/docker
+          readOnly: true
+        - name: host-proc-vol
+          mountPath: /host/proc
+          readOnly: true
+        - name: host-dev-vol
+          mountPath: /host/dev
+        - name: host-etc-vol
+          mountPath: /host/etc
+          readOnly: true
+        {{- if $config.featureConfig.BPF }}
+        - name: sysdig-probe-vol
+          mountPath: /sysdig
+          readOnly: true
+        {{- end }}
+        - name: sys-vol
+          mountPath: /sys/kernel/debug/
+          readOnly: true
+      # fluentbit
+      - name: fluentbit
+        image: {{ template "agent.fluentbit.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }} 
+        env:
+{{ include "fluentd.env" $config | indent 8 }}
+        - name: CP_KUBERNETES_RUNTIME_ALERT_URI
+          value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
+        - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
+          value: {{ template "cloudguardURL_path" . }}runtimeevent/profiling
+        {{- if $config.agentConfig.fluentbit.resources }}
+        resources:
+{{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
+        {{- end }}
+        volumeMounts:
+        - name: rp4c-alerts
+          mountPath: /rp4c/alerts
+        - name: rp4c-profiling
+          mountPath: /rp4c/profiling
+        - name: config-volume-fluentbit
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+      volumes:
+      - name: config-volume-fluentbit
+        configMap:
+            name: {{ template "agent.resource.name" $config }}-alerts
+      - name: rp4c-alerts
+        emptyDir: {}
+      - name: rp4c-profiling
+        emptyDir: {}
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: boot-vol
+        hostPath:
+          path: /boot
+      - name: modules-vol
+        hostPath:
+          path: /lib/modules
+      - name: usr-vol
+        hostPath:
+          path: /usr
+      - name: varlibdocker-vol
+        hostPath:
+          path: /var/lib/docker
+      - name: host-dev-vol
+        hostPath:
+          path: /dev
+      - name: host-proc-vol
+        hostPath:
+          path: /proc
+      {{- if .Values.addons.runtimeProtection.BPF }}
+      - name: sysdig-probe-vol
+        hostPath:
+          path: /tmp
+      {{- end }}
+      - name: sys-vol
+        hostPath:
+          path: /sys/kernel/debug/
+      - name: host-etc-vol
+        hostPath:
+          path: /etc
+{{- end }}

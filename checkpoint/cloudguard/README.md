@@ -1,0 +1,204 @@
+#  Check Point Cloudguard agents
+
+## Introduction
+
+This chart deploys the agents required by [Check Point ClougGuard](https://secure.dome9.com/) to provide Inventory Management, Posture Management, Image Assurance, Visibility, Threat Intelligence, Runtime Protection, Admission Control, and Monitoring capabilities. 
+
+## Prerequisites
+
+General
+- Kubernetes 1.12+
+- Helm 3.0+
+- Check Point ClougGuard account credentials
+
+For the Admission Control feature
+- Kubernetes 1.16+
+
+For the Threat Intelligence feature
+- Kernel 4.1+
+
+For the Runtime Protection feature
+- Kernel 4.14
+- Kubernetes 1.16+
+
+
+## Installing the Chart
+
+To install the chart with the chosen release name (e.g. `my-release`), run:
+
+```bash
+$ helm repo add checkpoint-ea https://raw.githubusercontent.com/CheckPointSW/charts/ea/repository/
+$ helm install my-release checkpoint-ea/cloudguard --set credentials.user=[CloudGuard API Key] --set credentials.secret=[CloudGuard API Secret] --set clusterID=[Cluster ID] --set imageRegistry.user=[Registry Username] --set imageRegistry.password=[Registry Password] --namespace [Namespace] --create-namespace
+```
+
+These are the additional optional flags to enable add-ons:
+
+```bash
+$ 
+$ --set addons.imageScan.enabled=true 
+$ --set addons.flowLogs.enabled=true
+$ --set addons.admissionControl.enabled=true
+$ --set addons.runtimeProtection.enabled=true
+```
+
+This command deploys an invetory agent as well as optional add-on agents.
+
+
+> **Tip**: List all releases using `helm list --namespace [Namespace]`
+
+
+## Upgrading the chart
+
+To upgrade the deployment and/or to add/remove additional feature run:
+
+```bash
+$ helm repo update
+$ helm upgrade my-release checkpoint-ea/cloudguard --set credentials.user=[CloudGuard API Key] --set credentials.secret=[CloudGuard API Secret] --set clusterID=[Cluster ID] --set addons.imageScan.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --set imageRegistry.user=[Registry Username] --set imageRegistry.password=[Registry Password] --namespace [Namespace]
+```
+
+## Uninstalling the Chart
+
+To uninstall the `my-release` deployment:
+
+```bash
+$ helm uninstall my-release --namespace [Namespace]
+```
+
+This command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Configuration
+
+In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard](https://secure.dome9.com/) website.
+
+Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
+
+Specify each parameter by adding `--set key=value[,key=value]` to the `helm install`. For example,
+
+```bash
+$ helm install my-release checkpoint/cloudguard --set varname=value
+```
+
+Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+
+```bash
+$ helm install my-release checkpoint/cloudguard -f values.yaml
+```
+
+> **Tip**: You can use the default [values.yaml](values.yaml)
+
+The following tables list the configurable parameters of this chart and their default values.
+
+| Parameter                                                  | Description                                                     | Default                                          |
+| ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
+| `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
+| `datacenter`                                               | CloudGuard datacenter (usea1 (default), euwe1 etc.)             | `usea1`                                          |
+| `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
+| `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
+| `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
+| `imageRegistry.url`                                        | Image registry                                                  | `quay.io`                                        |
+| `imageRegistry.authEnabled`                                | Whether or not Image Registry access is password-protected      | `true`                                           |
+| `imageRegistry.user`                                       | Image registry username                                         | `CHANGEME`                                       |
+| `imageRegistry.password`                                   | Image registry password                                         | `CHANGEME`                                       |
+| `imagePullPolicy`                                          | Image pull policy                                               | `Always`                                         |
+| `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
+| `podAnnotations.seccomp`                                   | Computer Security facility profile.                             | `docker/default`                                 |
+| `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
+| `inventory.agent.image`                                    | Specify image for Inventory agent                               | `checkpoint/consec-inventory-agent`              |
+| `inventory.agent.tag`                                      | Inventory Specify image tag for the agent                       | `1.2.0`                                          |
+| `inventory.agent.serviceAccountName`                       | Specify custom Service Account for the Inventory agent          | ``                                               |
+| `inventory.agent.replicaCount`                             | Number of Inventory agent instances to be deployed              | `1`                                              |
+| `inventory.agent.env`                                      | Additional environmental variables for Inventory agent          | `{}`                                             |
+| `inventory.agent.resources`                                | Resources restriction (e.g. CPU, memory) for Inventory agent    | `{}`                                             |
+| `inventory.agent.nodeSelector`                             | Node labels for pod assignment for Inventory agent              | `{}`                                             |
+| `inventory.agent.tolerations`                              | List of node taints to tolerate for Inventory agent             | `[]`                                             |
+| `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
+| `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
+| `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
+| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`0.2.2`                                           |
+| `addons.imageScan.daemon.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.imageScan.daemon.env`                              | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.imageScan.daemon.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.imageScan.daemon.nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+|                                                            |                                                                 | `key: node-role.kubernetes.io/control-plane`     |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+| `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
+| `addons.imageScan.engine.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-engine`             |
+| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`0.2.2`                                           |
+| `addons.imageScan.engine.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.imageScan.engine.env`                              | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.imageScan.engine.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.imageScan.engine.nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.imageScan.engine.tolerations`                      | List of node taints to tolerate                                 | `[]`                                             |
+| `addons.imageScan.engine.affinity`                         | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.enabled`                                  | Specifies whether the Flow Logs addon should be installed       | `false`                                          |
+| `addons.flowLogs.daemon.image`                             | Specify image for the agent                                     | `checkpoint/consec-flowlogs-daemon`              |
+| `addons.flowLogs.daemon.tag`                               | Specify image tag for the agent                                 |`0.1.1`                                           |
+| `addons.flowLogs.daemon.serviceAccountName`                | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.flowLogs.daemon.logLevel`                          | What should be logged. (info, debug)                            | `info`                                           |
+| `addons.flowLogs.daemon.env`                               | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.flowLogs.daemon.resources`                         | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.flowLogs.daemon.nodeSelector`                      | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.flowLogs.daemon.tolerations`                       | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+|                                                            |                                                                 | `key: node-role.kubernetes.io/control-plane`     |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+| `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | `{}`                                             |
+| `addons.admissionControl.enabled`                          | Specify whether the Admission Control addon should be installed | `false`                                          |
+| `addons.admissionControl.policy.image`                     | Specify image for the agent                                     | `checkpoint/consec-admission-policy`             |
+| `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.admissionControl.policy.serviceAccountName`        | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.admissionControl.policy.env`                       | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.admissionControl.policy.resources`                 | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.admissionControl.policy.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.admissionControl.policy.tolerations`               | List of node taints to tolerate                                 | `[]`                                             |
+| `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | `{}`                                             |
+| `addons.admissionControl.policy.fluentbit.image`           | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
+| `addons.admissionControl.policy.fluentbit.tag`             | Specify image tag for the agent                                 |`1.5.6-cp`                                        |
+| `addons.admissionControl.policy.fluentbit.resources`       | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
+| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.admissionControl.enforcer.serviceAccountName`      | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.admissionControl.enforcer.replicaCount`            | Number of Inventory agent instances to be deployed              | `2`                                              |
+| `addons.admissionControl.enforcer.env`                     | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.admissionControl.enforcer.resources`               | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.admissionControl.enforcer.gsl.image`               | Specify image for the agent                                     | `checkpoint/consec-admission-gsl`                |
+| `addons.admissionControl.enforcer.gsl.tag`                 | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.admissionControl.enforcer.gsl.resources`           | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.admissionControl.enforcer.fluentbit.image`         | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
+| `addons.admissionControl.enforcer.fluentbit.tag`           | Specify image tag for the agent                                 |`1.5.6-cp`                                        |
+| `addons.admissionControl.enforcer.fluentbit.resources`     | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.admissionControl.enforcer.nodeSelector`            | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.admissionControl.enforcer.tolerations`             | List of node taints to tolerate                                 | `[]`                                             |
+| `addons.admissionControl.enforcer.affinity`                | Affinity setting                                                | `{}`                                             |
+| `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be        | `false`                                          |
+|                                                            | installed                                                       |                                                  |
+| `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
+|                                                            |                                                                 | `requests.memory: 250Mi`                         |
+|                                                            |                                                                 | `limits.cpu: 500m`                               |
+|                                                            |                                                                 | `limits.memory: 1Gi`                             |
+| `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
+| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.27.1`                                          |
+| `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
+| `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.5.6-cp`                                        |
+| `addons.runtimeProtection.daemon.fluentbit.resources`      | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.runtimeProtection.daemon.nodeSelector`             | Node labels for pod assignment                                  | `beta.kubernetes.io/os: linux `                  |
+| `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `key: node-role.kubernetes.io/master`            |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+|                                                            |                                                                 | `key: node-role.kubernetes.io/control-plane`     |
+|                                                            |                                                                 | `effect: NoSchedule`                             |
+| `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | `{}`                                             |
+| `addons.runtimeProtection.policy.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-policy`               |
+| `addons.runtimeProtection.policy.tag`                      | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.runtimeProtection.policy.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.runtimeProtection.policy.env`                      | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.runtimeProtection.policy.resources`                | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
+| `addons.runtimeProtection.policy.nodeSelector`             | Node labels for pod assignment                                  | `{}`                                             |
+| `addons.runtimeProtection.policy.tolerations`              | List of node taints to tolerate                                 | `[]`                                             |
+| `addons.runtimeProtection.policy.affinity`                 | Affinity setting                                                | `{}`                                             |

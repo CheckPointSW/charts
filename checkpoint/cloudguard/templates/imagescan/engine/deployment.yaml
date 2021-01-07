@@ -1,0 +1,73 @@
+{{- $config := fromYaml (include "imagescan.engine.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ $config.agentConfig.tag }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "common.labels" $config | indent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+{{ include "common.pod.annotations" $config | indent 8 }}
+        # adding it so workload will be restarted to be updated with certificates that were re-generated
+        timestamp: {{ now | quote }}
+      labels:
+{{ include "common.labels" $config | indent 8 }}
+    spec:
+{{ include "common.pod.properties" $config | indent 6 }}
+      securityContext:
+        runAsUser: 17112
+      containers:
+      # Main container
+      - name: {{ $config.agentName }}
+        image: {{ template "agent.main.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if $config.agentConfig.resources }}
+        resources:
+{{ toYaml $config.agentConfig.resources | indent 10 }}
+        {{- end }}
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/secret-volume
+        - name: servercert-volume
+          mountPath: /etc/servercert
+        - name: clientcert-volume
+          mountPath: /etc/clientcert
+        - name: clientkey-volume
+          mountPath: /etc/clientkey
+        command: ["/bin/sh"]
+        args: ["-c", "/central_agent"]
+        env:
+{{ include "common.env" $config | indent 8 }}
+        - name: NODE_AGENT_SELECTOR
+          value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
+        - name: RELEASE_NAME
+          value: {{ .Release.Name }}
+        - name: CLOUDGUARD_REGION
+          value: {{ include "dome9.subdomain" $config | default "us" }}
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: {{ .Release.Name }}-cp-cloudguard-creds
+      - name: servercert-volume
+        configMap:
+          name: {{ template "imagescan.daemon.resource.name" . }}
+      - name: clientcert-volume
+        configMap:
+          name: {{ template "agent.resource.name" $config }}
+      - name: clientkey-volume
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}
+{{- end -}}

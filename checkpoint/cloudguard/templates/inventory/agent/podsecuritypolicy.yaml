@@ -1,0 +1,43 @@
+{{- $config := fromYaml (include "inventory.agent.config" .) -}}
+{{- if .Values.rbac.pspEnabled -}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
+spec:
+  privileged: false
+  # Required to prevent escalations to root.
+  allowPrivilegeEscalation: false
+  allowedHostPaths: []
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - 'secret'  
+  - 'configMap'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    # Require the container to run without root privileges.
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+    # Forbid adding the root group.
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+{{- end -}}
