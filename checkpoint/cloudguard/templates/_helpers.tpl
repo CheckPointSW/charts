@@ -159,6 +159,33 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
+  
+{{- /* fluentbit configmap to send metric */ -}}
+{{- define "fluentbit-metric.conf" -}}	  
+[INPUT]
+    Name            exec
+    Command         find {{ .metricPath }} -type f | xargs cat 
+    Tag             metrics
+    Buf_Size        8mb
+    Interval_Sec    300
+    Interval_NSec   0
+[OUTPUT]
+    Name            http
+    Match           metrics
+    Format          json_lines
+    Host            ${CP_KUBERNETES_DOME9_URL}
+    Uri             ${CP_KUBERNETES_METRIC_URI}
+    Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
+    Header          Agent-Version   {{ .agentVersion }}
+    Header          Node-Name   ${NODE_NAME}
+    Compress        gzip
+    http_User       ${CP_KUBERNETES_USER}
+    http_Passwd     ${CP_KUBERNETES_PASS}
+    Port            443        
+    tls             On
+    tls.verify      On
+{{- end -}}
+
 {{/*
 Generate self-signed certificate with 'featureName-agentName.Namespace' structure
 e.g. imagescan-daemon.checkpoint
