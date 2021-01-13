@@ -108,6 +108,8 @@ spec:
           mountPath: /rp4c/alerts
         - name: rp4c-profiling
           mountPath: /rp4c/profiling
+        - name: rp4c-metric
+          mountPath: /rp4c/metric          
         - name: docker-sock
           mountPath: /var/run/docker.sock
           readOnly: true
@@ -140,6 +142,8 @@ spec:
           value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
         - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
           value: {{ template "cloudguardURL_path" . }}runtimeevent/profiling
+        - name: CP_KUBERNETES_METRIC_URI
+          value: {{ template "cloudguardURL_path" . }}agenttelemetry
         {{- if $config.agentConfig.fluentbit.resources }}
         resources:
 {{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
@@ -149,17 +153,21 @@ spec:
           mountPath: /rp4c/alerts
         - name: rp4c-profiling
           mountPath: /rp4c/profiling
+        - name: rp4c-metric
+          mountPath: /rp4c/metric          
         - name: config-volume-fluentbit
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
       volumes:
       - name: config-volume-fluentbit
         configMap:
-            name: {{ template "agent.resource.name" $config }}-alerts
+            name: {{ template "agent.resource.name" $config }}-fluentbit
       - name: rp4c-alerts
         emptyDir: {}
       - name: rp4c-profiling
         emptyDir: {}
+      - name: rp4c-metric
+        emptyDir: {}        
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock

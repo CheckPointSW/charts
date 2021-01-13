@@ -13,27 +13,6 @@ data:
         Flush       5
         Daemon      Off
         Log_Level   info
-    [INPUT]
-        Name            exec
-        Command         find /metric -type f | xargs cat 
-        Tag             metrics
-        Buf_Size        8mb
-        Interval_Sec    60
-        Interval_NSec   0
-    [OUTPUT]
-        Name            http
-        Match           metrics
-        #Format         json_stream
-        Format          json_lines
-        Host            ${CP_KUBERNETES_DOME9_URL}
-        Uri             ${CP_KUBERNETES_ADMISSION_CONTROL_METRIC_URI}
-        Header          Kubernetes-Account ${CP_KUBERNETES_CLUSTER_ID}
-        Header          Agent-Version    {{ $config.agentConfig.tag }}
-        Header          Node-Name        ${NODE_NAME}
-        Compress        gzip
-        http_User       ${CP_KUBERNETES_USER}
-        http_Passwd     ${CP_KUBERNETES_PASS}
-        Port            443        
-        tls             On
-        tls.verify      On
+{{ $params := dict "metricPath" "/metric" "agentVersion" $config.agentConfig.tag }}
+{{ include "fluentbit-metric.conf" $params | indent 4 }}
 {{- end -}}
