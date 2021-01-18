@@ -167,7 +167,7 @@ imagePullSecrets:
     Command         find {{ .metricPath }} -type f | xargs cat 
     Tag             metrics
     Buf_Size        8mb
-    Interval_Sec    300
+    Interval_Sec    30
     Interval_NSec   0
 [OUTPUT]
     Name            http
