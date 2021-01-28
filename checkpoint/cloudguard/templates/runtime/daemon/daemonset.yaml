@@ -91,7 +91,7 @@ spec:
               name: {{ .Release.Name }}-cp-cloudguard-configmap
               key: clusterID
         - name: SBA_MANAGEMENT_URL
-          value: https://{{ .Release.Name }}/$(CP_KUBERNETES_CLUSTER_ID)
+          value: https://{{ .Release.Name }}-ClusterID-$(CP_KUBERNETES_CLUSTER_ID)
 ###############################################################################################################################
         - name: NAMESPACE_NAME
           valueFrom:
