@@ -7,6 +7,9 @@ clusterID:
 ## CloudGuard datacenter: usea1 [default], euwe1, apso1 etc.
 datacenter: usea1
 
+## CloudGuard telemetryVersion: 0.0.1, 0.0.2 etc.
+telemetryVersion: 0.0.2
+
 ## Check Point CloudGuard Credentials
 ## Example
 ## API Secret: "abcdefghijklmnopqrstvuwxyz"
@@ -96,13 +99,13 @@ addons:
 
       ## Configure resource requests and limits
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-      resources: {}
-      #  limits:
-      #    cpu: 100m
-      #    memory: 128Mi
-      #  requests:
-      #    cpu: 100m
-      #    memory: 128Mi  
+      resources:
+        limits:
+          cpu: 100m
+          memory: 50Mi
+        requests:
+          cpu: 50m
+          memory: 10Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -124,13 +127,13 @@ addons:
 
       ## Configure resource requests and limits
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-      resources: {}
-      #  limits:
-      #    cpu: 100m
-      #    memory: 128Mi
-      #  requests:
-      #    cpu: 100m
-      #    memory: 128Mi
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 2200Mi
+        requests:
+          cpu: 200m
+          memory: 500Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -158,13 +161,13 @@ addons:
 
       ## Configure resource requests and limits
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-      resources: {}
-      #  limits:
-      #    cpu: 100m
-      #    memory: 128Mi
-      #  requests:
-      #    cpu: 100m
-      #    memory: 128Mi  
+      resources:
+        limits:
+          cpu: 100m
+          memory: 100Mi
+        requests:
+          cpu: 30m
+          memory: 30Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -282,14 +285,13 @@ addons:
 ## Runtime Protection Add-on 
   runtimeProtection:
     enabled: false
-    EKS: false
     BPF: true
 
     daemon:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.282
+      tag: 0.0.295
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -311,7 +313,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.27.1
+        tag: 0.27.1-cp
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

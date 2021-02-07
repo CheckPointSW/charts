@@ -40,10 +40,6 @@ spec:
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
-        {{- if $config.featureConfig.EKS }}
-        - name: SYSDIG_BPF_USE_LOCAL_KERNEL_SOURCES
-          value: "true"
-        {{- end }}
         {{- end }}
         volumeMounts:
         - name: boot-vol
@@ -137,7 +133,7 @@ spec:
         image: {{ template "agent.fluentbit.image" $config }}
         imagePullPolicy: {{ .Values.imagePullPolicy }} 
         env:
-{{ include "fluentd.env" $config | indent 8 }}
+{{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_RUNTIME_ALERT_URI
           value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
         - name: CP_KUBERNETES_RUNTIME_PROFILING_URI

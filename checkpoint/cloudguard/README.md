@@ -149,7 +149,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.admissionControl.policy.tolerations`               | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | `{}`                                             |
 | `addons.admissionControl.policy.fluentbit.image`           | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
-| `addons.admissionControl.policy.fluentbit.tag`             | Specify image tag for the agent                                 |`1.5.6-cp`                                        |
+| `addons.admissionControl.policy.fluentbit.tag`             | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
 | `addons.admissionControl.policy.fluentbit.resources`       | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
 | `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`0.1.0`                                           |
@@ -161,7 +161,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.admissionControl.enforcer.gsl.tag`                 | Specify image tag for the agent                                 |`0.1.0`                                           |
 | `addons.admissionControl.enforcer.gsl.resources`           | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.admissionControl.enforcer.fluentbit.image`         | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
-| `addons.admissionControl.enforcer.fluentbit.tag`           | Specify image tag for the agent                                 |`1.5.6-cp`                                        |
+| `addons.admissionControl.enforcer.fluentbit.tag`           | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
 | `addons.admissionControl.enforcer.fluentbit.resources`     | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.admissionControl.enforcer.nodeSelector`            | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.admissionControl.enforcer.tolerations`             | List of node taints to tolerate                                 | `[]`                                             |
@@ -169,7 +169,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be        | `false`                                          |
 |                                                            | installed                                                       |                                                  |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.282`                                           |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.295`                                           |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
@@ -177,10 +177,10 @@ The following tables list the configurable parameters of this chart and their de
 |                                                            |                                                                 | `limits.cpu: 2000m`                               |
 |                                                            |                                                                 | `limits.memory: 1Gi`                             |
 | `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
-| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.27.1`                                          |
+| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.27.1-cp`                                          |
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
-| `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.5.6-cp`                                        |
+| `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
 | `addons.runtimeProtection.daemon.fluentbit.resources`      | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.nodeSelector`             | Node labels for pod assignment                                  | `beta.kubernetes.io/os: linux `                  |
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
