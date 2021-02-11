@@ -35,7 +35,7 @@ spec:
 {{ toYaml $config.agentConfig.probe.resources | indent 10}}
         {{- end }}
         env:
-        {{- if .Values.addons.runtimeProtection.BPF }}
+        {{- if $config.featureConfig.BPF }}
         - name: HOME
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
@@ -57,11 +57,12 @@ spec:
         - name: host-proc-vol
           mountPath: /host/proc
           readOnly: true
-        - name: host-dev-vol
-          mountPath: /host/dev
-        {{- if .Values.addons.runtimeProtection.BPF }}
+        {{- if $config.featureConfig.BPF }}
         - name: sysdig-probe-vol
           mountPath: /sysdig
+        {{- else }}
+        - name: host-dev-vol
+          mountPath: /host/dev
         {{- end }}
       containers:
       # Main container
@@ -115,15 +116,13 @@ spec:
         - name: host-proc-vol
           mountPath: /host/proc
           readOnly: true
-        - name: host-dev-vol
-          mountPath: /host/dev
-        - name: host-etc-vol
-          mountPath: /host/etc
-          readOnly: true
         {{- if $config.featureConfig.BPF }}
         - name: sysdig-probe-vol
           mountPath: /sysdig
           readOnly: true
+        {{- else }}
+        - name: host-dev-vol
+          mountPath: /host/dev
         {{- end }}
         - name: sys-vol
           mountPath: /sys/kernel/debug/
@@ -179,16 +178,17 @@ spec:
       - name: varlibdocker-vol
         hostPath:
           path: /var/lib/docker
-      - name: host-dev-vol
-        hostPath:
-          path: /dev
       - name: host-proc-vol
         hostPath:
           path: /proc
-      {{- if .Values.addons.runtimeProtection.BPF }}
+      {{- if $config.featureConfig.BPF }}
       - name: sysdig-probe-vol
         hostPath:
           path: /tmp
+      {{- else }}
+      - name: host-dev-vol
+        hostPath:
+          path: /dev
       {{- end }}
       - name: sys-vol
         hostPath:
