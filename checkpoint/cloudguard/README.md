@@ -169,7 +169,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be        | `false`                                          |
 |                                                            | installed                                                       |                                                  |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.295`                                           |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.301`                                           |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
@@ -186,7 +186,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | `{}`                                             |
 | `addons.runtimeProtection.policy.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-policy`               |
-| `addons.runtimeProtection.policy.tag`                      | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.runtimeProtection.policy.tag`                      | Specify image tag for the agent                                 |`0.2.0`                                           |
 | `addons.runtimeProtection.policy.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.policy.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.policy.resources`                | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
