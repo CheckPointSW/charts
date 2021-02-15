@@ -35,15 +35,11 @@ spec:
 {{ toYaml $config.agentConfig.probe.resources | indent 10}}
         {{- end }}
         env:
-        {{- if .Values.addons.runtimeProtection.BPF }}
+        {{- if $config.featureConfig.BPF }}
         - name: HOME
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
-        {{- if $config.featureConfig.EKS }}
-        - name: SYSDIG_BPF_USE_LOCAL_KERNEL_SOURCES
-          value: "true"
-        {{- end }}
         {{- end }}
         volumeMounts:
         - name: boot-vol
@@ -61,11 +57,12 @@ spec:
         - name: host-proc-vol
           mountPath: /host/proc
           readOnly: true
-        - name: host-dev-vol
-          mountPath: /host/dev
-        {{- if .Values.addons.runtimeProtection.BPF }}
+        {{- if $config.featureConfig.BPF }}
         - name: sysdig-probe-vol
           mountPath: /sysdig
+        {{- else }}
+        - name: host-dev-vol
+          mountPath: /host/dev
         {{- end }}
       containers:
       # Main container
@@ -91,7 +88,7 @@ spec:
               name: {{ .Release.Name }}-cp-cloudguard-configmap
               key: clusterID
         - name: SBA_MANAGEMENT_URL
-          value: https://{{ .Release.Name }}/$(CP_KUBERNETES_CLUSTER_ID)
+          value: https://{{ .Release.Name }}-ClusterID-$(CP_KUBERNETES_CLUSTER_ID)
 ###############################################################################################################################
         - name: NAMESPACE_NAME
           valueFrom:
@@ -108,6 +105,8 @@ spec:
           mountPath: /rp4c/alerts
         - name: rp4c-profiling
           mountPath: /rp4c/profiling
+        - name: rp4c-metric
+          mountPath: /rp4c/metric          
         - name: docker-sock
           mountPath: /var/run/docker.sock
           readOnly: true
@@ -117,15 +116,13 @@ spec:
         - name: host-proc-vol
           mountPath: /host/proc
           readOnly: true
-        - name: host-dev-vol
-          mountPath: /host/dev
-        - name: host-etc-vol
-          mountPath: /host/etc
-          readOnly: true
         {{- if $config.featureConfig.BPF }}
         - name: sysdig-probe-vol
           mountPath: /sysdig
           readOnly: true
+        {{- else }}
+        - name: host-dev-vol
+          mountPath: /host/dev
         {{- end }}
         - name: sys-vol
           mountPath: /sys/kernel/debug/
@@ -135,11 +132,13 @@ spec:
         image: {{ template "agent.fluentbit.image" $config }}
         imagePullPolicy: {{ .Values.imagePullPolicy }} 
         env:
-{{ include "fluentd.env" $config | indent 8 }}
+{{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_RUNTIME_ALERT_URI
           value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
         - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
           value: {{ template "cloudguardURL_path" . }}runtimeevent/profiling
+        - name: CP_KUBERNETES_METRIC_URI
+          value: {{ template "cloudguardURL_path" . }}agenttelemetry
         {{- if $config.agentConfig.fluentbit.resources }}
         resources:
 {{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
@@ -149,17 +148,21 @@ spec:
           mountPath: /rp4c/alerts
         - name: rp4c-profiling
           mountPath: /rp4c/profiling
+        - name: rp4c-metric
+          mountPath: /rp4c/metric          
         - name: config-volume-fluentbit
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
       volumes:
       - name: config-volume-fluentbit
         configMap:
-            name: {{ template "agent.resource.name" $config }}-alerts
+            name: {{ template "agent.resource.name" $config }}-fluentbit
       - name: rp4c-alerts
         emptyDir: {}
       - name: rp4c-profiling
         emptyDir: {}
+      - name: rp4c-metric
+        emptyDir: {}        
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock
@@ -175,16 +178,17 @@ spec:
       - name: varlibdocker-vol
         hostPath:
           path: /var/lib/docker
-      - name: host-dev-vol
-        hostPath:
-          path: /dev
       - name: host-proc-vol
         hostPath:
           path: /proc
-      {{- if .Values.addons.runtimeProtection.BPF }}
+      {{- if $config.featureConfig.BPF }}
       - name: sysdig-probe-vol
         hostPath:
           path: /tmp
+      {{- else }}
+      - name: host-dev-vol
+        hostPath:
+          path: /dev
       {{- end }}
       - name: sys-vol
         hostPath:
