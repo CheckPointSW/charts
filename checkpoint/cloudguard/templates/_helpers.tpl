@@ -127,8 +127,8 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
-{{- /* Environment variables needed for fluentd-based side-cars */ -}}
-{{- define "fluentd.env" -}}
+{{- /* Environment variables needed for fluentbit-based side-cars */ -}}
+{{- define "fluentbit.env" -}}
 - name: CP_KUBERNETES_CLUSTER_ID
   valueFrom:
     configMapKeyRef:
@@ -150,6 +150,8 @@ imagePullSecrets:
   valueFrom:
     fieldRef:
       fieldPath: spec.nodeName
+- name: TELEMETRY_VERSION
+  value: {{ .Values.telemetryVersion }}
 
 {{- if .Values.proxy }}
 - name: HTTP_PROXY
@@ -157,6 +159,34 @@ imagePullSecrets:
 - name: NO_PROXY
   value: "kubernetes.default.svc"
 {{- end -}}
+{{- end -}}
+
+ 
+{{- /* fluentbit configmap to send metric */ -}}
+{{- define "fluentbit-metric.conf" -}}	  
+[INPUT]
+    Name            exec
+    Command         find {{ .metricPath }} -type f | xargs cat 
+    Tag             metrics
+    Buf_Size        8mb
+    Interval_Sec    30
+    Interval_NSec   0
+[OUTPUT]
+    Name            http
+    Match           metrics
+    Format          json_lines
+    Host            ${CP_KUBERNETES_DOME9_URL}
+    Uri             ${CP_KUBERNETES_METRIC_URI}
+    Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
+    Header          Agent-Version   {{ .agentVersion }}
+    Header          Node-Name   ${NODE_NAME}
+    Header          Telemetry-Version  ${TELEMETRY_VERSION}
+    Compress        gzip
+    http_User       ${CP_KUBERNETES_USER}
+    http_Passwd     ${CP_KUBERNETES_PASS}
+    Port            443        
+    tls             On
+    tls.verify      On
 {{- end -}}
 
 {{/*
