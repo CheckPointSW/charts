@@ -38,8 +38,8 @@ credentials:
 ## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
 clusterID: 
 
-## CloudGuard region: US [default], EU, AP
-region: US
+## CloudGuard datacenter: usea1 [default], euwe1, apso1 etc.
+datacenter: usea1
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
