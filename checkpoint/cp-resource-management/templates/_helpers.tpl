@@ -27,16 +27,45 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
-{{- define "dome9.url" -}}
-{{- $region := default "us1" (lower .Values.region) -}}
-{{- if has $region (list "us1" "us") -}}
-{{- printf "https://api-cpx.dome9.com" -}}
-{{- else if has $region (list "eu1" "eu") -}}
-{{- printf "https://api-cpx.eu1.dome9.com" -}}
-{{- else if has $region (list "ap1" "ap") -}}
-{{- printf "https://api-cpx.ap1.dome9.com" -}}
+{{/*
+  Return Dome9 subdomain in format xxN e.g. "eu1", "ap3" etc. For us* only return an empty string
+*/}}
+{{- define "dome9.subdomain" -}}
+{{- $datacenter := lower $.Values.datacenter -}}
+{{- if has $datacenter (list "us" "us1" "usea1") -}}
+{{- printf "" -}}
+{{- else if has $datacenter (list "eu" "eu1" "euwe1") -}}
+{{- printf "eu1" -}}
+{{- else if has $datacenter (list "ap1" "apse1") -}}
+{{- printf "ap1" -}}
+{{- else if has $datacenter (list "ap2" "apse2") -}}
+{{- printf "ap2" -}}
+{{- else if has $datacenter (list "ap" "ap3" "apso1") -}}
+{{- printf "ap3" -}}
+{{- else if has $datacenter (list "ap4" "apne1") -}}
+{{- printf "ap4" -}}
+{{- else if has $datacenter (list "ap5" "apea1") -}}
+{{- printf "ap5" -}}
+{{- else if has $datacenter (list "ca" "ca1" "cace1") -}}
+{{- printf "ca1" -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid region: %s (should be one of: 'US' [default], 'EU', 'AP')"  .Values.region -}}
+{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1', 'apne1', 'apea1', 'cace1')"  $.Values.datacenter -}}
 {{- fail $err -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+  Return backend URL
+*/}}
+{{- define "dome9.url" -}}
+{{- if $.Values.cloudguardURL -}}
+{{- printf "%s" $.Values.cloudguardURL -}}
+{{- else -}}
+{{- $subdomain := (include "dome9.subdomain" .) -}}
+{{- if eq $subdomain "" -}}
+{{- printf "https://api-cpx.dome9.com" -}}
+{{- else -}}
+{{- printf "https://api-cpx.%s.dome9.com" $subdomain -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
