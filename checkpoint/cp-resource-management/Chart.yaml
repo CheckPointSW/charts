@@ -6,7 +6,7 @@ name: cp-resource-management
 keywords:
 - checkpoint
 - dome9
-- cloudgurad
+- cloudguard
 - workload security
 - inventory
 - compliance
