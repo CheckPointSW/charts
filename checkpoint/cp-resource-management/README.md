@@ -2,14 +2,14 @@
 
 ## Introduction
 
-This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ServiceAccount, and Ingress) and uploads their meta-data to [Check Point ClougGuard](https://secure.dome9.com/).
-Check Point ClougGuard provides Posture Management, Visibility, Monitoring and Threat Hunting capabilities.
+This chart creates a single resource management Pod that scans the cluster's resources (Nodes, Images, Pods, Namespaces, Services, PSP, Network Policy, Role, ClusterRole, RoleBinding, ClusterRoleBinding, ServiceAccount, and Ingress) and uploads their meta-data to [Check Point CloudGuard](https://secure.dome9.com/).
+Check Point CloudGuard provides Posture Management, Visibility, Monitoring and Threat Hunting capabilities.
 
 ## Prerequisites
 
 - Kubernetes 1.12+
 - Helm 3.0+
-- A Check Point ClougGuard account and API key
+- A Check Point CloudGuard account and API key
 
 ## Installing the Chart
 
@@ -45,7 +45,7 @@ This command removes all the Kubernetes components associated with the chart and
 
 ## Configuration
 
-In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard](https://secure.dome9.com/) website.
+In order to get the [Check Point CloudGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point CloudGuard](https://secure.dome9.com/) website.
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
 
