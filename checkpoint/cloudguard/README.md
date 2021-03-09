@@ -2,14 +2,14 @@
 
 ## Introduction
 
-This chart deploys the agents required by [Check Point ClougGuard](https://secure.dome9.com/) to provide Inventory Management, Posture Management, Image Assurance, Visibility, Threat Intelligence, Runtime Protection, Admission Control, and Monitoring capabilities. 
+This chart deploys the agents required by [Check Point CloudGuard](https://secure.dome9.com/) to provide Inventory Management, Posture Management, Image Assurance, Visibility, Threat Intelligence, Runtime Protection, Admission Control, and Monitoring capabilities. 
 
 ## Prerequisites
 
 General
 - Kubernetes 1.12+
 - Helm 3.0+
-- Check Point ClougGuard account credentials
+- Check Point CloudGuard account credentials
 
 For the Admission Control feature
 - Kubernetes 1.16+
@@ -68,7 +68,7 @@ This command removes all the Kubernetes components associated with the chart and
 
 ## Configuration
 
-In order to get the [Check Point ClougGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point ClougGuard](https://secure.dome9.com/) website.
+In order to get the [Check Point CloudGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point CloudGuard](https://secure.dome9.com/) website.
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
 
