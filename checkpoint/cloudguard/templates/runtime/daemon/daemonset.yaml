@@ -65,6 +65,38 @@ spec:
           mountPath: /host/dev
         {{- end }}
       containers:
+      # fluentbit
+      # the fluentbit container needs to be before the daemon container 
+      # so the fluentbit will be up before the daemon to send message that daemon will send once it is up (like telemetry)
+      - name: fluentbit
+        image: {{ template "agent.fluentbit.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }} 
+        env:
+{{ include "fluentbit.env" $config | indent 8 }}
+        - name: CP_KUBERNETES_RUNTIME_ALERT_URI
+          value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
+        - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
+          value: {{ template "cloudguardURL_path" . }}runtimeevent/profiling
+        - name: CP_KUBERNETES_METRIC_URI
+          value: {{ template "cloudguardURL_path" . }}agenttelemetry
+        - name: CP_KUBERNETES_RUNTIME_TELEMETRY_URI
+          value: {{ template "cloudguardURL_path" . }}runtimetelemetry
+        {{- if $config.agentConfig.fluentbit.resources }}
+        resources:
+{{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
+        {{- end }}
+        volumeMounts:
+        - name: rp4c-alerts
+          mountPath: /rp4c/alerts
+        - name: rp4c-profiling
+          mountPath: /rp4c/profiling
+        - name: rp4c-metric
+          mountPath: /rp4c/metric
+        - name: rp4c-telemetry
+          mountPath: /rp4c/telemetry
+        - name: config-volume-fluentbit
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -81,19 +113,12 @@ spec:
 {{ include "user.defined.env" $config | indent 8 }}
         - name: LANG
           value: C.UTF-8
-## TODO : Temporary solution for internal deployment - should omit #############################################################
-        - name: CP_KUBERNETES_CLUSTER_ID
-          valueFrom:
-            configMapKeyRef:
-              name: {{ .Release.Name }}-cp-cloudguard-configmap
-              key: clusterID
-        - name: SBA_MANAGEMENT_URL
-          value: https://{{ .Release.Name }}-ClusterID-$(CP_KUBERNETES_CLUSTER_ID)
-###############################################################################################################################
         - name: NAMESPACE_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: SBA_TELEMETRY_SAVE_TO_FILE
+          value: "1"             
         {{- if $config.featureConfig.BPF }}
         - name: SYSDIG_BPF_PROBE
           value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
@@ -106,7 +131,9 @@ spec:
         - name: rp4c-profiling
           mountPath: /rp4c/profiling
         - name: rp4c-metric
-          mountPath: /rp4c/metric          
+          mountPath: /rp4c/metric
+        - name: rp4c-telemetry
+          mountPath: /rp4c/telemetry
         - name: docker-sock
           mountPath: /var/run/docker.sock
           readOnly: true
@@ -127,32 +154,6 @@ spec:
         - name: sys-vol
           mountPath: /sys/kernel/debug/
           readOnly: true
-      # fluentbit
-      - name: fluentbit
-        image: {{ template "agent.fluentbit.image" $config }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }} 
-        env:
-{{ include "fluentbit.env" $config | indent 8 }}
-        - name: CP_KUBERNETES_RUNTIME_ALERT_URI
-          value: {{ template "cloudguardURL_path" . }}runtimeevent/alert
-        - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
-          value: {{ template "cloudguardURL_path" . }}runtimeevent/profiling
-        - name: CP_KUBERNETES_METRIC_URI
-          value: {{ template "cloudguardURL_path" . }}agenttelemetry
-        {{- if $config.agentConfig.fluentbit.resources }}
-        resources:
-{{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
-        {{- end }}
-        volumeMounts:
-        - name: rp4c-alerts
-          mountPath: /rp4c/alerts
-        - name: rp4c-profiling
-          mountPath: /rp4c/profiling
-        - name: rp4c-metric
-          mountPath: /rp4c/metric          
-        - name: config-volume-fluentbit
-          mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf
       volumes:
       - name: config-volume-fluentbit
         configMap:
@@ -162,6 +163,8 @@ spec:
       - name: rp4c-profiling
         emptyDir: {}
       - name: rp4c-metric
+        emptyDir: {}   
+      - name: rp4c-telemetry
         emptyDir: {}        
       - name: docker-sock
         hostPath:
