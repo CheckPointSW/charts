@@ -161,6 +161,20 @@ imagePullSecrets:
 {{- end -}}
 {{- end -}}
 
+{{- /* fluentbit http output parametes */ -}}
+{{- define "fluentbit-http-output-param.conf" }}
+Name            http
+Format          json_lines
+Host            ${CP_KUBERNETES_DOME9_URL}
+Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
+Header          Node-Name   ${NODE_NAME}
+Compress        gzip
+http_User       ${CP_KUBERNETES_USER}
+http_Passwd     ${CP_KUBERNETES_PASS}
+Port            443        
+tls             On
+tls.verify      On
+{{- end -}}
  
 {{- /* fluentbit configmap to send metric */ -}}
 {{- define "fluentbit-metric.conf" -}}	  
@@ -172,21 +186,11 @@ imagePullSecrets:
     Interval_Sec    30
     Interval_NSec   0
 [OUTPUT]
-    Name            http
     Match           metrics
-    Format          json_lines
-    Host            ${CP_KUBERNETES_DOME9_URL}
     Uri             ${CP_KUBERNETES_METRIC_URI}
-    Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
     Header          Agent-Version   {{ .agentVersion }}
-    Header          Node-Name   ${NODE_NAME}
     Header          Telemetry-Version  ${TELEMETRY_VERSION}
-    Compress        gzip
-    http_User       ${CP_KUBERNETES_USER}
-    http_Passwd     ${CP_KUBERNETES_PASS}
-    Port            443        
-    tls             On
-    tls.verify      On
+{{ include "fluentbit-http-output-param.conf" . | indent 4 }}
 {{- end -}}
 
 {{/*

@@ -24,37 +24,25 @@ data:
         Path             /rp4c/profiling/profiling.log
         Tag              rp-profiling
         
+    [INPUT]
+        Name             tail
+        Path             /rp4c/telemetry/telemetry.log
+        Tag              rp-telemetry
+        
     [OUTPUT]
-        Name             http
         Match            rp-alert
-        Format           json_lines
-        Host             ${CP_KUBERNETES_DOME9_URL}
         Uri              ${CP_KUBERNETES_RUNTIME_ALERT_URI}
-        Port             443  
-        Compress         gzip
-        tls              On
-        tls.verify       On
-        tls.debug        0
-        http_User        ${CP_KUBERNETES_USER}
-        http_Passwd      ${CP_KUBERNETES_PASS}
-        Header           Kubernetes-Account     ${CP_KUBERNETES_CLUSTER_ID}
-        Header           Node-Name              ${HOSTNAME}
+{{ include "fluentbit-http-output-param.conf" . | indent 8 }}
 
     [OUTPUT]
-        Name             http
         Match            rp-profiling
-        Format           json_lines
-        Host             ${CP_KUBERNETES_DOME9_URL}
         Uri              ${CP_KUBERNETES_RUNTIME_PROFILING_URI}
-        Port             443
-        Compress         gzip
-        tls              On
-        tls.verify       On
-        tls.debug        0
-        http_User        ${CP_KUBERNETES_USER}
-        http_Passwd      ${CP_KUBERNETES_PASS}
-        Header           Kubernetes-Account     ${CP_KUBERNETES_CLUSTER_ID}
-        Header           Node-Name              ${HOSTNAME}
+{{ include "fluentbit-http-output-param.conf" . | indent 8 }}
+        
+    [OUTPUT]
+        Match           rp-telemetry
+        Uri             ${CP_KUBERNETES_RUNTIME_TELEMETRY_URI}
+{{ include "fluentbit-http-output-param.conf" . | indent 8 }}
         
 {{ $params := dict "metricPath" "/rp4c/metric" "agentVersion" $config.agentConfig.tag }}
 {{ include "fluentbit-metric.conf" $params | indent 4 }}
