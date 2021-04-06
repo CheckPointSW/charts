@@ -38,6 +38,9 @@ credentials:
 ## Example: "151e985a-a413-4dfa-bc05-51d7c1fbd11d"
 clusterID: 
 
+## CloudGuard datacenter: usea1 [default], euwe1, apse1, apse2, apso1
+datacenter: usea1
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
