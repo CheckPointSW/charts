@@ -42,14 +42,8 @@ If release name contains chart name it will be used as a full name.
 {{- printf "ap2" -}}
 {{- else if has $datacenter (list "ap" "ap3" "apso1") -}}
 {{- printf "ap3" -}}
-{{- else if has $datacenter (list "ap4" "apne1") -}}
-{{- printf "ap4" -}}
-{{- else if has $datacenter (list "ap5" "apea1") -}}
-{{- printf "ap5" -}}
-{{- else if has $datacenter (list "ca" "ca1" "cace1") -}}
-{{- printf "ca1" -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1', 'apne1', 'apea1', 'cace1')"  $.Values.datacenter -}}
+{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1')"  $.Values.datacenter -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}

@@ -80,7 +80,7 @@ The following tables list the configurable parameters of this chart and their de
 | `credentials.secret`                                       | CloudGuard API Secret                                           | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard API ID                                               | `CHANGEME`                                       |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
-| `datacenter`                                               | CloudGuard datacenter (usea1 (default), euwe1 etc.)             | `usea1`                                          |
+| `datacenter`                                               | CloudGuard datacenter (usea1, euwe1 apse1, apse2, apso1)        | `usea1`                                          |
 | `resources`                                                | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `podAnnotations`                                           | Arbitrary non-identifying metadata                              | `{}`                                             |
 | `nodeSelector`                                             | Node labels for pod assignment                                  | `{}`                                             |
