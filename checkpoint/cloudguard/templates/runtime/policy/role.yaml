@@ -9,12 +9,12 @@ metadata:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 rules:
 - apiGroups: ["runtimeprotection.cloudguard.checkpoint.com"]
-  resources: ["denylists", "profilingconfigs", "allowlists", "signaturegroups"]
+  resources: ["*"]
   verbs: ["update", "list", "create", "delete"]
 {{- if .Values.rbac.pspEnabled }}
 - apiGroups: [ "policy" ]
   resources: [ "podsecuritypolicies" ]
-  verbs: [ "use"]
+  verbs: ["use"]
   resourceNames:
   - {{ template "agent.resource.name" $config }}
 {{- end -}}

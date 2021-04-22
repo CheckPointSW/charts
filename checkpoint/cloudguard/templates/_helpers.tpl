@@ -193,6 +193,30 @@ tls.verify      On
 {{ include "fluentbit-http-output-param.conf" . | indent 4 }}
 {{- end -}}
 
+{{- /* fluentbit container for agents telemetry, do not use by agents sending alerts */ -}}
+{{- define "telemetry.container" -}}
+# fluentbit
+- name: fluentbit
+  image: {{ template "agent.fluentbit.image" . }}
+  imagePullPolicy: {{ .Values.imagePullPolicy }} 
+  securityContext:
+    allowPrivilegeEscalation: false
+  env:
+{{ include "fluentbit.env" . | indent 2 }}
+  - name: CP_KUBERNETES_METRIC_URI
+    value: {{ template "cloudguardURL_path" . }}agenttelemetry
+{{- if .agentConfig.fluentbit.resources }}
+  resources:
+{{ toYaml .agentConfig.fluentbit.resources | indent 4 }}
+{{- end }}
+  volumeMounts:
+  - name: config-volume-fluentbit
+    mountPath: /fluent-bit/etc/fluent-bit.conf
+    subPath: fluent-bit.conf
+  - name: metrics
+    mountPath: /metric
+{{- end -}}
+
 {{/*
 Generate self-signed certificate with 'featureName-agentName.Namespace' structure
 e.g. imagescan-daemon.checkpoint
@@ -214,20 +238,14 @@ key: {{ $cert.Key | b64enc }}
 {{- printf "" -}}
 {{- else if has $datacenter (list "eu" "eu1" "euwe1") -}}
 {{- printf "eu1" -}}
-{{- else if has $datacenter (list "ap1" "apse1") -}}
+{{- else if has $datacenter (list "ap" "ap1" "apse1") -}}
 {{- printf "ap1" -}}
 {{- else if has $datacenter (list "ap2" "apse2") -}}
 {{- printf "ap2" -}}
-{{- else if has $datacenter (list "ap" "ap3" "apso1") -}}
+{{- else if has $datacenter (list "ap3" "apso1") -}}
 {{- printf "ap3" -}}
-{{- else if has $datacenter (list "ap4" "apne1") -}}
-{{- printf "ap4" -}}
-{{- else if has $datacenter (list "ap5" "apea1") -}}
-{{- printf "ap5" -}}
-{{- else if has $datacenter (list "ca" "ca1" "cace1") -}}
-{{- printf "ca1" -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1', 'apne1', 'apea1', 'cace1')"  $.Values.datacenter -}}
+{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1')"  $.Values.datacenter -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -256,4 +274,8 @@ key: {{ $cert.Key | b64enc }}
     {{- $user := required $err .Values.imageRegistry.user -}}
     {{- $pass := required $err .Values.imageRegistry.password -}}
     {{- printf "{\"auths\":{\"%s\":{\"auth\":\"%s\"}}}" .Values.imageRegistry.url (printf "%s:%s" $user $pass | b64enc) | b64enc }}
+{{- end }}
+
+{{- define "cloudguard.nonroot.user" -}}
+17112
 {{- end }}

@@ -1,0 +1,19 @@
+{{- define "telemetry.configmap" -}}
+{{ if .config.featureConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" .config }}-metrics
+  namespace: {{ .config.Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" .config | indent 4 }}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush       5
+        Daemon      Off
+        Log_Level   info
+{{ $params := dict "metricPath" "/metric" "agentVersion" .config.agentConfig.tag }}
+{{ include "fluentbit-metric.conf" $params | indent 4 }}
+{{- end -}}
+{{- end -}}
