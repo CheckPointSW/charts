@@ -91,7 +91,7 @@ The following tables list the configurable parameters of this chart and their de
 | Parameter                                                  | Description                                                     | Default                                          |
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
-| `datacenter`                                               | CloudGuard datacenter (usea1 (default), euwe1 etc.)             | `usea1`                                          |
+| `datacenter`                                               | CloudGuard datacenter (usea1, euwe1 apse1, apse2, apso1)        | `usea1`                                          |
 | `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
 | `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
@@ -104,7 +104,7 @@ The following tables list the configurable parameters of this chart and their de
 | `podAnnotations.seccomp`                                   | Computer Security facility profile.                             | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
 | `inventory.agent.image`                                    | Specify image for Inventory agent                               | `checkpoint/consec-inventory-agent`              |
-| `inventory.agent.tag`                                      | Inventory Specify image tag for the agent                       | `1.2.0`                                          |
+| `inventory.agent.tag`                                      | Inventory Specify image tag for the agent                       | `1.2.1`                                          |
 | `inventory.agent.serviceAccountName`                       | Specify custom Service Account for the Inventory agent          | ``                                               |
 | `inventory.agent.replicaCount`                             | Number of Inventory agent instances to be deployed              | `1`                                              |
 | `inventory.agent.env`                                      | Additional environmental variables for Inventory agent          | `{}`                                             |
@@ -114,7 +114,7 @@ The following tables list the configurable parameters of this chart and their de
 | `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
-| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`0.2.2`                                           |
+| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`0.2.3`                                           |
 | `addons.imageScan.daemon.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.imageScan.daemon.env`                              | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.imageScan.daemon.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
@@ -122,7 +122,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
 | `addons.imageScan.engine.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-engine`             |
-| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`0.2.2`                                           |
+| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`0.2.3`                                           |
 | `addons.imageScan.engine.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.imageScan.engine.env`                              | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.imageScan.engine.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
@@ -169,7 +169,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be        | `false`                                          |
 |                                                            | installed                                                       |                                                  |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.347`                                           |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.369`                                           |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |

@@ -51,7 +51,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.2.0
+    tag: 1.2.1
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -88,7 +88,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 0.2.2
+      tag: 0.2.3
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -104,8 +104,8 @@ addons:
           cpu: 100m
           memory: 50Mi
         requests:
-          cpu: 50m
-          memory: 10Mi
+          cpu: 100m
+          memory: 50Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -114,10 +114,25 @@ addons:
       - operator: Exists
       affinity: {}
 
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 0.2.2
+      tag: 0.2.3
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -130,7 +145,7 @@ addons:
       resources:
         limits:
           cpu: 1000m
-          memory: 2200Mi
+          memory: 4000Mi
         requests:
           cpu: 200m
           memory: 500Mi
@@ -140,6 +155,21 @@ addons:
       nodeSelector: {}
       tolerations: []
       affinity: {}
+      
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
 
 
 ## Flow Logs Add-on
@@ -291,7 +321,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.347
+      tag: 0.0.369
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""

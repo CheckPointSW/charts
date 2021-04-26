@@ -24,6 +24,7 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
+{{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -43,6 +44,8 @@ spec:
           mountPath: /etc/servercert
         - name: clientcert-volume
           mountPath: /etc/clientcert
+        - name: metrics
+          mountPath: /metric
         command: ["/node_agent"]
         ports:
         - containerPort: 8443
@@ -52,10 +55,6 @@ spec:
         {{- end }}
         env:
 {{ include "user.defined.env" $config | indent 8 }}
-        - name: MY_NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
       volumes:
       - name: docker-sock-volume
         hostPath:
@@ -70,4 +69,9 @@ spec:
       - name: clientcert-volume
         configMap:
           name: {{ template "imagescan.engine.resource.name" . }}
-{{- end -}}
+      - name: config-volume-fluentbit
+        configMap:
+          name: {{ template "agent.resource.name" $config }}-metrics
+      - name: metrics
+        emptyDir: {}
+{{- end -}}  

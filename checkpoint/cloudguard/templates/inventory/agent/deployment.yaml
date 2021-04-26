@@ -22,7 +22,7 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}    
       securityContext:
-        runAsUser: 17112
+        runAsUser: {{ include "cloudguard.nonroot.user" . }}
       containers:
       # Main container
       - name: {{ $config.agentName }}
