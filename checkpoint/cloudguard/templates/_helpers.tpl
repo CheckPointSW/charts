@@ -48,6 +48,13 @@
 {{- default $image $containerConfig.fullImage }}
 {{- end -}}
 
+{{- /* Full path to the docker shim image of the provided agent */ -}}
+{{- define "agent.shim.image" -}}
+{{- $containerConfig := .agentConfig.shim }}
+{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $containerConfig.tag }}
+{{- default $image $containerConfig.fullImage }}
+{{- end -}}
+
 {{- /* Labels commonly used in our k8s resources */ -}}
 {{- define "common.labels" -}}
 app.kubernetes.io/name: {{ template "agent.resource.name" . }}
@@ -279,3 +286,11 @@ key: {{ $cert.Key | b64enc }}
 {{- define "cloudguard.nonroot.user" -}}
 17112
 {{- end }}
+
+{{- define "container.runtime.validate" -}}
+{{- if has .Values.containerRuntime (list "docker" "containerd") -}}
+{{- else -}}
+{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker' [default], 'containerd')"  .Values.containerRuntime -}}
+{{- fail $err -}}
+{{- end -}}
+{{- end -}}

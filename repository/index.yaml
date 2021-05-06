@@ -2,8 +2,34 @@ apiVersion: v1
 entries:
   cloudguard:
   - apiVersion: v2
+    appVersion: 2.2.0
+    created: "2021-05-06T18:17:38.1559955+03:00"
+    description: A Helm chart for Check Point CloudGuard Workload Security
+    digest: 62bebfa23acce1cf0830c18a221c4f231ccb4bfe54aed9b3a880f037b7d12aeb
+    home: https://secure.dome9.com/v2/
+    icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
+    keywords:
+    - check point
+    - cloudguard
+    - workload security
+    - inventory
+    - posture management
+    - vulnerability assessment
+    - image assurance
+    - flow logs
+    - threat intelligence
+    - admission control
+    - runtime protection
+    maintainers:
+    - email: dome9@checkpoint.com
+      name: Check Point
+    name: cloudguard
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/ea/repository/cloudguard-2.2.0.tgz
+    version: 2.2.0
+  - apiVersion: v2
     appVersion: v2.0.9
-    created: "2021-04-26T10:54:34.4485561+03:00"
+    created: "2021-05-06T18:17:38.1540009+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 4e05cb8b1a89ffbdc9b36a9ee58ec81dca6c481d6f787becaa49ff855ae758ea
     home: https://secure.dome9.com/v2/
@@ -29,7 +55,7 @@ entries:
     version: 2.0.9
   - apiVersion: v2
     appVersion: v2.0.8
-    created: "2021-04-26T10:54:34.4445557+03:00"
+    created: "2021-05-06T18:17:38.1529958+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: cb2e1e40c7e0e5de1b9434695a7dd418f371180e7a8d9fb74982c732c0b96073
     home: https://secure.dome9.com/v2/
@@ -55,7 +81,7 @@ entries:
     version: 2.0.8
   - apiVersion: v2
     appVersion: v1.3.2
-    created: "2021-04-26T10:54:34.4435554+03:00"
+    created: "2021-05-06T18:17:38.1509646+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 6942631a2c3e8c1b598eda26873da3613c72eb9134701c36832eff5b5217b666
     home: https://secure.dome9.com/v2/
@@ -81,7 +107,7 @@ entries:
     version: 2.0.7
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.4415558+03:00"
+    created: "2021-05-06T18:17:38.1489643+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: e45ce436b872547b809bd542db9a3b4ff0c11296155481fb743a5cab655f9168
     home: https://secure.dome9.com/v2/
@@ -107,7 +133,7 @@ entries:
     version: 2.0.6
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.4395557+03:00"
+    created: "2021-05-06T18:17:38.1459643+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 41e2c93908df77b07252e70bfbf075a10692a1c0206155c1903072b6e4f4b647
     home: https://secure.dome9.com/v2/
@@ -133,7 +159,7 @@ entries:
     version: 2.0.5
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.438556+03:00"
+    created: "2021-05-06T18:17:38.1439642+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: f521fc840c94668bdfd7dbb5dac3247522a43e14bc7af9fba6041d5b59067ef2
     home: https://secure.dome9.com/v2/
@@ -159,7 +185,7 @@ entries:
     version: 2.0.4
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.4355897+03:00"
+    created: "2021-05-06T18:17:38.1429644+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0e66c71e8837bde5d396ae5033d4ecff2a9ff477a1ecf9cf1044ff9f09bf7d93
     home: https://secure.dome9.com/v2/
@@ -185,7 +211,7 @@ entries:
     version: 2.0.3
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.4335863+03:00"
+    created: "2021-05-06T18:17:38.1409645+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: c36e2f797ec63d2fa49cfd20345490fe61e0fb037801a320deb53fbd9b25c996
     home: https://secure.dome9.com/v2/
@@ -211,7 +237,7 @@ entries:
     version: 2.0.2
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.4325884+03:00"
+    created: "2021-05-06T18:17:38.1389643+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: fbb05a4fa7606c3dfe5fa6cdd97979fa0f0249a74d2f111a5d50b707cf7a9334
     home: https://secure.dome9.com/v2/
@@ -238,7 +264,7 @@ entries:
   cp-resource-management:
   - apiVersion: v2
     appVersion: v1.3.1
-    created: "2021-04-26T10:54:34.4555563+03:00"
+    created: "2021-05-06T18:17:38.1619657+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 94b2c71d67e41bf1fe776f9f35b0b7006a1ae60a82145f359d1867e9b3e9b546
     home: https://secure.dome9.com/v2/
@@ -262,7 +288,7 @@ entries:
     version: 1.08.11
   - apiVersion: v1
     appVersion: v1.2.1
-    created: "2021-04-26T10:54:34.4605886+03:00"
+    created: "2021-05-06T18:17:38.1669663+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 785e7371ca00b7f42d1d9688655f94b121a2bc7494bac98c32857efc817a0628
     home: https://secure.dome9.com/v2/
@@ -286,7 +312,7 @@ entries:
     version: 1.08.9
   - apiVersion: v1
     appVersion: v1.2.1
-    created: "2021-04-26T10:54:34.4595575+03:00"
+    created: "2021-05-06T18:17:38.1659653+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 873d633a5dea0cbd2ec1ff64e956e6c56e1cb3fb37b13ae67675bdbc65539fe3
     home: https://secure.dome9.com/v2/
@@ -309,7 +335,7 @@ entries:
     version: 1.08.7
   - apiVersion: v1
     appVersion: v1.2.1
-    created: "2021-04-26T10:54:34.4585859+03:00"
+    created: "2021-05-06T18:17:38.1659653+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 1f41c01eed27d469fef99a18828b89afcb4279885ccd3cb913ed01a02e8f5d45
     home: https://secure.dome9.com/v2/
@@ -332,7 +358,7 @@ entries:
     version: 1.08.6
   - apiVersion: v1
     appVersion: v1.2.0
-    created: "2021-04-26T10:54:34.4575857+03:00"
+    created: "2021-05-06T18:17:38.1649662+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: ed15d6119fe685651cc23be2e891a10298fa9ead297cdcaadb45918f3fef88bb
     home: https://secure.dome9.com/v2/
@@ -355,7 +381,7 @@ entries:
     version: 1.08.5
   - apiVersion: v1
     appVersion: v1.2.0
-    created: "2021-04-26T10:54:34.4575857+03:00"
+    created: "2021-05-06T18:17:38.1639685+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 56ce44af9d1695664d7beb32d434e9b3a4a7b51ebc98d4f400c324c45602722a
     home: https://secure.dome9.com/v2/
@@ -378,7 +404,7 @@ entries:
     version: 1.08.4
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4565577+03:00"
+    created: "2021-05-06T18:17:38.1629644+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 581a49da5c6927450d78565abeb97a09427422c437b3424299cafa4fde627b94
     home: https://secure.dome9.com/v2/
@@ -402,7 +428,7 @@ entries:
     version: 1.08.2
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4545814+03:00"
+    created: "2021-05-06T18:17:38.1609652+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: dddcf9638c3fc3e26f74cd7829798b011679e97dd7acbda8680cf67c94a32418
     home: https://secure.dome9.com/v2/
@@ -426,7 +452,7 @@ entries:
     version: 1.08.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4545814+03:00"
+    created: "2021-05-06T18:17:38.1609652+03:00"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 2bbb9bf615def0c0e4f69e26fe034d699bb8728409002963f7e40f4572559b59
     home: https://secure.dome9.com/v2/
@@ -450,7 +476,7 @@ entries:
     version: 1.08.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4535865+03:00"
+    created: "2021-05-06T18:17:38.1599653+03:00"
     description: A Helm chart for CloudGuard Workload Security
     digest: 8920c6606a6038ee4ed0b1e201fc28ea094b8a0d564b262435273907d7e65e82
     home: https://secure.dome9.com/v2/
@@ -472,7 +498,7 @@ entries:
     version: 1.07.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4525571+03:00"
+    created: "2021-05-06T18:17:38.1589671+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: bebb6e83ed371d2501879219a72540a2e7f45518f32ede0c64f7109b5b443033
     home: https://secure.dome9.com/v2/
@@ -491,7 +517,7 @@ entries:
     version: "1.06"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4525571+03:00"
+    created: "2021-05-06T18:17:38.1589671+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ebaf4da8a836f017cb4cbd0012b063e293e3ae805ebddb92ce49d666fe328cf4
     home: https://secure.dome9.com/v2/
@@ -510,7 +536,7 @@ entries:
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2021-04-26T10:54:34.4505561+03:00"
+    created: "2021-05-06T18:17:38.156965+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -529,7 +555,7 @@ entries:
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2021-04-26T10:54:34.4495555+03:00"
+    created: "2021-05-06T18:17:38.156965+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -548,7 +574,7 @@ entries:
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2021-04-26T10:54:34.4605886+03:00"
+    created: "2021-05-06T18:17:38.1679664+03:00"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -565,4 +591,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/CheckPointSW/charts/ea/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2021-04-26T10:54:34.4305886+03:00"
+generated: "2021-05-06T18:17:38.1369642+03:00"

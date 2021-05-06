@@ -101,10 +101,11 @@ The following tables list the configurable parameters of this chart and their de
 | `imageRegistry.password`                                   | Image registry password                                         | `CHANGEME`                                       |
 | `imagePullPolicy`                                          | Image pull policy                                               | `Always`                                         |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
+| `containerRuntime`                                         | Cluster container runtime (docker, containerd)                  | `docker`                                         |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile.                             | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
-| `inventory.agent.image`                                    | Specify image for Inventory agent                               | `checkpoint/consec-inventory-agent`              |
-| `inventory.agent.tag`                                      | Inventory Specify image tag for the agent                       | `1.2.1`                                          |
+| `inventory.agent.image`                                    | Specify image for the agent                                     | `checkpoint/consec-inventory-agent`              |
+| `inventory.agent.tag`                                      | Specify image tag for the agent                                 | `1.2.1`                                          |
 | `inventory.agent.serviceAccountName`                       | Specify custom Service Account for the Inventory agent          | ``                                               |
 | `inventory.agent.replicaCount`                             | Number of Inventory agent instances to be deployed              | `1`                                              |
 | `inventory.agent.env`                                      | Additional environmental variables for Inventory agent          | `{}`                                             |
@@ -114,15 +115,19 @@ The following tables list the configurable parameters of this chart and their de
 | `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
-| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`0.2.3`                                           |
+| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`0.3.0`                                           |
 | `addons.imageScan.daemon.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.imageScan.daemon.env`                              | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.imageScan.daemon.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.imageScan.daemon.nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
+| `addons.imageScan.daemon.shim.image`                       | Specify image for the shim container                            | `checkpoint/consec-imagescan-shim`               |
+| `addons.imageScan.daemon.shim.tag`                         | Specify image tag for the shim container                        |`0.3.0`                                           |
+| `addons.imageScan.daemon.shim.env`                         | Additional environmental variables for the shim container       | `{}`                                             |
+| `addons.imageScan.daemon.shim.resources`                   | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.imageScan.engine.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-engine`             |
-| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`0.2.3`                                           |
+| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`0.3.0`                                           |
 | `addons.imageScan.engine.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.imageScan.engine.env`                              | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.imageScan.engine.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
@@ -141,7 +146,7 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | `{}`                                             |
 | `addons.admissionControl.enabled`                          | Specify whether the Admission Control addon should be installed | `false`                                          |
 | `addons.admissionControl.policy.image`                     | Specify image for the agent                                     | `checkpoint/consec-admission-policy`             |
-| `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 |`0.1.1`                                           |
 | `addons.admissionControl.policy.serviceAccountName`        | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.admissionControl.policy.env`                       | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.admissionControl.policy.resources`                 | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
@@ -152,10 +157,11 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.admissionControl.policy.fluentbit.tag`             | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
 | `addons.admissionControl.policy.fluentbit.resources`       | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
-| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`0.1.0`                                           |
+| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`0.1.1`                                           |
 | `addons.admissionControl.enforcer.serviceAccountName`      | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.admissionControl.enforcer.replicaCount`            | Number of Inventory agent instances to be deployed              | `2`                                              |
 | `addons.admissionControl.enforcer.env`                     | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.admissionControl.enforcer.failurePolicyIntervalHours`| If the agent is unable to synchronize it's policy, this is the number of hours it will wait before switching to a fail-open policy | `24`                                             |
 | `addons.admissionControl.enforcer.resources`               | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.admissionControl.enforcer.gsl.image`               | Specify image for the agent                                     | `checkpoint/consec-admission-gsl`                |
 | `addons.admissionControl.enforcer.gsl.tag`                 | Specify image tag for the agent                                 |`0.1.0`                                           |
@@ -169,15 +175,15 @@ The following tables list the configurable parameters of this chart and their de
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be        | `false`                                          |
 |                                                            | installed                                                       |                                                  |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.369`                                           |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.369`                                         |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
 |                                                            |                                                                 | `requests.memory: 250Mi`                         |
-|                                                            |                                                                 | `limits.cpu: 2000m`                               |
+|                                                            |                                                                 | `limits.cpu: 2000m`                              |
 |                                                            |                                                                 | `limits.memory: 1Gi`                             |
 | `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
-| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.27.1-cp`                                          |
+| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.27.1-cp`                                       |
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
 | `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.6.9-cp`                                        |

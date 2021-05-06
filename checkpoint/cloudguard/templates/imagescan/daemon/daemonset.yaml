@@ -1,5 +1,6 @@
 {{- $config := fromYaml (include "imagescan.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
+{{- include "container.runtime.validate" . -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -35,9 +36,11 @@ spec:
             add:
             - NET_BIND_SERVICE
         volumeMounts:
+{{- if eq .Values.containerRuntime "docker" }}
         - name: docker-sock-volume
           mountPath: /var/run/docker.sock
           readOnly: true
+{{- end }}
         - name: serverkey-volume
           mountPath: /etc/serverkey
         - name: servercert-volume
@@ -49,17 +52,74 @@ spec:
         command: ["/node_agent"]
         ports:
         - containerPort: 8443
-        {{- if $config.agentConfig.resources }}
+{{- if $config.agentConfig.resources }}
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
         {{- end }}
         env:
 {{ include "user.defined.env" $config | indent 8 }}
+{{- if eq .Values.containerRuntime "containerd" }}
+        - name: IS_CONTAINERD
+          value: "true"
+{{- end }}
+{{- if eq .Values.containerRuntime "containerd" }}
+      - name: shim
+        image: {{ template "agent.shim.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+        volumeMounts:
+        - name: cri-sock-volume
+          mountPath: /run/cri.sock
+          readOnly: true
+        - name: containerd-sock-volume
+          mountPath: /run/containerd/containerd.sock
+          readOnly: true
+        - name: host
+          mountPath: /host
+          readOnly: true
+        - name: ld-linux
+          mountPath: /lib64/ld-linux-x86-64.so.2
+          readOnly: true
+        - name: metrics
+          mountPath: /metric
+        command: ["/server"]
+{{- if $config.agentConfig.shim.resources }}
+        resources:
+{{ toYaml $config.agentConfig.shim.resources | indent 10 }}
+        {{- end }}
+        env:
+{{- if $config.agentConfig.shim.env }}
+{{ toYaml $config.agentConfig.shim.env | indent 8 }}
+{{- end -}}
+{{- end }}
       volumes:
+{{- if eq .Values.containerRuntime "docker" }}
       - name: docker-sock-volume
         hostPath:
           path: /var/run/docker.sock
           type: Socket
+{{- else }}
+      - name: cri-sock-volume
+        hostPath:
+          path: /run/containerd/containerd.sock
+          type: Socket
+      - name: containerd-sock-volume
+        hostPath:
+          path: /run/containerd/containerd.sock
+          type: Socket
+      - name: host
+        hostPath:
+          path: /
+          type: Directory
+      - name: ld-linux
+        hostPath:
+          path: /lib64/ld-linux-x86-64.so.2
+          type: File
+{{- end }}
       - name: serverkey-volume
         secret:
           secretName: {{ template "agent.resource.name" $config }}
