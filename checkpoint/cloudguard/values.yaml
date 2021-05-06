@@ -45,6 +45,8 @@ podAnnotations:
 ## proxy: $HTTPS_PROXY
 proxy: {}
 
+containerRuntime: docker
+
 ### Inventory agent settings
 inventory:
   agent:
@@ -88,7 +90,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 0.2.3
+      tag: 0.3.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -106,6 +108,21 @@ addons:
         requests:
           cpu: 100m
           memory: 50Mi
+
+      shim:
+        ## Specify image and tag
+        image: checkpoint/consec-imagescan-shim
+        tag: 0.3.0
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources:
+          limits:
+            cpu: 100m
+            memory: 50Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -132,7 +149,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 0.2.3
+      tag: 0.3.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -213,7 +230,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 0.1.0
+      tag: 0.1.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -255,7 +272,9 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 0.1.0
+      tag: 0.1.1
+
+      failurePolicyIntervalHours: 24
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -278,7 +297,7 @@ addons:
       gsl:
         ## Specify image and tag
         image: checkpoint/consec-admission-gsl
-        tag: 0.1.0
+        tag: 0.1.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

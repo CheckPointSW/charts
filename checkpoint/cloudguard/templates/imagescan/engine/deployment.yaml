@@ -59,6 +59,10 @@ spec:
           value: {{ .Release.Name }}
         - name: CLOUDGUARD_REGION
           value: {{ include "dome9.subdomain" $config | default "us" }}
+{{- if eq .Values.containerRuntime "containerd" }}
+        - name: IS_CONTAINERD
+          value: "true"
+{{- end }}
       volumes:
       - name: secret-volume
         secret:

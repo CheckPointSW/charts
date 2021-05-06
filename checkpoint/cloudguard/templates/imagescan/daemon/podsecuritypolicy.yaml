@@ -15,14 +15,21 @@ spec:
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
   allowedHostPaths:
+{{- if eq .Values.containerRuntime "docker" }}
   - pathPrefix: /var/run/docker.sock
     readOnly: true
+{{- end }}
+{{- if eq .Values.containerRuntime "containerd" }}
+  - pathPrefix: /
+    readOnly: true
+{{- end }}
   allowedCapabilities:
   - 'NET_BIND_SERVICE'
   volumes:
   - 'hostPath'
   - 'secret'
   - 'configMap' 
+  - 'emptyDir'
   hostNetwork: false
   hostIPC: false
   hostPID: false
