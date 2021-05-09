@@ -190,7 +190,7 @@ tls.verify      On
     Command         find {{ .metricPath }} -type f | xargs cat 
     Tag             metrics
     Buf_Size        8mb
-    Interval_Sec    30
+    Interval_Sec    150
     Interval_NSec   0
 [OUTPUT]
     Match           metrics
