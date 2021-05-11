@@ -48,13 +48,6 @@
 {{- default $image $containerConfig.fullImage }}
 {{- end -}}
 
-{{- /* Full path to the docker shim image of the provided agent */ -}}
-{{- define "agent.shim.image" -}}
-{{- $containerConfig := .agentConfig.shim }}
-{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $containerConfig.tag }}
-{{- default $image $containerConfig.fullImage }}
-{{- end -}}
-
 {{- /* Labels commonly used in our k8s resources */ -}}
 {{- define "common.labels" -}}
 app.kubernetes.io/name: {{ template "agent.resource.name" . }}

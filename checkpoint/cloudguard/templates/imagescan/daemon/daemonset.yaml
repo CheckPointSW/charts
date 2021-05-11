@@ -63,8 +63,9 @@ spec:
           value: "true"
 {{- end }}
 {{- if eq .Values.containerRuntime "containerd" }}
-      - name: shim
-        image: {{ template "agent.shim.image" $config }}
+      - {{ $containerConfig := merge $config (dict "containerName" "shim") -}} 
+        name: {{ $containerConfig.containerName }} 
+        image: {{ template "agent.sidecar.image" $containerConfig }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         securityContext:
           allowPrivilegeEscalation: false
