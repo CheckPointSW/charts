@@ -1,0 +1,7 @@
+{{- $config := fromYaml (include "imagescan.engine.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+{{- $cert := fromYaml (include "generate.selfsigned.cert" $config) -}}
+{{ template "imagescan.engine.secret" dict "config" $config "key" $cert.key }}
+---
+{{ template "imagescan.engine.configmap" dict "config" $config "crt" $cert.crt }}
+{{- end -}}

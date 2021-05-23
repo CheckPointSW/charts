@@ -1,0 +1,2 @@
+{{- $config := fromYaml (include "imagescan.daemon.config" .) -}}
+{{ template "telemetry.configmap" dict "config" $config }}

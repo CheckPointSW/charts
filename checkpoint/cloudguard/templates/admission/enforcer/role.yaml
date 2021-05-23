@@ -1,0 +1,27 @@
+{{- $config := fromYaml (include "admission.enforcer.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+rules: 
+  {{- if .Values.rbac.pspEnabled }}
+  - apiGroups: [ "policy" ]
+    resources: [ "podsecuritypolicies" ]
+    verbs: [ "use"]
+    resourceNames: 
+    - {{ template "agent.resource.name" $config }}
+  {{- end }}
+  - apiGroups: 
+      - admissioncontrol.cloudguard.checkpoint.com
+    resources:
+      - detectionrules
+      - preventionrules
+      - configurations
+    verbs:
+      - get
+      - list
+{{- end -}}

@@ -1,0 +1,46 @@
+{{- $config := fromYaml (include "runtime.policy.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+{{- if .Values.rbac.pspEnabled -}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  hostPID: false
+  hostIPC: false
+  hostNetwork: false
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - 'secret'
+  fsGroup:
+    rule: 'MayRunAs' # Allows the range but not sets default
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: true
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  runAsGroup:
+    rule: 'MayRunAs' # Allows the range but not sets default
+    ranges:
+    - min: 1
+      max: 65535
+  supplementalGroups:
+    rule: 'MayRunAs' # Allows the range but not sets default
+    ranges:
+    # Forbid adding the root group.
+    - min: 1
+      max: 65535
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: 'RunAsAny'
+{{- end -}}
+{{- end -}}

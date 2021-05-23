@@ -1,0 +1,67 @@
+{{- $config := fromYaml (include "flowlogs.daemon.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ $config.agentConfig.tag }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "common.labels" $config | indent 6 }}
+  template:
+    metadata:
+      annotations:
+{{ include "common.pod.annotations" $config | indent 8 }}
+      labels:
+{{ include "common.labels" $config | indent 8 }}
+    spec:
+{{ include "common.pod.properties" $config | indent 6 }}
+      containers:
+      # Main container
+      - name: {{ $config.agentName }}
+        image: {{ template "agent.main.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          capabilities:
+            add: [ "SYS_ADMIN", "SYS_RESOURCE", "NET_ADMIN" ]
+        volumeMounts:
+        - mountPath: /var/run/netns
+          name: netns-volume
+          mountPropagation: HostToContainer
+          readOnly: true
+        - mountPath: /var/run/docker.sock
+          name: docker-sock-volume
+          readOnly: true
+        - mountPath: /etc/secret-volume
+          name: secret-volume
+        - mountPath: /etc/cpconfig
+          name: config-volume              
+        command: ["/bin/sh"]
+        args: ["-c", "/flow_logs_user"]
+        {{- if $config.agentConfig.resources }}
+        resources:
+{{ toYaml $config.agentConfig.resources | indent 10 }}
+        {{- end }}
+        env:
+{{ include "common.env" $config | indent 8 }}
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: {{ .Release.Name }}-cp-cloudguard-creds
+      - name: netns-volume
+        hostPath:
+          path: /var/run/docker/netns
+          type: Directory
+      - name: docker-sock-volume
+        hostPath:
+          path: /var/run/docker.sock
+          type: Socket
+      - name: config-volume
+        configMap:
+          name: {{ template "agent.resource.name" $config }}
+{{ end }}

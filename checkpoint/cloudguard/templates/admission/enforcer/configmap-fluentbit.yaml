@@ -1,0 +1,29 @@
+{{- $config := fromYaml (include "admission.enforcer.config" .) -}}
+{{ if $config.featureConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" $config }}-fluentbit
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush       5
+        Daemon      Off
+        Log_Level   info
+    [INPUT]
+        Name             tail
+        Path             admission/alerts/alerts.log
+        Tag              ac-alert
+
+    [OUTPUT]
+        Match            ac-alert
+        Uri              ${CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI}
+{{ include "fluentbit-http-output-param.conf" . | indent 8 }}        
+        
+{{ $params := dict "metricPath" "/metric" "agentVersion" $config.agentConfig.tag }}
+{{ include "fluentbit-metric.conf" $params | indent 4 }}
+
+{{- end -}}

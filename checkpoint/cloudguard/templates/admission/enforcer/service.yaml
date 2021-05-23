@@ -1,0 +1,17 @@
+{{- $config := fromYaml (include "admission.enforcer.config" .) -}}
+{{ if $config.featureConfig.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+spec:
+  ports:
+    - name: webhook
+      port: 443
+      targetPort: 8080
+  selector:
+{{ include "common.labels" $config | indent 4 }}
+{{ end }}

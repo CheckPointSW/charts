@@ -1,0 +1,10 @@
+{{- $config := fromYaml (include "inventory.agent.config" .) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-cp-cloudguard-configmap
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+data:
+  clusterID: {{ required "CloudGuard Cluster ID is required" .Values.clusterID | quote }}

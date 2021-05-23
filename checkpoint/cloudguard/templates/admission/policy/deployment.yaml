@@ -1,0 +1,75 @@
+{{- $config := fromYaml (include "admission.policy.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ $config.agentConfig.tag }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+{{ include "common.labels" $config | indent 6 }}
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+{{ include "common.pod.annotations" $config | indent 8 }}
+      labels:
+{{ include "common.labels" $config | indent 8 }}
+    spec:
+{{ include "common.pod.properties" $config | indent 6 }}
+      securityContext:
+        runAsUser: 1000
+      containers:
+      # Main container
+      - name: {{ $config.agentName }}
+        image: {{ template "agent.main.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/secret-volume
+        - name: metrics
+          mountPath: /metric
+        command: ["/admission_rule_updater"]
+        env:
+{{ include "common.env" $config | indent 8 }}
+        {{- if $config.agentConfig.resources }}
+        resources:
+{{ toYaml $config.agentConfig.resources | indent 10 }}
+        {{- end }}
+      # fluentbit
+      - name: fluentbit
+        image: {{ template "agent.fluentbit.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+        env:
+{{ include "fluentbit.env" $config | indent 8 }}
+        - name: CP_KUBERNETES_METRIC_URI
+          value: {{ template "cloudguardURL_path" . }}agenttelemetry
+        {{- if $config.agentConfig.fluentbit.resources }}
+        resources:
+{{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
+        {{- end }}
+        volumeMounts:
+        - name: config-volume-fluentbit
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+        - name: metrics
+          mountPath: /metric
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: {{ .Release.Name }}-cp-cloudguard-creds
+      - name: config-volume-fluentbit
+        configMap:
+          name: {{ template "agent.resource.name" $config }}-metrics
+      - name: metrics
+        emptyDir: {}
+
+{{ end }}
