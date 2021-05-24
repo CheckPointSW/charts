@@ -1,0 +1,48 @@
+{{- define "gsl-enforcer-webhook-configuration" -}}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+
+  {{- /* TODO: use naming convention, pass to agent code as ENV variable */}}
+  name: cloudguard-enforcer-webhook
+  namespace: {{ .config.Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" .config | indent 4 }}
+webhooks:
+  - name: cloudguard-enforcer-webhook.cloudguard.checkpoint.com
+    clientConfig:
+      service:
+        name: {{ template "agent.resource.name" .config }}
+        path: "/validate"
+        namespace: {{ .config.Release.Namespace }}
+      caBundle: {{ .crt }}
+    rules:
+      - operations: ["CREATE","UPDATE", "DELETE", "CONNECT"]
+        apiGroups: ["", "apps", "rbac.authorization.k8s.io", "networking.k8s.io", "batch", "policy"]
+        apiVersions: ["v1", "v1beta1"]
+        resources: ["pods","pods/attach","pods/exec","pods/portforward",
+                    "deployments",
+                    "replicationcontrollers",
+                    "replicasets",
+                    "daemonsets",
+                    "statefulsets",
+                    "jobs",
+                    "cronjobs",
+                    "roles",
+                    "clusterroles",
+                    "rolebindings",
+                    "clusterrolebindings",
+                    "services",
+                    "ingresses",
+                    "serviceaccounts",
+                    "namespaces",
+                    "configmaps",
+                    "networkpolicies",
+                    "podsecuritypolicies"]
+    admissionReviewVersions: ["v1", "v1beta1"]
+    matchPolicy: Equivalent
+    failurePolicy: Ignore
+    sideEffects: None
+    timeoutSeconds: 5
+{{- end -}}
+

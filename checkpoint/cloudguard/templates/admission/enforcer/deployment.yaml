@@ -1,0 +1,118 @@
+{{- $config := fromYaml (include "admission.enforcer.config" .) -}}
+{{ if $config.featureConfig.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    agentVersion: {{ $config.agentConfig.tag }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+spec:
+  replicas: {{ $config.agentConfig.replicaCount }}
+  selector:
+    matchLabels:
+{{ include "common.labels" $config | indent 6 }}
+  template:
+    metadata:
+      annotations:
+{{ include "common.pod.annotations" $config | indent 8 }}
+        # adding it so workload will be restarted to be updated with a certificate that was re-generated
+        timestamp: {{ now | quote }}
+      labels:
+{{ include "common.labels" $config | indent 8 }}
+    spec:
+{{ include "common.pod.properties" $config | indent 6 }}
+      securityContext:
+        runAsUser: 1000
+      containers:
+      # gsl (note: should be first to simplify Pod startup)
+      - {{ $containerConfig := merge $config (dict "containerName" "gsl") -}}
+        name: {{ $containerConfig.containerName }}
+        image: {{ template "agent.sidecar.image" $containerConfig }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["node"]
+        args: ["/gsl-engine/index.js"]
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+        {{- if $config.agentConfig.gsl.resources }}
+        resources:
+{{ toYaml $config.agentConfig.gsl.resources | indent 10}}
+        {{- end }}
+      # Main container
+      - name: {{ $config.agentName }}
+        image: {{ template "agent.main.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/enforcer"]
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+        env:
+{{ include "user.defined.env" $config | indent 8 }}
+        - name: NAMESPACE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: FAILURE_POLICY_INTERVAL_HOURS
+          value: {{ $config.agentConfig.failurePolicyIntervalHours | quote }}
+        volumeMounts:
+        - name: webhook-certs
+          mountPath: /etc/certs
+          readOnly: true
+        - name: logs
+          mountPath: /admission/alerts
+        - name: metrics
+          mountPath: /metric
+        {{- if $config.agentConfig.resources }}
+        resources:
+{{ toYaml $config.agentConfig.resources | indent 10}}
+        {{- end }}
+        ports:
+        - containerPort: 8080
+        startupProbe:
+          tcpSocket:
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 5
+      # fluentbit
+      - name: fluentbit
+        image: {{ template "agent.fluentbit.image" $config }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+        env:
+{{ include "fluentbit.env" $config | indent 8 }}
+        - name: CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI
+          value: {{ template "cloudguardURL_path" . }}admissioncontrolleralerts
+        - name: CP_KUBERNETES_METRIC_URI
+          value: {{ template "cloudguardURL_path" . }}agenttelemetry
+        {{- if $config.agentConfig.fluentbit.resources }}
+        resources:
+{{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
+        {{- end }}
+        volumeMounts:
+        - name: config-volume-fluentbit
+          mountPath: /fluent-bit/etc/fluent-bit.conf
+          subPath: fluent-bit.conf
+        - name: logs
+          mountPath: /admission/alerts
+        - name: metrics
+          mountPath: /metric
+      volumes:
+      - name: webhook-certs
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}
+      - name: config-volume-fluentbit
+        configMap:
+          name: {{ template "agent.resource.name" $config }}-fluentbit
+      - name: logs
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Mi
+      - name: metrics
+        emptyDir: {}
+{{- end -}}
+

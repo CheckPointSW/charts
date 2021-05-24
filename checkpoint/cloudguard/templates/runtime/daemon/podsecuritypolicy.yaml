@@ -1,0 +1,68 @@
+{{- $config := fromYaml (include "runtime.daemon.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+{{- if .Values.rbac.pspEnabled -}}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true #must be true because priviliged=true
+  hostPID: false
+  hostIPC: false
+  hostNetwork: true
+  volumes:
+  - 'secret'
+  - 'configMap'
+  - 'hostPath'
+  - 'emptyDir'
+  allowedHostPaths:
+  - pathPrefix: /var/run/docker.sock
+    readOnly: true
+  - pathPrefix: /boot
+    readOnly: true
+  - pathPrefix: /lib/modules
+    readOnly: true
+  - pathPrefix: /usr
+    readOnly: true
+  - pathPrefix: /var/lib/docker
+    readOnly: true
+  - pathPrefix: /dev
+    readOnly: false
+  - pathPrefix: /proc
+    readOnly: true
+  - pathPrefix: /tmp
+    readOnly: false
+  - pathPrefix: /sys/kernel/debug
+    readOnly: true
+  - pathPrefix: /etc
+    readOnly: true
+  fsGroup:
+    rule: 'MayRunAs' # Allows the range but not sets default
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+  runAsUser:
+    rule: 'RunAsAny'
+  runAsGroup:
+    rule: 'MayRunAs' # Allows the range but not sets default
+    ranges:
+    - min: 1
+      max: 65535
+  supplementalGroups:
+    rule: 'MayRunAs' # Allows the range but not sets default
+    ranges:
+      # Forbid adding the root group.
+    - min: 1
+      max: 65535
+  seLinux:
+    # This policy assumes the nodes are using AppArmor rather than SELinux.
+    rule: 'RunAsAny'
+{{- end -}}
+{{- end -}}

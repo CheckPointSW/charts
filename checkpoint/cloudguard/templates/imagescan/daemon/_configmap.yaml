@@ -1,0 +1,12 @@
+{{- define "imagescan.daemon.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agent.resource.name" .config }}
+  namespace: {{ .config.Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" .config | indent 4 }}
+data:
+  {{ include "agent.full.name" .config }}.crt: |
+{{ .crt | b64dec | indent 4 }}
+{{- end -}}

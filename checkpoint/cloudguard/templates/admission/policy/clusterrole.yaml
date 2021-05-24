@@ -1,0 +1,20 @@
+{{- $config := fromYaml (include "admission.policy.config" .) -}}
+{{ if $config.featureConfig.enabled }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+rules:  
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  resourceNames:
+{{/* TODO: replace with reference to generated name? */}}
+  - cloudguard-enforcer-webhook
+  verbs:
+  - patch
+{{ end }}

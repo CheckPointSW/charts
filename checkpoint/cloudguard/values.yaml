@@ -1,0 +1,427 @@
+### Cluster-wide parameters
+
+## Check Point CloudGuard  cluster ID
+## Example: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+clusterID:
+
+## CloudGuard datacenter: usea1 [default], euwe1, apso1 etc.
+datacenter: usea1
+
+## CloudGuard telemetryVersion: 0.0.1, 0.0.2 etc.
+telemetryVersion: 0.0.2
+
+## Check Point CloudGuard Credentials
+## Example
+## API Secret: "abcdefghijklmnopqrstvuwxyz"
+## API ID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+credentials:
+  secret:
+  user: 
+
+rbac:
+  ## Specifies whether a custom PSP should be defined
+  pspEnabled: false
+
+## Image registry settings
+imageRegistry:
+  url: quay.io
+  authEnabled: true
+  user: "checkpoint+public_access"
+  password: 64DILXL1OVTI9O7ZXVPVBV9703XVCS4210UIKLPSBYM2ES0PLSENPDCMKZF1V62S
+
+## Image Pull Policy.
+imagePullPolicy: Always
+
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: 
+  seccomp: runtime/default
+  apparmor: {}
+
+## Proxy settings 
+## Examples:
+## proxy: http://example.com:443
+## proxy: $HTTPS_PROXY
+proxy: {}
+
+containerRuntime: docker
+
+### Inventory agent settings
+inventory:
+  agent:
+
+    ## Specify image and tag
+    image: checkpoint/consec-inventory-agent
+    tag: 1.2.1
+
+    ## Specify existing service account name ("" to create)
+    serviceAccountName: ""
+
+    replicaCount: 1
+
+    ## Extra environment variables passed to the container
+    env: []
+
+    ## Configure resource requests and limits
+    ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+    resources: {}
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+    ## Configuration options for nodeSelector, tolerations and affinity for pod
+    ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+### Addons configuration
+### Each addon may be disabled
+addons:
+
+## Image Scan Add-on
+  imageScan:
+    enabled: false
+    daemon:
+
+      ## Specify image and tag
+      image: checkpoint/consec-imagescan-daemon
+      tag: 0.3.1
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        limits:
+          cpu: 100m
+          memory: 50Mi
+        requests:
+          cpu: 100m
+          memory: 50Mi
+
+      shim:
+        ## Specify image and tag
+        image: checkpoint/consec-imagescan-shim
+        tag: 0.3.1
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources:
+          limits:
+            cpu: 100m
+            memory: 50Mi
+          requests:
+            cpu: 100m
+            memory: 50Mi
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations:
+      - operator: Exists
+      affinity: {}
+
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+    engine:
+      ## Specify image and tag
+      image: checkpoint/consec-imagescan-engine
+      tag: 0.3.1
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 4000Mi
+        requests:
+          cpu: 200m
+          memory: 500Mi
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+      
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+
+## Flow Logs Add-on
+  flowLogs:
+    enabled: false
+    daemon:
+      ## Specify image and tag
+      image: checkpoint/consec-flowlogs-daemon
+      tag: 0.1.1
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Log Level values: error, warn, info, debug, trace
+      logLevel: info
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        limits:
+          cpu: 100m
+          memory: 100Mi
+        requests:
+          cpu: 30m
+          memory: 30Mi
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations:
+      - operator: Exists
+      affinity: {}
+
+
+## Admission Control Add-on 
+  admissionControl:
+    enabled: false
+    policy:
+      ## Specify image and tag
+      image: checkpoint/consec-admission-policy
+      tag: 0.1.1
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      affinity: {}
+      tolerations: []
+
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi    
+
+    enforcer:
+      ## Specify image and tag
+      image: checkpoint/consec-admission-enforcer
+      tag: 0.1.1
+
+      failurePolicyIntervalHours: 24
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      replicaCount: 2
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      gsl:
+        ## Specify image and tag
+        image: checkpoint/consec-admission-gsl
+        tag: 0.1.1
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations: []
+      affinity: {}
+
+
+## Runtime Protection Add-on 
+  runtimeProtection:
+    enabled: false
+    BPF: true
+
+    daemon:
+      ## Main container settings
+      ## Specify image and tag
+      image: checkpoint/consec-runtime-daemon
+      tag: 0.0.369
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        requests:
+          cpu: 100m
+          memory: 250Mi
+        limits:
+          cpu: 2000m
+          memory: 1Gi
+
+      ## Sidecars
+      probe:
+        ## Specify image and tag
+        image: checkpoint/consec-runtime-probe
+        tag: 0.27.1-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+#          requests:
+#            cpu: 100m
+#            memory: 128Mi
+#          limits:
+#            cpu: 100m
+#            memory: 128Mi
+
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+
+        ## Configure resource requests and limits
+        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources: {}
+        #  limits:
+        #    cpu: 100m
+        #    memory: 128Mi
+        #  requests:
+        #    cpu: 100m
+        #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector:
+        beta.kubernetes.io/os: linux        
+      tolerations:
+      - operator: Exists
+      affinity: {}
+
+    policy:
+      ## Main container settings
+
+      ## Specify custom image ("" to use default)
+      image: checkpoint/consec-runtime-policy
+      tag: 0.2.0
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources: {}
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi  
+
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: {}
+      tolerations: []       
+      affinity: {}
