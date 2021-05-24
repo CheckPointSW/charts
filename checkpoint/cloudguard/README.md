@@ -4,6 +4,8 @@
 
 This chart deploys the agents required by [Check Point CloudGuard](https://secure.dome9.com/) to provide Inventory Management, Posture Management, Image Assurance, Visibility, Threat Intelligence, Runtime Protection, Admission Control, and Monitoring capabilities. 
 
+Note: notice that some of the above capabilities require enrollment in the Early Availability program (contact a Check Point representative for more details).
+
 ## Prerequisites
 
 General
@@ -27,8 +29,8 @@ For the Runtime Protection feature
 To install the chart with the chosen release name (e.g. `my-release`), run:
 
 ```bash
-$ helm repo add checkpoint-ea https://raw.githubusercontent.com/CheckPointSW/charts/ea/repository/
-$ helm install my-release checkpoint-ea/cloudguard --set credentials.user=[CloudGuard API Key] --set credentials.secret=[CloudGuard API Secret] --set clusterID=[Cluster ID] --set imageRegistry.user=[Registry Username] --set imageRegistry.password=[Registry Password] --namespace [Namespace] --create-namespace
+$ helm repo add checkpoint https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/
+$ helm install my-release checkpoint/cloudguard --set credentials.user=[CloudGuard API Key] --set credentials.secret=[CloudGuard API Secret] --set clusterID=[Cluster ID] --namespace [Namespace] --create-namespace
 ```
 
 These are the additional optional flags to enable add-ons:
@@ -43,6 +45,9 @@ $ --set addons.runtimeProtection.enabled=true
 
 This command deploys an invetory agent as well as optional add-on agents.
 
+**Note**: the following add-ons require enrollment in the Early Availability program:
+* Threat Intelligence (flowLogs)
+* Runtime Protection (runtimeProtection)
 
 > **Tip**: List all releases using `helm list --namespace [Namespace]`
 
@@ -53,7 +58,7 @@ To upgrade the deployment and/or to add/remove additional feature run:
 
 ```bash
 $ helm repo update
-$ helm upgrade my-release checkpoint-ea/cloudguard --set credentials.user=[CloudGuard API Key] --set credentials.secret=[CloudGuard API Secret] --set clusterID=[Cluster ID] --set addons.imageScan.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --set imageRegistry.user=[Registry Username] --set imageRegistry.password=[Registry Password] --namespace [Namespace]
+$ helm upgrade my-release checkpoint-ea/cloudguard --set credentials.user=[CloudGuard API Key] --set credentials.secret=[CloudGuard API Secret] --set clusterID=[Cluster ID] --set addons.imageScan.enabled=[true/false] --set addons.flowLogs.enabled=[true/false] --namespace [Namespace]
 ```
 
 ## Uninstalling the Chart

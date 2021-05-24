@@ -15,19 +15,19 @@ telemetryVersion: 0.0.2
 ## API Secret: "abcdefghijklmnopqrstvuwxyz"
 ## API ID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 credentials:
-  secret: 
+  secret:
   user: 
 
 rbac:
   ## Specifies whether a custom PSP should be defined
   pspEnabled: false
 
-## Image registry settings (quay.io for EA, docker hub for GA)
+## Image registry settings
 imageRegistry:
   url: quay.io
   authEnabled: true
-  user: 
-  password: 
+  user: "checkpoint+public_access"
+  password: 64DILXL1OVTI9O7ZXVPVBV9703XVCS4210UIKLPSBYM2ES0PLSENPDCMKZF1V62S
 
 ## Image Pull Policy.
 imagePullPolicy: Always

@@ -16,11 +16,11 @@ spec:
   template:
     metadata:
       annotations:
-{{ include "common.pod.annotations" $config | indent 8 }} 
+{{ include "common.pod.annotations" $config | indent 8 }}
       labels:
 {{ include "common.labels" $config | indent 8 }}
     spec:
-{{ include "common.pod.properties" $config | indent 6 }}    
+{{ include "common.pod.properties" $config | indent 6 }}
       securityContext:
         runAsUser: {{ include "cloudguard.nonroot.user" . }}
       containers:
@@ -31,8 +31,7 @@ spec:
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume
-        command: ["/bin/sh"]
-        args: ["-c", "/inventory"]
+        command: ["/inventory"]
         {{- if $config.agentConfig.resources }}
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
