@@ -25,7 +25,7 @@ spec:
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         securityContext:
           capabilities:
             add: [ "SYS_ADMIN", "SYS_RESOURCE", "NET_ADMIN" ]

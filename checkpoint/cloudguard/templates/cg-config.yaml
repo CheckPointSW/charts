@@ -7,4 +7,4 @@ metadata:
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 data:
-  clusterID: {{ required "CloudGuard Cluster ID is required" .Values.clusterID | quote }}
+  clusterID: {{ required "CloudGuard Cluster ID is required" $config.Values.clusterID | quote }}

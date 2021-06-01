@@ -1,5 +1,5 @@
 {{- $config := fromYaml (include "inventory.agent.config" .) -}}
-{{- if .Values.rbac.pspEnabled }}
+{{- if $config.Values.rbac.pspEnabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
