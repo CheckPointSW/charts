@@ -31,7 +31,7 @@ spec:
       - {{ $containerConfig := merge $config (dict "containerName" "gsl") -}}
         name: {{ $containerConfig.containerName }}
         image: {{ template "agent.sidecar.image" $containerConfig }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         command: ["node"]
         args: ["/gsl-engine/index.js"]
         securityContext:
@@ -44,7 +44,7 @@ spec:
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         command: ["/enforcer"]
         securityContext:
           runAsNonRoot: true
@@ -65,6 +65,8 @@ spec:
           mountPath: /admission/alerts
         - name: metrics
           mountPath: /metric
+        - name: metrics-tail
+          mountPath: /metric-tail
         {{- if $config.agentConfig.resources }}
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10}}
@@ -79,16 +81,16 @@ spec:
       # fluentbit
       - name: fluentbit
         image: {{ template "agent.fluentbit.image" $config }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         securityContext:
           allowPrivilegeEscalation: false
           runAsUser: 1000
         env:
 {{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI
-          value: {{ template "cloudguardURL_path" . }}admissioncontrolleralerts
+          value: {{ template "cloudguardURL_path" $config }}admissioncontrolleralerts
         - name: CP_KUBERNETES_METRIC_URI
-          value: {{ template "cloudguardURL_path" . }}agenttelemetry
+          value: {{ template "cloudguardURL_path" $config }}agenttelemetry
         {{- if $config.agentConfig.fluentbit.resources }}
         resources:
 {{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
@@ -101,6 +103,8 @@ spec:
           mountPath: /admission/alerts
         - name: metrics
           mountPath: /metric
+        - name: metrics-tail
+          mountPath: /metric-tail
       volumes:
       - name: webhook-certs
         secret:
@@ -113,6 +117,8 @@ spec:
           medium: Memory
           sizeLimit: 10Mi
       - name: metrics
+        emptyDir: {}
+      - name: metrics-tail
         emptyDir: {}
 {{- end -}}
 

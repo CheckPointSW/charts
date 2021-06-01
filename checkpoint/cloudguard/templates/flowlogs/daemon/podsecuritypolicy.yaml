@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "flowlogs.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- if .Values.rbac.pspEnabled -}}
+{{- if $config.Values.rbac.pspEnabled -}}
 {{ if .Capabilities.APIVersions.Has "policy/v1beta1" }}
 apiVersion: policy/v1beta1
 {{ else }}
@@ -12,7 +12,7 @@ metadata:
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
   annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ $config.Values.podAnnotations.seccomp }}
 spec:
   privileged: false
   # Required to prevent escalations to root.

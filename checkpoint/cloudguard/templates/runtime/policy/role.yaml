@@ -11,7 +11,7 @@ rules:
 - apiGroups: ["runtimeprotection.cloudguard.checkpoint.com"]
   resources: ["*"]
   verbs: ["update", "list", "create", "delete"]
-{{- if .Values.rbac.pspEnabled }}
+{{- if $config.Values.rbac.pspEnabled }}
 - apiGroups: [ "policy" ]
   resources: [ "podsecuritypolicies" ]
   verbs: ["use"]
