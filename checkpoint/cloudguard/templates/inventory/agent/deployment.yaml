@@ -22,12 +22,12 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" . }}
+        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
       containers:
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume

@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "imagescan.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- if .Values.rbac.pspEnabled -}}
+{{- if $config.Values.rbac.pspEnabled -}}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
@@ -9,17 +9,17 @@ metadata:
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
   annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ .Values.podAnnotations.seccomp}}
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ $config.Values.podAnnotations.seccomp }}
 spec:
   privileged: false
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
   allowedHostPaths:
-{{- if eq .Values.containerRuntime "docker" }}
+{{- if eq $config.Values.containerRuntime "docker" }}
   - pathPrefix: /var/run/docker.sock
     readOnly: true
 {{- end }}
-{{- if eq .Values.containerRuntime "containerd" }}
+{{- if eq $config.Values.containerRuntime "containerd" }}
   - pathPrefix: /
     readOnly: true
 {{- end }}

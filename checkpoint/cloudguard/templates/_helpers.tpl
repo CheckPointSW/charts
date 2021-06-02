@@ -12,6 +12,7 @@
         - .agentName (e.g., daemon)
         - .featureConfig (e.g., .Values.addons.imagescan)
         - .agentConfig (e.g., .Values.addons.imagescan.daemon)
+        - .Values - merged content of provided defaults.yaml, values.yaml and values provided during installation (CLI and values file)
     */ -}}
 {{- define "agent.full.name" -}}
 {{ printf "%s-%s" .featureName .agentName }}
@@ -183,8 +184,15 @@ tls.verify      On
     Command         find {{ .metricPath }} -type f | xargs cat 
     Tag             metrics
     Buf_Size        8mb
-    Interval_Sec    150
+    Interval_Sec    300
     Interval_NSec   0
+[INPUT]
+    Name             tail
+    Path             {{ .metricTailPath }}
+    Tag              metrics
+    Mem_Buf_Limit    8mb
+    Refresh_Interval 3
+    Read_from_Head   true
 [OUTPUT]
     Match           metrics
     Uri             ${CP_KUBERNETES_METRIC_URI}
@@ -215,6 +223,8 @@ tls.verify      On
     subPath: fluent-bit.conf
   - name: metrics
     mountPath: /metric
+  - name: metrics-tail
+    mountPath: /metric-tail
 {{- end -}}
 
 {{/*
@@ -233,7 +243,7 @@ key: {{ $cert.Key | b64enc }}
   Return Dome9 subdomain in format xxN e.g. "eu1", "ap3" etc. For us* only return an empty string
 */}}
 {{- define "dome9.subdomain" -}}
-{{- $datacenter := lower $.Values.datacenter -}}
+{{- $datacenter := lower .Values.datacenter -}}
 {{- if has $datacenter (list "us" "us1" "usea1") -}}
 {{- printf "" -}}
 {{- else if has $datacenter (list "eu" "eu1" "euwe1") -}}
@@ -245,7 +255,7 @@ key: {{ $cert.Key | b64enc }}
 {{- else if has $datacenter (list "ap3" "apso1") -}}
 {{- printf "ap3" -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1')"  $.Values.datacenter -}}
+{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1')"  .Values.datacenter -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -254,8 +264,8 @@ key: {{ $cert.Key | b64enc }}
   Return backend URL
 */}}
 {{- define "dome9.url" -}}
-{{- if $.Values.cloudguardURL -}}
-{{- printf "%s" $.Values.cloudguardURL -}}
+{{- if .Values.cloudguardURL -}}
+{{- printf "%s" .Values.cloudguardURL -}}
 {{- else -}}
 {{- $subdomain := (include "dome9.subdomain" .) -}}
 {{- if eq $subdomain "" -}}
@@ -286,4 +296,13 @@ key: {{ $cert.Key | b64enc }}
 {{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker' [default], 'containerd')"  .Values.containerRuntime -}}
 {{- fail $err -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+  Construct "root" context (dict) from defaults.yaml included in the chart and the effective .Values of the release (overriding defaults)
+*/}}
+{{- define "get.root" -}}
+{{- $defaults := (.Files.Get "defaults.yaml" | fromYaml ) }}
+{{- $merged := deepCopy . | mustMergeOverwrite (dict "Values" $defaults) | toYaml }}
+{{- $merged }}
 {{- end -}}

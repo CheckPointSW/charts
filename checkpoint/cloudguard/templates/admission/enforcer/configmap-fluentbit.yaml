@@ -21,9 +21,9 @@ data:
     [OUTPUT]
         Match            ac-alert
         Uri              ${CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI}
-{{ include "fluentbit-http-output-param.conf" . | indent 8 }}        
+{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
         
-{{ $params := dict "metricPath" "/metric" "agentVersion" $config.agentConfig.tag }}
+{{ $params := dict "metricPath" "/metric" "agentVersion" $config.agentConfig.tag "metricTailPath" "/metric-tail/*/*" }}
 {{ include "fluentbit-metric.conf" $params | indent 4 }}
 
 {{- end -}}

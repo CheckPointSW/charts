@@ -25,17 +25,14 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" . }}
+        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
       containers:
 {{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        {{- if $config.agentConfig.resources }}
-        resources:
-{{ toYaml $config.agentConfig.resources | indent 10 }}
-        {{- end }}
+        imagePullPolicy: {{ $config.Values.imagePullPolicy }}
+{{- include "imagescan.engine.resources" $config | indent 8 }}
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
@@ -50,16 +47,27 @@ spec:
           mountPath: /etc/clientkey
         - name: metrics
           mountPath: /metric
+        - name: metrics-tail
+          mountPath: /metric-tail
         command: ["/central_agent"]
         env:
 {{ include "common.env" $config | indent 8 }}
         - name: NODE_AGENT_SELECTOR
           value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
+          {{/* TODO: investigate why $config instead of "." fails */}}
         - name: RELEASE_NAME
           value: {{ .Release.Name }}
         - name: CLOUDGUARD_REGION
           value: {{ include "dome9.subdomain" $config | default "us" }}
-{{- if eq .Values.containerRuntime "containerd" }}
+{{- if $config.featureConfig.maxImageSizeMb }}
+{{- if eq ( $config.featureConfig.maxImageSizeMb | int ) 0 }}
+{{- fail "\n\nimageScan: wrong value for maxImageSizeMb, should be integer" -}}
+{{- else }}
+        - name: MAX_SCAN_IMAGE_SIZE_MB
+          value: "{{ $config.featureConfig.maxImageSizeMb }}"
+{{- end }}
+{{- end }}
+{{- if eq $config.Values.containerRuntime "containerd" }}
         - name: IS_CONTAINERD
           value: "true"
 {{- end }}
@@ -70,6 +78,7 @@ spec:
       - name: servercert-volume
         configMap:
           name: {{ template "imagescan.daemon.resource.name" . }}
+          {{/* TODO: investigate why $config instead of "." fails */}}
       - name: clientcert-volume
         configMap:
           name: {{ template "agent.resource.name" $config }}
@@ -80,5 +89,7 @@ spec:
         configMap:
           name: {{ template "agent.resource.name" $config }}-metrics
       - name: metrics
+        emptyDir: {}
+      - name: metrics-tail
         emptyDir: {}
 {{- end -}}
