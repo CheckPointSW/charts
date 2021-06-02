@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "imagescan.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- if .Values.rbac.pspEnabled -}}
+{{- if $config.Values.rbac.pspEnabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:

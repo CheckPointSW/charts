@@ -13,7 +13,7 @@ data:
         Flush       5
         Daemon      Off
         Log_Level   info
-{{ $params := dict "metricPath" "/metric" "agentVersion" .config.agentConfig.tag }}
+{{ $params := dict "metricPath" "/metric" "agentVersion" .config.agentConfig.tag "metricTailPath" "/metric-tail/*/*" }}
 {{ include "fluentbit-metric.conf" $params | indent 4 }}
 {{- end -}}
 {{- end -}}

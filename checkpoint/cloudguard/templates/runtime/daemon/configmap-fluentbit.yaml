@@ -32,19 +32,19 @@ data:
     [OUTPUT]
         Match            rp-alert
         Uri              ${CP_KUBERNETES_RUNTIME_ALERT_URI}
-{{ include "fluentbit-http-output-param.conf" . | indent 8 }}
+{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
 
     [OUTPUT]
         Match            rp-profiling
         Uri              ${CP_KUBERNETES_RUNTIME_PROFILING_URI}
-{{ include "fluentbit-http-output-param.conf" . | indent 8 }}
+{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
         
     [OUTPUT]
         Match           rp-telemetry
         Uri             ${CP_KUBERNETES_RUNTIME_TELEMETRY_URI}
-{{ include "fluentbit-http-output-param.conf" . | indent 8 }}
-        
-{{ $params := dict "metricPath" "/rp4c/metric" "agentVersion" $config.agentConfig.tag }}
+{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
+
+{{ $params := dict "metricPath" "/rp4c/metric" "agentVersion" $config.agentConfig.tag "metricTailPath" "/rp4c/metric/*" }}
 {{ include "fluentbit-metric.conf" $params | indent 4 }}
 
 {{- end -}}
