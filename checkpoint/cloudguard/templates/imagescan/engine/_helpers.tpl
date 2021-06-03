@@ -15,15 +15,16 @@
 {{- define "imagescan.engine.resources" -}}
 {{- if .agentConfig.resources }}
 resources:
+  requests:
+    cpu: {{ .agentConfig.resources.requests.cpu }}
+    memory: {{ .agentConfig.resources.requests.memory }}
   limits:
     cpu: {{ .agentConfig.resources.limits.cpu }}
 {{- if .featureConfig.maxImageSizeMb }}
+{{- /*the memory consumption of imagescan engine is up to 2x the largest image size it is configured to scan*/}}
     memory: {{ mul 2 .featureConfig.maxImageSizeMb }}Mi
 {{- else }}
     memory: {{ .agentConfig.resources.limits.memory }}
 {{- end }}
-  requests:
-    cpu: {{ .agentConfig.resources.requests.cpu }}
-    memory: {{ .agentConfig.resources.requests.memory }}
 {{- end -}}
 {{- end }}
