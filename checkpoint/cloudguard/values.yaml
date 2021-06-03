@@ -21,10 +21,3 @@ credentials:
   secret:
   user:
 
-### Addons configuration
-### IMPORTANT: do NOT leave empty dictionaries
-addons:
-  admissionControl:
-    enabled: true
-  imageScan:
-    enabled: true
