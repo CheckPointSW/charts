@@ -66,7 +66,7 @@ spec:
         {{- end }}
       containers:
       # fluentbit
-      # the fluentbit container needs to be before the daemon container 
+      # the fluentbit container needs to be before the daemon container
       # so the fluentbit will be up before the daemon to send message that daemon will send once it is up (like telemetry)
       - name: fluentbit
         image: {{ template "agent.fluentbit.image" $config }}
@@ -120,7 +120,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: SBA_TELEMETRY_SAVE_TO_FILE
-          value: "1"             
+          value: "1"
+        - name: SBA_CONTAINER_RUNTIME
+          value: {{ $config.Values.containerRuntime }}
         {{- if $config.featureConfig.BPF }}
         - name: SYSDIG_BPF_PROBE
           value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
@@ -138,12 +140,19 @@ spec:
           mountPath: /metric-tail
         - name: rp4c-telemetry
           mountPath: /rp4c/telemetry
+{{- if eq $config.Values.containerRuntime "docker" }}
         - name: docker-sock
           mountPath: /var/run/docker.sock
           readOnly: true
         - name: varlibdocker-vol
           mountPath: /var/lib/docker
           readOnly: true
+{{- end }}
+{{- if eq $config.Values.containerRuntime "containerd" }}
+        - name: containerd-sock
+          mountPath: /run/containerd/containerd.sock
+          readOnly: true
+{{- end }}
         - name: host-proc-vol
           mountPath: /host/proc
           readOnly: true
@@ -167,14 +176,26 @@ spec:
       - name: rp4c-profiling
         emptyDir: {}
       - name: rp4c-metric
-        emptyDir: {}   
+        emptyDir: {}
       - name: metrics-tail
         emptyDir: {}
       - name: rp4c-telemetry
-        emptyDir: {}        
+        emptyDir: {}
+{{- if eq $config.Values.containerRuntime "docker" }}
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock
+          type: Socket
+      - name: varlibdocker-vol
+        hostPath:
+          path: /var/lib/docker
+{{- end }}
+{{- if eq $config.Values.containerRuntime "containerd" }}
+      - name: containerd-sock
+        hostPath:
+          path: /run/containerd/containerd.sock
+          type: Socket
+{{- end }}
       - name: boot-vol
         hostPath:
           path: /boot
@@ -184,9 +205,6 @@ spec:
       - name: usr-vol
         hostPath:
           path: /usr
-      - name: varlibdocker-vol
-        hostPath:
-          path: /var/lib/docker
       - name: host-proc-vol
         hostPath:
           path: /proc

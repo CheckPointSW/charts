@@ -93,7 +93,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 0.4.0
+      tag: 0.4.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -115,7 +115,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 0.4.0
+        tag: 0.4.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -152,7 +152,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 0.4.0
+      tag: 0.4.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
