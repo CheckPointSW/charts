@@ -169,6 +169,8 @@ Format          json_lines
 Host            ${CP_KUBERNETES_DOME9_URL}
 Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
 Header          Node-Name   ${NODE_NAME}
+Header          Agent-Version   {{ .agentVersion }}
+Header          Telemetry-Version  ${TELEMETRY_VERSION}
 Compress        gzip
 http_User       ${CP_KUBERNETES_USER}
 http_Passwd     ${CP_KUBERNETES_PASS}
@@ -196,8 +198,6 @@ tls.verify      On
 [OUTPUT]
     Match           metrics
     Uri             ${CP_KUBERNETES_METRIC_URI}
-    Header          Agent-Version   {{ .agentVersion }}
-    Header          Telemetry-Version  ${TELEMETRY_VERSION}
 {{ include "fluentbit-http-output-param.conf" . | indent 4 }}
 {{- end -}}
 
