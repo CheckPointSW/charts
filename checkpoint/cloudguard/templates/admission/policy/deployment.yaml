@@ -72,7 +72,7 @@ spec:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
       - name: config-volume-fluentbit
         configMap:
-          name: {{ template "agent.resource.name" $config }}-metrics
+          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
       - name: metrics
         emptyDir: {}
       - name: metrics-tail

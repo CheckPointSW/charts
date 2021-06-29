@@ -111,7 +111,7 @@ spec:
           secretName: {{ template "agent.resource.name" $config }}
       - name: config-volume-fluentbit
         configMap:
-          name: {{ template "agent.resource.name" $config }}-fluentbit
+          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
       - name: logs
         emptyDir:
           medium: Memory

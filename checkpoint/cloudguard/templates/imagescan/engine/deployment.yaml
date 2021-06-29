@@ -67,7 +67,7 @@ spec:
           value: "{{ $config.featureConfig.maxImageSizeMb }}"
 {{- end }}
 {{- end }}
-{{- if eq $config.Values.containerRuntime "containerd" }}
+{{- if eq $config.containerRuntime "containerd" }}
         - name: IS_CONTAINERD
           value: "true"
 {{- end }}
@@ -87,7 +87,7 @@ spec:
           secretName: {{ template "agent.resource.name" $config }}
       - name: config-volume-fluentbit
         configMap:
-          name: {{ template "agent.resource.name" $config }}-metrics
+          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
       - name: metrics
         emptyDir: {}
       - name: metrics-tail
