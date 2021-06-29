@@ -15,11 +15,11 @@ spec:
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
   allowedHostPaths:
-{{- if eq $config.Values.containerRuntime "docker" }}
+{{- if eq $config.containerRuntime "docker" }}
   - pathPrefix: /var/run/docker.sock
     readOnly: true
 {{- end }}
-{{- if eq $config.Values.containerRuntime "containerd" }}
+{{- if eq $config.containerRuntime "containerd" }}
   - pathPrefix: /
     readOnly: true
 {{- end }}

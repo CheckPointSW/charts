@@ -48,7 +48,7 @@ podAnnotations:
 ## proxy: $HTTPS_PROXY
 proxy: {}
 
-containerRuntime: docker
+containerRuntime:
 
 ### Inventory agent settings
 inventory:
@@ -56,7 +56,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.2.1
+    tag: 1.3.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -93,7 +93,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 0.4.1
+      tag: 0.4.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -115,7 +115,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 0.4.1
+        tag: 0.4.2
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -152,7 +152,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 0.4.1
+      tag: 0.4.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -343,7 +343,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.425
+      tag: 0.0.489
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""

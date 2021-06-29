@@ -1,6 +1,5 @@
 {{- $config := fromYaml (include "imagescan.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- include "container.runtime.validate" $config -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -36,7 +35,7 @@ spec:
             add:
             - NET_BIND_SERVICE
         volumeMounts:
-{{- if eq $config.Values.containerRuntime "docker" }}
+{{- if eq $config.containerRuntime "docker" }}
         - name: docker-sock-volume
           mountPath: /var/run/docker.sock
           readOnly: true
@@ -60,11 +59,11 @@ spec:
         {{- end }}
         env:
 {{ include "user.defined.env" $config | indent 8 }}
-{{- if eq $config.Values.containerRuntime "containerd" }}
+{{- if eq $config.containerRuntime "containerd" }}
         - name: IS_CONTAINERD
           value: "true"
 {{- end }}
-{{- if eq $config.Values.containerRuntime "containerd" }}
+{{- if eq $config.containerRuntime "containerd" }}
       - {{ $containerConfig := merge $config (dict "containerName" "shim") -}} 
         name: {{ $containerConfig.containerName }} 
         image: {{ template "agent.sidecar.image" $containerConfig }}
@@ -102,7 +101,7 @@ spec:
 {{- end -}}
 {{- end }}
       volumes:
-{{- if eq $config.Values.containerRuntime "docker" }}
+{{- if eq $config.containerRuntime "docker" }}
       - name: docker-sock-volume
         hostPath:
           path: /var/run/docker.sock
@@ -138,7 +137,7 @@ spec:
 
       - name: config-volume-fluentbit
         configMap:
-          name: {{ template "agent.resource.name" $config }}-metrics
+          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
       - name: metrics
         emptyDir: {}
       - name: metrics-tail
