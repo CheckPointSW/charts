@@ -11,11 +11,23 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ $config.Values.podAnnotations.seccomp }}
 spec:
-  privileged: true
-  allowPrivilegeEscalation: true #must be true because priviliged=true
   hostPID: false
   hostIPC: false
-  hostNetwork: true
+  hostNetwork: false
+{{- if $config.featureConfig.BPF }}
+  privileged: false
+  allowPrivilegeEscalation: false
+  allowedCapabilities:
+  - SYS_ADMIN
+  - SYS_RESOURCE
+  - SYS_NICE
+  - SYS_PTRACE
+  - FOWNER
+  - SYS_PACCT
+{{- else }}
+  privileged: true
+  allowPrivilegeEscalation: true
+{{- end }}
   volumes:
   - 'secret'
   - 'configMap'

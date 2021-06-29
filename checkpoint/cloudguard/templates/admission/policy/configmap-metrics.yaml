@@ -1,18 +1,5 @@
 {{- $config := fromYaml (include "admission.policy.config" .) -}}
 {{ if $config.featureConfig.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "agent.resource.name" $config }}-metrics
-  namespace: {{ .Release.Namespace }}
-  labels:
-{{ include "common.labels.with.chart" $config | indent 4 }}
-data:
-  fluent-bit.conf: |
-    [SERVICE]
-        Flush       5
-        Daemon      Off
-        Log_Level   info
-{{ $params := dict "metricPath" "/metric" "agentVersion" $config.agentConfig.tag "metricTailPath" "/metric-tail/*/*" }}
-{{ include "fluentbit-metric.conf" $params | indent 4 }}
+{{ template "telemetry.configmap" dict "config" $config }}
 {{- end -}}
+

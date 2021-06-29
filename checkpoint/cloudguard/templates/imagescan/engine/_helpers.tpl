@@ -4,6 +4,7 @@
 {{- $_ := set $config "agentName" "engine" }}
 {{- $_ := set $config "featureConfig" $config.Values.addons.imageScan }}
 {{- $_ := set $config "agentConfig" $config.Values.addons.imageScan.engine }}
+{{- $_ := set $config "containerRuntime" (include "get.container.runtime" .) }}
 {{- $config | toYaml -}}
 {{- end -}}
 
