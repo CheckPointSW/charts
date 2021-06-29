@@ -31,14 +31,22 @@
 
 {{- /* Full path to the image of the main container of the provided agent */ -}}
 {{- define "agent.main.image" -}}
-{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image .agentConfig.tag }}
+{{- $tag := .agentConfig.tag }}
+{{- if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages }}
+{{- $tag = printf "%s-debug" .agentConfig.tag }}
+{{- end }}
+{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image $tag }}
 {{- default $image .agentConfig.fullImage }}
 {{- end -}}
 
 {{- /* Full path to the image of a provided side-car container */ -}}
 {{- define "agent.sidecar.image" -}}
 {{- $containerConfig := get .agentConfig .containerName }}
-{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $containerConfig.tag }}
+{{- $tag := $containerConfig.tag }}
+{{- if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages $containerConfig.debugImage }}
+{{- $tag = printf "%s-debug" $containerConfig.tag }}
+{{- end }}
+{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $tag }}
 {{- default $image $containerConfig.fullImage }}
 {{- end -}}
 
@@ -153,6 +161,10 @@ imagePullSecrets:
       fieldPath: spec.nodeName
 - name: TELEMETRY_VERSION
   value: {{ .Values.telemetryVersion }}
+- name: POD_ID
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.uid
 
 {{- if .Values.proxy }}
 - name: HTTP_PROXY
@@ -170,7 +182,6 @@ Host            ${CP_KUBERNETES_DOME9_URL}
 Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
 Header          Node-Name   ${NODE_NAME}
 Header          Agent-Version   {{ .agentVersion }}
-Header          Telemetry-Version  ${TELEMETRY_VERSION}
 Compress        gzip
 http_User       ${CP_KUBERNETES_USER}
 http_Passwd     ${CP_KUBERNETES_PASS}
@@ -180,24 +191,36 @@ tls.verify      On
 {{- end -}}
  
 {{- /* fluentbit configmap to send metric */ -}}
-{{- define "fluentbit-metric.conf" -}}	  
+{{- define "fluentbit-metric.conf" -}}   
+[SERVICE]
+    Flush                      5
+    Daemon                     Off
+    Log_Level                  info
+    storage.path               /tmp/fb-tmp
+    storage.sync               normal
+    storage.checksum           off
+    storage.backlog.mem_limit  1M   
 [INPUT]
     Name            exec
     Command         find {{ .metricPath }} -type f | xargs cat 
     Tag             metrics
     Buf_Size        8mb
+    Mem_Buf_Limit   1mb
     Interval_Sec    300
     Interval_NSec   0
 [INPUT]
     Name             tail
     Path             {{ .metricTailPath }}
     Tag              metrics
-    Mem_Buf_Limit    8mb
+    Mem_Buf_Limit    1mb
     Refresh_Interval 3
     Read_from_Head   true
 [OUTPUT]
-    Match           metrics
-    Uri             ${CP_KUBERNETES_METRIC_URI}
+    Match                     metrics
+    Uri                       ${CP_KUBERNETES_METRIC_URI}
+    Header          Pod-Id    ${POD_ID}
+    Header          Telemetry-Version  ${TELEMETRY_VERSION}
+    Retry_Limit               3
 {{ include "fluentbit-http-output-param.conf" . | indent 4 }}
 {{- end -}}
 
@@ -290,10 +313,10 @@ key: {{ $cert.Key | b64enc }}
 17112
 {{- end }}
 
-{{- define "container.runtime.validate" -}}
+{{- define "validate.container.runtime" -}}
 {{- if has .Values.containerRuntime (list "docker" "containerd") -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker' [default], 'containerd')"  .Values.containerRuntime -}}
+{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker', 'containerd')"  .Values.containerRuntime -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -305,4 +328,27 @@ key: {{ $cert.Key | b64enc }}
 {{- $defaults := (.Files.Get "defaults.yaml" | fromYaml ) }}
 {{- $merged := deepCopy . | mustMergeOverwrite (dict "Values" $defaults) | toYaml }}
 {{- $merged }}
+{{- end -}}
+
+
+{{- define "get.container.runtime" -}}
+{{- if .Values.containerRuntime -}}
+{{- include "validate.container.runtime" . -}}
+{{- .Values.containerRuntime -}}
+{{- else -}}
+{{- $nodes := lookup "v1" "Node" "" "" -}}
+{{- if ne (len $nodes) 0 -}}
+{{/* examples for runtime version: docker://19.3.3, containerd://1.3.3 */}}
+{{- $containerRuntimeVersion := (first $nodes.items).status.nodeInfo.containerRuntimeVersion }}
+{{- $containerRuntime := first (regexSplit ":" $containerRuntimeVersion -1) }}
+{{- if has $containerRuntime (list "docker" "containerd") -}}
+{{- $containerRuntime }}
+{{- else -}}
+{{- $err := printf "\n\nERROR: Unsupported container runtime: %s" $containerRuntime -}}
+{{- fail $err -}}
+{{- end -}}
+{{- else -}}
+{{- fail "\n\nERROR: No nodes found, cannot identify container runtime. Use '--set containerRuntime=docker' or '--set containerRuntime=containerd'" -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}

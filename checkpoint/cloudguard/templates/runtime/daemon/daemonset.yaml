@@ -17,29 +17,30 @@ spec:
     metadata:
       annotations:
 {{ include "common.pod.annotations" $config | indent 8 }}
+        container.apparmor.security.beta.kubernetes.io/daemon: unconfined
       labels:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
-      hostNetwork: true
       initContainers:
       # probe (sysdig)
       - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
         name: {{ $containerConfig.containerName }}
         image: {{ template "agent.sidecar.image" $containerConfig }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
-        securityContext:
-          privileged: true
         {{- if $config.agentConfig.probe.resources }}
         resources:
 {{ toYaml $config.agentConfig.probe.resources | indent 10}}
         {{- end }}
-        env:
         {{- if $config.featureConfig.BPF }}
+        env:
         - name: HOME
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
+        {{- else }}
+        securityContext:
+          privileged: true
         {{- end }}
         volumeMounts:
         - name: boot-vol
@@ -53,9 +54,6 @@ spec:
           readOnly: true
         - name: host-etc-vol
           mountPath: /host/etc
-          readOnly: true
-        - name: host-proc-vol
-          mountPath: /host/proc
           readOnly: true
         {{- if $config.featureConfig.BPF }}
         - name: sysdig-probe-vol
@@ -122,13 +120,18 @@ spec:
         - name: SBA_TELEMETRY_SAVE_TO_FILE
           value: "1"
         - name: SBA_CONTAINER_RUNTIME
-          value: {{ $config.Values.containerRuntime }}
+          value: {{ include "get.container.runtime" . }}
         {{- if $config.featureConfig.BPF }}
         - name: SYSDIG_BPF_PROBE
           value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
         {{- end }}
         securityContext:
+        {{- if $config.featureConfig.BPF }}
+          capabilities:
+            add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT"]
+        {{- else }}
           privileged: true
+	{{- end }}
         volumeMounts:
         - name: rp4c-alerts
           mountPath: /rp4c/alerts
@@ -140,7 +143,7 @@ spec:
           mountPath: /metric-tail
         - name: rp4c-telemetry
           mountPath: /rp4c/telemetry
-{{- if eq $config.Values.containerRuntime "docker" }}
+{{- if eq $config.containerRuntime "docker" }}
         - name: docker-sock
           mountPath: /var/run/docker.sock
           readOnly: true
@@ -148,7 +151,7 @@ spec:
           mountPath: /var/lib/docker
           readOnly: true
 {{- end }}
-{{- if eq $config.Values.containerRuntime "containerd" }}
+{{- if eq $config.containerRuntime "containerd" }}
         - name: containerd-sock
           mountPath: /run/containerd/containerd.sock
           readOnly: true
@@ -170,7 +173,7 @@ spec:
       volumes:
       - name: config-volume-fluentbit
         configMap:
-            name: {{ template "agent.resource.name" $config }}-fluentbit
+            name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
       - name: rp4c-alerts
         emptyDir: {}
       - name: rp4c-profiling
@@ -181,7 +184,7 @@ spec:
         emptyDir: {}
       - name: rp4c-telemetry
         emptyDir: {}
-{{- if eq $config.Values.containerRuntime "docker" }}
+{{- if eq $config.containerRuntime "docker" }}
       - name: docker-sock
         hostPath:
           path: /var/run/docker.sock
@@ -190,7 +193,7 @@ spec:
         hostPath:
           path: /var/lib/docker
 {{- end }}
-{{- if eq $config.Values.containerRuntime "containerd" }}
+{{- if eq $config.containerRuntime "containerd" }}
       - name: containerd-sock
         hostPath:
           path: /run/containerd/containerd.sock
