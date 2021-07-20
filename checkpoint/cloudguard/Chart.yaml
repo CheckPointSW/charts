@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: 2.3.5
-version: 2.3.5
+appVersion: 2.4.0
+version: 2.4.0
 description: A Helm chart for Check Point CloudGuard Workload Security
 name: cloudguard
 keywords:
@@ -15,8 +15,5 @@ keywords:
 - threat intelligence
 - admission control
 - runtime protection
-home: https://secure.dome9.com/v2/
-icon: https://secure.dome9.com/v2/assets/images/dome9/d9-logo-white.svg
-maintainers:
-- name: Check Point
-  email: dome9@checkpoint.com
+home: https://portal.checkpoint.com
+icon: https://www.checkpoint.com/wp-content/uploads/icon-cloudguard-nav.png

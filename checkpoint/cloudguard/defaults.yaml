@@ -168,7 +168,7 @@ addons:
           memory: 500Mi
         limits:
           cpu: 1000m
-          memory: 4000Mi
+          memory: 2500Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
