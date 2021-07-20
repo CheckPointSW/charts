@@ -39,20 +39,20 @@ data:
         Uri                         ${CP_KUBERNETES_RUNTIME_ALERT_URI}
         storage.total_limit_size    100M
         Retry_Limit                 False        
-{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
+{{ include "fluentbit-http-output-param.conf" $params | indent 8 }}
 
     [OUTPUT]
         Match                       rp-profiling
         Uri                         ${CP_KUBERNETES_RUNTIME_PROFILING_URI}
         storage.total_limit_size    100M  
         Retry_Limit                 False
-{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
+{{ include "fluentbit-http-output-param.conf" $params | indent 8 }}
         
     [OUTPUT]
         Match                       rp-telemetry
         Uri                         ${CP_KUBERNETES_RUNTIME_TELEMETRY_URI}
         Retry_Limit                 3
-{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
+{{ include "fluentbit-http-output-param.conf" $params | indent 8 }}
 
 
 {{- end -}}

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This chart deploys the agents required by [Check Point CloudGuard](https://secure.dome9.com/) to provide Inventory Management, Posture Management, Image Assurance, Visibility, Threat Intelligence, Runtime Protection, Admission Control, and Monitoring capabilities. 
+This chart deploys the agents required by [Check Point CloudGuard](https://portal.checkpoint.com/) to provide Inventory Management, Posture Management, Image Assurance, Visibility, Threat Intelligence, Runtime Protection, Admission Control, and Monitoring capabilities.
 
 Note: notice that some of the above capabilities require enrollment in the Early Availability program (contact a Check Point representative for more details).
 
@@ -73,7 +73,7 @@ This command removes all the Kubernetes components associated with the chart and
 
 ## Configuration
 
-In order to get the [Check Point CloudGuard](https://secure.dome9.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point CloudGuard](https://secure.dome9.com/) website.
+In order to get the [Check Point CloudGuard](https://portal.checkpoint.com/) Cluster ID & credentials, you must first complete the Kubernetes Cluster onboarding process in [Check Point CloudGuard](https://portal.checkpoint.com/) website.
 
 Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and CloudGuard directives that map to environment variables.
 
@@ -91,7 +91,18 @@ $ helm install my-release checkpoint/cloudguard -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-The following tables list the configurable parameters of this chart and their default values.
+**Maximal image size for Image Assurance**
+
+For Image Assurance feature the default maximal image size to scan is 2GB, and the relevant imageScan-engine pod memory limit is 2.5GB. In order to configure a different maximal image size, *addons.imageScan.maxImageSizeMb* parameter should be set with the maximal image size in MB. Pay attention, using this flag defines also the memory limit of imagescan-engine pod to this value + 500MB. E.g., to scan images of size of up to 3000MB, helm install command should be appended with:
+```bash
+     --set addons.imageScan.maxImageSizeMb=3000
+```
+
+It will define memory limit for *imagescan-engine* pod to be 3.5GB.
+
+## Configurable parameters
+
+The following table list the configurable parameters of this chart and their default values.
 
 | Parameter                                                  | Description                                                     | Default                                          |
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
@@ -119,7 +130,7 @@ The following tables list the configurable parameters of this chart and their de
 | `inventory.agent.tolerations`                              | List of node taints to tolerate for Inventory agent             | `[]`                                             |
 | `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
-| `addons.imageScan.maxImageSizeMb`                          | Specifies in MiBytes maximal image size to be scanned, imageScan.engine main container memory limit will be a double of it | ``                                               |
+| `addons.imageScan.maxImageSizeMb`                          | Specifies in MiBytes maximal image size to scan, its value + 500MB will be imageScan.engine main container memory limit | ``                                               |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
 | `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`0.4.2`                                           |
 | `addons.imageScan.daemon.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |

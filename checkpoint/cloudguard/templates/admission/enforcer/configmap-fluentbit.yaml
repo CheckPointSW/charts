@@ -15,7 +15,7 @@
         Uri                         ${CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI}
         storage.total_limit_size    100M
         Retry_Limit                 False         
-{{ include "fluentbit-http-output-param.conf" $config | indent 8 }}
+{{ include "fluentbit-http-output-param.conf" $params | indent 8 }}
         
 
 {{- end -}}

@@ -22,8 +22,8 @@ resources:
   limits:
     cpu: {{ .agentConfig.resources.limits.cpu }}
 {{- if .featureConfig.maxImageSizeMb }}
-{{- /*the memory consumption of imagescan engine is up to 2x the largest image size it is configured to scan*/}}
-    memory: {{ mul 2 .featureConfig.maxImageSizeMb }}Mi
+{{- /* the memory consumption of imagescan engine is the largest image size it is configured to scan + 500Mi */}}
+    memory: {{ add 500 .featureConfig.maxImageSizeMb }}Mi
 {{- else }}
     memory: {{ .agentConfig.resources.limits.memory }}
 {{- end }}
