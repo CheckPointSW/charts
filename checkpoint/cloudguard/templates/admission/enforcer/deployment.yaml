@@ -24,8 +24,8 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
-      securityContext:
-        runAsUser: 1000
+#      securityContext:
+#        runAsUser: 1000
       containers:
       # gsl (note: should be first to simplify Pod startup)
       - {{ $containerConfig := merge $config (dict "containerName" "gsl") -}}
@@ -84,7 +84,7 @@ spec:
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         securityContext:
           allowPrivilegeEscalation: false
-          runAsUser: 1000
+#          runAsUser: 1000
         env:
 {{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI

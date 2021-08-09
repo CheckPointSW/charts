@@ -21,8 +21,8 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
-      securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
+#      securityContext:
+#        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
       containers:
       # Main container
       - name: {{ $config.agentName }}

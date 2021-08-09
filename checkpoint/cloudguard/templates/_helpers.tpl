@@ -72,7 +72,7 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 {{- /* Pod annotations commonly used in agents */ -}}
 {{- define "common.pod.annotations" -}}
 agentVersion: {{ .agentConfig.tag }}
-seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+# seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- if .Values.podAnnotations.apparmor }}
 container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name" . }}:
 {{ toYaml .Values.podAnnotations.apparmor | indent 2 }}
