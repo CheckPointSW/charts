@@ -1,0 +1,2 @@
+{{- $config := fromYaml (include "runtime.policy.config" .) -}}
+{{ template "telemetry.configmap" dict "config" $config }}

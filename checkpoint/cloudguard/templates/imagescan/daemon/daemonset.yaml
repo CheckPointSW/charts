@@ -80,12 +80,6 @@ spec:
         - name: containerd-sock-volume
           mountPath: /run/containerd/containerd.sock
           readOnly: true
-        - name: host
-          mountPath: /host
-          readOnly: true
-        - name: ld-linux
-          mountPath: /lib64/ld-linux-x86-64.so.2
-          readOnly: true
         - name: metrics
           mountPath: /metric
         - name: metrics-tail
@@ -115,14 +109,6 @@ spec:
         hostPath:
           path: /run/containerd/containerd.sock
           type: Socket
-      - name: host
-        hostPath:
-          path: /
-          type: Directory
-      - name: ld-linux
-        hostPath:
-          path: /lib64/ld-linux-x86-64.so.2
-          type: File
 {{- end }}
       - name: serverkey-volume
         secret:
