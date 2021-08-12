@@ -25,6 +25,7 @@ spec:
       securityContext:
         runAsUser: 1000
       containers:
+{{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -32,6 +33,10 @@ spec:
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume
+        - name: metrics
+          mountPath: /metric
+        - name: metrics-tail
+          mountPath: /metric-tail
         command: ["/bin/sh"]
         args: ["-c", "/runtime-policy"]
         {{- if $config.agentConfig.resources }}
@@ -47,4 +52,11 @@ spec:
       - name: secret-volume
         secret:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
+      - name: config-volume-fluentbit
+        configMap:
+          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
+      - name: metrics
+        emptyDir: {}
+      - name: metrics-tail
+        emptyDir: {}
 {{- end }}

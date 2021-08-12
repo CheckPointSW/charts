@@ -67,10 +67,6 @@ spec:
           value: "{{ $config.featureConfig.maxImageSizeMb }}"
 {{- end }}
 {{- end }}
-{{- if eq $config.containerRuntime "containerd" }}
-        - name: IS_CONTAINERD
-          value: "true"
-{{- end }}
       volumes:
       - name: secret-volume
         secret:
