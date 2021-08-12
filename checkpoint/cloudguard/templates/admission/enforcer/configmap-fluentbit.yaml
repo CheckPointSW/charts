@@ -9,6 +9,8 @@
         Tag              ac-alert
         storage.type     filesystem
         Mem_Buf_Limit    1mb
+        Buffer_Max_Size  1mb
+        Skip_Long_Lines  true
 
     [OUTPUT]
         Match                       ac-alert

@@ -215,6 +215,8 @@ tls.verify      On
     Mem_Buf_Limit    1mb
     Refresh_Interval 3
     Read_from_Head   true
+    Buffer_Max_Size  1mb
+    Skip_Long_Lines  true
 [OUTPUT]
     Match                     metrics
     Uri                       ${CP_KUBERNETES_METRIC_URI}
