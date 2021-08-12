@@ -19,7 +19,8 @@ data:
         Tag                         rp-alert
         storage.type                filesystem
         Mem_Buf_Limit               1mb
-
+        Buffer_Max_Size             1mb
+        Skip_Long_Lines             true
 
     [INPUT]
         Name                        tail
@@ -27,6 +28,8 @@ data:
         Tag                         rp-profiling
         storage.type                filesystem
         Mem_Buf_Limit               1mb
+        Buffer_Max_Size             1mb
+        Skip_Long_Lines             true        
         
     [INPUT]
         Name                        tail
