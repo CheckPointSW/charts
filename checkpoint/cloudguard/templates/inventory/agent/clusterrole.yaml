@@ -15,13 +15,20 @@ rules:
     resources: [ "daemonsets", "deployments", "replicasets", "statefulsets"]
     verbs: [ "list", "get" ]
 
+{{/* extensions/ingress deprecated in 1.22 and networking.k8s.io/ingress is supported only from 1.14 we support both */}}
+{{- if has "networking.k8s.io/v1/Ingress" .Capabilities.APIVersions }}
+  - apiGroups: [ "networking.k8s.io" ]
+    resources: [ "networkpolicies", "ingresses" ]
+    verbs: [ "list", "get" ]
+{{- else }}
   - apiGroups: [ "networking.k8s.io" ]
     resources: [ "networkpolicies" ]
     verbs: [ "list", "get" ]
 
   - apiGroups: [ "extensions" ]
     resources: [ "ingresses" ]
-    verbs: [ "list", "get" ]
+    verbs: [ "list", "get" ]  
+{{- end }}
 
   - apiGroups: [ "policy" ]
     resources: [ "podsecuritypolicies" ]
