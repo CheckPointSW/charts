@@ -23,6 +23,20 @@ spec:
       labels:
 {{ include "common.labels" $config | indent 8 }}
     spec:
+      # the affinity definition should be BEFORE include "common.pod.properties" .since in case the
+      #user will add his own "affinity" we want to take his definition
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: "kubernetes.io/name"
+                      operator: In
+                      values:
+                        - {{ include "agent.resource.name" $config }}
+                topologyKey: "kubernetes.io/hostname"
 {{ include "common.pod.properties" $config | indent 6 }}
       securityContext:
         runAsUser: 1000

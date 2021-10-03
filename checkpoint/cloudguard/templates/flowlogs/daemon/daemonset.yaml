@@ -21,6 +21,7 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
+      hostNetwork: true
       containers:
       # Main container
       - name: {{ $config.agentName }}
@@ -30,13 +31,6 @@ spec:
           capabilities:
             add: [ "SYS_ADMIN", "SYS_RESOURCE", "NET_ADMIN" ]
         volumeMounts:
-        - mountPath: /var/run/netns
-          name: netns-volume
-          mountPropagation: HostToContainer
-          readOnly: true
-        - mountPath: /var/run/docker.sock
-          name: docker-sock-volume
-          readOnly: true
         - mountPath: /etc/secret-volume
           name: secret-volume
         - mountPath: /etc/cpconfig
@@ -53,14 +47,6 @@ spec:
       - name: secret-volume
         secret:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
-      - name: netns-volume
-        hostPath:
-          path: /var/run/docker/netns
-          type: Directory
-      - name: docker-sock-volume
-        hostPath:
-          path: /var/run/docker.sock
-          type: Socket
       - name: config-volume
         configMap:
           name: {{ template "agent.resource.name" $config }}
