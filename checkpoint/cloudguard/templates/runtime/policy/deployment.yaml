@@ -22,8 +22,11 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
+{{- if ne (include "get.platform" $config) "openshift" }}
       securityContext:
-        runAsUser: 1000
+        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
+        runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
+{{- end }}
       containers:
 {{ include "telemetry.container" $config | indent 6 }}
       # Main container
@@ -52,11 +55,5 @@ spec:
       - name: secret-volume
         secret:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
-      - name: config-volume-fluentbit
-        configMap:
-          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
-      - name: metrics
-        emptyDir: {}
-      - name: metrics-tail
-        emptyDir: {}
+{{ include "fluentbit-metrics.volumes" $config | indent 6 }}
 {{- end }}

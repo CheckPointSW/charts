@@ -72,7 +72,9 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 {{- /* Pod annotations commonly used in agents */ -}}
 {{- define "common.pod.annotations" -}}
 agentVersion: {{ .agentConfig.tag }}
+{{- if ne (include "get.platform" .) "openshift" }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
+{{- end }}
 {{- if .Values.podAnnotations.apparmor }}
 container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name" . }}:
 {{ toYaml .Values.podAnnotations.apparmor | indent 2 }}
@@ -145,16 +147,6 @@ imagePullSecrets:
       key: clusterID
 - name: CP_KUBERNETES_DOME9_URL
   value: {{ template "cloudguardURL_host" . }}
-- name: CP_KUBERNETES_USER
-  valueFrom:
-    secretKeyRef:
-      name: {{ $.Release.Name }}-cp-cloudguard-creds
-      key: username
-- name: CP_KUBERNETES_PASS
-  valueFrom:
-    secretKeyRef:
-        name: {{ $.Release.Name }}-cp-cloudguard-creds
-        key: secret
 - name: NODE_NAME
   valueFrom:
     fieldRef:
@@ -175,19 +167,24 @@ imagePullSecrets:
 {{- end -}}
 
 {{- /* fluentbit http output parametes */ -}}
-{{- define "fluentbit-http-output-param.conf" }}
-Name            http
-Format          json_lines
-Host            ${CP_KUBERNETES_DOME9_URL}
-Header          Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
-Header          Node-Name   ${NODE_NAME}
-Header          Agent-Version   {{ .agentVersion }}
-Compress        gzip
-http_User       ${CP_KUBERNETES_USER}
-http_Passwd     ${CP_KUBERNETES_PASS}
-Port            443        
-tls             On
-tls.verify      On
+{{- define "fluentbit-http-output-param.conf" -}}
+[OUTPUT]
+    Name                        http
+    Format                      json_lines
+    Host                        ${CP_KUBERNETES_DOME9_URL}
+    Header                      Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
+    Header                      Node-Name   ${NODE_NAME}
+    Header                      Agent-Version   {{ .agentVersion }}
+    Compress                    gzip
+    http_User                   {{ .credentials.user }}
+    http_Passwd                 {{ .credentials.secret }}
+    Port                        443        
+    tls                         On
+    tls.verify                  On
+    Match                       {{ .inputTag }}
+    Uri                         {{ .uriParameterName }}
+    storage.total_limit_size    100M
+    Retry_Limit                 {{ .retryLimit }}  
 {{- end -}}
  
 {{- /* fluentbit configmap to send metric */ -}}
@@ -217,14 +214,34 @@ tls.verify      On
     Read_from_Head   true
     Buffer_Max_Size  1mb
     Skip_Long_Lines  true
-[OUTPUT]
-    Match                     metrics
-    Uri                       ${CP_KUBERNETES_METRIC_URI}
+@INCLUDE metric-output.conf
+{{- end -}}
+
+{{- /* fluentbit config output to send metrics */ -}}
+{{- define "fluentbit-metrics-output.conf" -}} 
+{{ include "fluentbit-http-output-param.conf" . }}
     Header          Pod-Id    ${POD_ID}
     Header          Telemetry-Version  ${TELEMETRY_VERSION}
-    Retry_Limit               3
-{{ include "fluentbit-http-output-param.conf" . | indent 4 }}
 {{- end -}}
+
+
+{{- /* volumes needed for pods using fluentbit to send metrics */ -}}
+{{- define "fluentbit-metrics.volumes" -}}
+- name: config-volume-fluentbit
+  configMap:
+    name: {{ template "agent.resource.name" . }}-fluentbit-metrics
+- name: fluentbit-metric-output
+  secret:
+    secretName: {{ template "agent.resource.name" . }}-fluentbit-metrics-output
+- name: metrics
+  emptyDir: {}
+- name: metrics-tail
+  emptyDir: {}
+{{- end -}}
+
+{{- define "cloudguard.nonroot.user" -}}
+17112
+{{- end }}
 
 {{- /* fluentbit container for agents telemetry, do not use by agents sending alerts */ -}}
 {{- define "telemetry.container" -}}
@@ -234,6 +251,10 @@ tls.verify      On
   imagePullPolicy: {{ .Values.imagePullPolicy }} 
   securityContext:
     allowPrivilegeEscalation: false
+{{- if ne (include "get.platform" .) "openshift" }}
+    runAsUser: {{ include "cloudguard.nonroot.user" . }}
+    runAsGroup: {{ include "cloudguard.nonroot.user" . }}
+{{- end }}
   env:
 {{ include "fluentbit.env" . | indent 2 }}
   - name: CP_KUBERNETES_METRIC_URI
@@ -246,6 +267,9 @@ tls.verify      On
   - name: config-volume-fluentbit
     mountPath: /fluent-bit/etc/fluent-bit.conf
     subPath: fluent-bit.conf
+  - name: fluentbit-metric-output
+    mountPath: /fluent-bit/etc/metric-output.conf
+    subPath: metric-output.conf  
   - name: metrics
     mountPath: /metric
   - name: metrics-tail
@@ -311,14 +335,10 @@ key: {{ $cert.Key | b64enc }}
     {{- printf "{\"auths\":{\"%s\":{\"auth\":\"%s\"}}}" .Values.imageRegistry.url (printf "%s:%s" $user $pass | b64enc) | b64enc }}
 {{- end }}
 
-{{- define "cloudguard.nonroot.user" -}}
-17112
-{{- end }}
-
 {{- define "validate.container.runtime" -}}
-{{- if has .Values.containerRuntime (list "docker" "containerd") -}}
+{{- if has .Values.containerRuntime (list "docker" "containerd" "cri-o") -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker', 'containerd')"  .Values.containerRuntime -}}
+{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker', 'containerd', 'cri-o')"  .Values.containerRuntime -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -340,17 +360,27 @@ key: {{ $cert.Key | b64enc }}
 {{- else -}}
 {{- $nodes := lookup "v1" "Node" "" "" -}}
 {{- if ne (len $nodes) 0 -}}
-{{/* examples for runtime version: docker://19.3.3, containerd://1.3.3 */}}
+{{/* examples for runtime version: docker://19.3.3, containerd://1.3.3, cri-o://1.20.3 */}}
 {{- $containerRuntimeVersion := (first $nodes.items).status.nodeInfo.containerRuntimeVersion }}
 {{- $containerRuntime := first (regexSplit ":" $containerRuntimeVersion -1) }}
-{{- if has $containerRuntime (list "docker" "containerd") -}}
+{{- if has $containerRuntime (list "docker" "containerd" "cri-o") -}}
 {{- $containerRuntime }}
 {{- else -}}
 {{- $err := printf "\n\nERROR: Unsupported container runtime: %s" $containerRuntime -}}
 {{- fail $err -}}
 {{- end -}}
 {{- else -}}
-{{- fail "\n\nERROR: No nodes found, cannot identify container runtime. Use '--set containerRuntime=docker' or '--set containerRuntime=containerd'" -}}
+{{- fail "\n\nERROR: No nodes found, cannot identify container runtime. Use '--set containerRuntime=docker' or '--set containerRuntime=containerd' or '--set containerRuntime=cri-o'" -}}
 {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "get.platform" -}}
+{{- if has "security.openshift.io/v1" .Capabilities.APIVersions -}}
+openshift
+{{- else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
+tanzu
+{{- else -}}
+{{- .Values.platform | quote -}}
 {{- end -}}
 {{- end -}}
