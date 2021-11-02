@@ -38,8 +38,11 @@ spec:
                         - {{ include "agent.resource.name" $config }}
                 topologyKey: "kubernetes.io/hostname"
 {{ include "common.pod.properties" $config | indent 6 }}
+{{- if ne (include "get.platform" $config) "openshift" }}
       securityContext:
-        runAsUser: 1000
+        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
+        runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
+{{- end }}
       containers:
       # gsl (note: should be first to simplify Pod startup)
       - {{ $containerConfig := merge $config (dict "containerName" "gsl") -}}
@@ -77,6 +80,8 @@ spec:
           readOnly: true
         - name: logs
           mountPath: /admission/alerts
+        - name: reviews
+          mountPath: /admission/reviews
         - name: metrics
           mountPath: /metric
         - name: metrics-tail
@@ -98,11 +103,16 @@ spec:
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         securityContext:
           allowPrivilegeEscalation: false
-          runAsUser: 1000
+{{- if ne (include "get.platform" $config) "openshift" }}
+          runAsUser: {{ include "cloudguard.nonroot.user" $config }}
+          runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
+{{- end }}
         env:
 {{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI
           value: {{ template "cloudguardURL_path" $config }}admissioncontrolleralerts
+        - name: CP_KUBERNETES_ADMISSION_CONTROLLER_REVIEWS_URI
+          value: {{ template "cloudguardURL_path" $config }}admissioncontrollerreviews
         - name: CP_KUBERNETES_METRIC_URI
           value: {{ template "cloudguardURL_path" $config }}agenttelemetry
         {{- if $config.agentConfig.fluentbit.resources }}
@@ -113,8 +123,19 @@ spec:
         - name: config-volume-fluentbit
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
+        - name: fluentbit-metric-output
+          mountPath: /fluent-bit/etc/metric-output.conf
+          subPath: metric-output.conf
+        - name: fluentbit-alert-output
+          mountPath: /fluent-bit/etc/alert-output.conf
+          subPath: alert-output.conf
+        - name: fluentbit-review-output
+          mountPath: /fluent-bit/etc/review-output.conf
+          subPath: review-output.conf               
         - name: logs
           mountPath: /admission/alerts
+        - name: reviews
+          mountPath: /admission/reviews
         - name: metrics
           mountPath: /metric
         - name: metrics-tail
@@ -123,16 +144,20 @@ spec:
       - name: webhook-certs
         secret:
           secretName: {{ template "agent.resource.name" $config }}
-      - name: config-volume-fluentbit
-        configMap:
-          name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
+{{ include "fluentbit-metrics.volumes" $config | indent 6 }}
+      - name: fluentbit-alert-output
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}-fluentbit-alert-output
+      - name: fluentbit-review-output
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}-fluentbit-review-output
       - name: logs
         emptyDir:
           medium: Memory
           sizeLimit: 10Mi
-      - name: metrics
-        emptyDir: {}
-      - name: metrics-tail
-        emptyDir: {}
+      - name: reviews
+        emptyDir:
+          medium: Memory
+          sizeLimit: 20Mi
 {{- end -}}
 

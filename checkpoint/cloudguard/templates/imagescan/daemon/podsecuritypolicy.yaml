@@ -16,12 +16,42 @@ spec:
   allowPrivilegeEscalation: false
   allowedHostPaths:
 {{- if eq $config.containerRuntime "docker" }}
+{{- if eq (include "get.platform" $config) "tanzu" }}
+  - pathPrefix: /var/vcap/sys/run/docker/docker.sock
+{{- else }}
   - pathPrefix: /var/run/docker.sock
+{{- end }}
     readOnly: true
 {{- end }}
 {{- if eq $config.containerRuntime "containerd" }}
-  - pathPrefix: /
+  - pathPrefix: /run/containerd/containerd.sock
     readOnly: true
+{{- end }}
+{{- if eq $config.containerRuntime "cri-o" }}
+  - pathPrefix: /run/crio/crio.sock
+    readOnly: true
+  - pathPrefix: /etc/containers
+    readOnly: true
+  - pathPrefix: /run/containers
+    readOnly: false
+  - pathPrefix: /var/lib/containers
+    readOnly: false
+  - pathPrefix: /lib64
+    readOnly: true
+  - pathPrefix: /usr/bin/podman
+    readOnly: true
+  - pathPrefix: /usr/bin/conmon
+    readOnly: true
+  - pathPrefix: /usr/bin/runc
+    readOnly: true
+  - pathPrefix: /usr/bin/nsenter
+    readOnly: true
+{{- if ne (include "get.platform" $config) "openshift" }}
+  - pathPrefix: /lib/x86_64-linux-gnu
+    readOnly: true
+  - pathPrefix: /usr/lib/x86_64-linux-gnu
+    readOnly: true
+{{- end }}
 {{- end }}
   allowedCapabilities:
   - 'NET_BIND_SERVICE'

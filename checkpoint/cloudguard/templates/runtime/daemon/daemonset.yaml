@@ -38,7 +38,8 @@ spec:
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
-        {{- else }}
+        {{- end }}
+        {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
         securityContext:
           privileged: true
         {{- end }}
@@ -97,6 +98,18 @@ spec:
         - name: config-volume-fluentbit
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
+        - name: fluentbit-metric-output
+          mountPath: /fluent-bit/etc/metric-output.conf
+          subPath: metric-output.conf
+        - name: fluentbit-alert-output
+          mountPath: /fluent-bit/etc/alert-output.conf
+          subPath: alert-output.conf
+        - name: fluentbit-profile-output
+          mountPath: /fluent-bit/etc/profile-output.conf
+          subPath: profile-output.conf 
+        - name: fluentbit-telemetry-output
+          mountPath: /fluent-bit/etc/telemetry-output.conf
+          subPath: telemetry-output.conf           
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -126,12 +139,12 @@ spec:
           value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
         {{- end }}
         securityContext:
-        {{- if $config.featureConfig.BPF }}
+        {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
+          privileged: true
+        {{- else }}
           capabilities:
             add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT"]
-        {{- else }}
-          privileged: true
-	{{- end }}
+	    {{- end }}
         volumeMounts:
         - name: rp4c-alerts
           mountPath: /rp4c/alerts
@@ -143,19 +156,26 @@ spec:
           mountPath: /metric-tail
         - name: rp4c-telemetry
           mountPath: /rp4c/telemetry
-{{- if eq $config.containerRuntime "docker" }}
+        {{- if eq $config.containerRuntime "docker" }}
         - name: docker-sock
           mountPath: /var/run/docker.sock
           readOnly: true
+        {{- if ne (include "get.platform" $config) "tanzu" }}
         - name: varlibdocker-vol
           mountPath: /var/lib/docker
           readOnly: true
-{{- end }}
-{{- if eq $config.containerRuntime "containerd" }}
+        {{- end }}
+        {{- end }}
+        {{- if eq $config.containerRuntime "containerd" }}
         - name: containerd-sock
           mountPath: /run/containerd/containerd.sock
           readOnly: true
-{{- end }}
+        {{- end }}
+        {{- if eq $config.containerRuntime "cri-o" }}
+        - name: crio-sock
+          mountPath: /var/run/crio/crio.sock
+          readOnly: true
+        {{- end }}
         - name: host-proc-vol
           mountPath: /host/proc
           readOnly: true
@@ -174,6 +194,18 @@ spec:
       - name: config-volume-fluentbit
         configMap:
             name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
+      - name: fluentbit-metric-output
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}-fluentbit-metrics-output
+      - name: fluentbit-alert-output
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}-fluentbit-alert-output
+      - name: fluentbit-profile-output
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}-fluentbit-profile-output
+      - name: fluentbit-telemetry-output
+        secret:
+          secretName: {{ template "agent.resource.name" $config }}-fluentbit-telemetry-output
       - name: rp4c-alerts
         emptyDir: {}
       - name: rp4c-profiling
@@ -184,21 +216,32 @@ spec:
         emptyDir: {}
       - name: rp4c-telemetry
         emptyDir: {}
-{{- if eq $config.containerRuntime "docker" }}
+      {{- if eq $config.containerRuntime "docker" }}
       - name: docker-sock
         hostPath:
+      {{- if eq (include "get.platform" $config) "tanzu" }}
+          path: /var/vcap/sys/run/docker/docker.sock
+          type: Socket
+      {{- else }}
           path: /var/run/docker.sock
           type: Socket
       - name: varlibdocker-vol
         hostPath:
           path: /var/lib/docker
-{{- end }}
-{{- if eq $config.containerRuntime "containerd" }}
+      {{- end }}
+      {{- end }}
+      {{- if eq $config.containerRuntime "containerd" }}
       - name: containerd-sock
         hostPath:
           path: /run/containerd/containerd.sock
           type: Socket
-{{- end }}
+      {{- end }}
+      {{- if eq $config.containerRuntime "cri-o" }}
+      - name: crio-sock
+        hostPath:
+          path: /var/run/crio/crio.sock
+          type: Socket
+      {{- end }}
       - name: boot-vol
         hostPath:
           path: /boot
