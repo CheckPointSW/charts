@@ -72,7 +72,9 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 {{- /* Pod annotations commonly used in agents */ -}}
 {{- define "common.pod.annotations" -}}
 agentVersion: {{ .agentConfig.tag }}
-{{- if ne (include "get.platform" .) "openshift" }}
+{{- /* Openshift does not allow seccomp - So we don't add seccomp in openshift case */ -}}
+{{- /* From k8s 1.19 and up we use the seccomp in securityContext so no need for it here, in case of template we don't know the version so we fall back to annotation */ -}}
+{{- if and (ne (include "get.platform" .) "openshift") (or (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) (include "is.helm.template.command" .)) }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- end }}
 {{- if .Values.podAnnotations.apparmor }}
@@ -83,6 +85,15 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 
 {{- /* Pod properties commonly used in agents */ -}}
 {{- define "common.pod.properties" -}}
+{{- if ne (include "get.platform" .) "openshift" }}
+securityContext:
+  runAsUser: {{ include "cloudguard.nonroot.user" . }}
+  runAsGroup: {{ include "cloudguard.nonroot.user" . }}
+{{- if and (semverCompare ">=1.19-0" .Capabilities.KubeVersion.Version) (not (include "is.helm.template.command" .)) }}
+  seccompProfile:
+{{ toYaml .Values.seccompProfile | indent 4 }}
+{{- end }}
+{{- end }}
 serviceAccountName: {{ template "agent.service.account.name" . }}
 {{- if .agentConfig.nodeSelector }}
 nodeSelector:
@@ -251,10 +262,6 @@ imagePullSecrets:
   imagePullPolicy: {{ .Values.imagePullPolicy }} 
   securityContext:
     allowPrivilegeEscalation: false
-{{- if ne (include "get.platform" .) "openshift" }}
-    runAsUser: {{ include "cloudguard.nonroot.user" . }}
-    runAsGroup: {{ include "cloudguard.nonroot.user" . }}
-{{- end }}
   env:
 {{ include "fluentbit.env" . | indent 2 }}
   - name: CP_KUBERNETES_METRIC_URI
@@ -382,5 +389,17 @@ openshift
 tanzu
 {{- else -}}
 {{- .Values.platform | quote -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+  use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
+  if there is no namespace probably we are running template
+*/}}
+{{- define "is.helm.template.command" -}}
+{{- $namespace := lookup "v1" "Namespace" "" "" -}}
+{{- if eq (len $namespace) 0 -}}
+true
 {{- end -}}
 {{- end -}}

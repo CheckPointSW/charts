@@ -38,11 +38,6 @@ spec:
                         - {{ include "agent.resource.name" $config }}
                 topologyKey: "kubernetes.io/hostname"
 {{ include "common.pod.properties" $config | indent 6 }}
-{{- if ne (include "get.platform" $config) "openshift" }}
-      securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
-        runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
-{{- end }}
       containers:
       # gsl (note: should be first to simplify Pod startup)
       - {{ $containerConfig := merge $config (dict "containerName" "gsl") -}}

@@ -51,6 +51,9 @@ proxy: {}
 containerRuntime:
 platform: kubernetes # kubernetes, openshift or tanzu
 
+seccompProfile:
+  type: RuntimeDefault
+
 ### Inventory agent settings
 inventory:
   agent:
@@ -108,7 +111,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 1.2.0
+      tag: 2.0.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -130,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 1.2.0
+        tag: 2.0.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -176,7 +179,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 1.2.0
+      tag: 2.0.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -272,7 +275,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.0.0
+      tag: 1.0.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -314,7 +317,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 1.1.0
+      tag: 1.2.2
 
       failurePolicyIntervalHours: 24
 
@@ -339,7 +342,7 @@ addons:
       gsl:
         ## Specify image and tag
         image: checkpoint/consec-admission-gsl
-        tag: 1.1.0
+        tag: 1.1.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -434,7 +437,7 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
-        beta.kubernetes.io/os: linux        
+        kubernetes.io/os: linux        
       tolerations:
       - operator: Exists
       affinity: {}

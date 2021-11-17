@@ -39,9 +39,11 @@ spec:
         - name: SYSDIG_BPF_PROBE
           value: ""
         {{- end }}
-        {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
         securityContext:
+        {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
           privileged: true
+        {{- else }}
+          runAsUser: 0
         {{- end }}
         volumeMounts:
         - name: boot-vol
@@ -142,6 +144,7 @@ spec:
         {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
           privileged: true
         {{- else }}
+          runAsUser: 0
           capabilities:
             add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT"]
 	    {{- end }}
