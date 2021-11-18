@@ -24,11 +24,6 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
-{{- if ne (include "get.platform" $config) "openshift" }}
-      securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
-        runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
-{{- end }}
       containers:
 {{ include "telemetry.container" $config | indent 6 }}
       # Main container
@@ -52,12 +47,19 @@ spec:
           mountPath: /metric
         - name: metrics-tail
           mountPath: /metric-tail
+{{- if $config.featureConfig.registryEnvId }}
+        - name: registries
+          mountPath: /etc/registries
+{{- end }}
+{{- if $config.featureConfig.registryPullSecret }}
+        - name: registry-pull-secret
+          mountPath: /etc/pull-secret
+{{- end }}
         command: ["/central_agent"]
         env:
-{{ include "common.env" $config | indent 8 }}
         - name: NODE_AGENT_SELECTOR
           value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
-          {{/* TODO: investigate why $config instead of "." fails */}}
+          {{- /* TODO: investigate why $config instead of "." fails */}}
         - name: RELEASE_NAME
           value: {{ .Release.Name }}
         - name: CLOUDGUARD_REGION
@@ -70,6 +72,8 @@ spec:
           value: "{{ $config.featureConfig.maxImageSizeMb }}"
 {{- end }}
 {{- end }}
+{{- /* TODO: move user env. variables to the end for all agents */}}
+{{ include "common.env" $config | indent 8 }}
       volumes:
       - name: secret-volume
         secret:
@@ -77,12 +81,25 @@ spec:
       - name: servercert-volume
         configMap:
           name: {{ template "imagescan.daemon.resource.name" . }}
-          {{/* TODO: investigate why $config instead of "." fails */}}
+          {{- /* TODO: investigate why $config instead of "." fails */}}
       - name: clientcert-volume
         configMap:
           name: {{ template "agent.resource.name" $config }}
       - name: clientkey-volume
         secret:
           secretName: {{ template "agent.resource.name" $config }}
+{{- if $config.featureConfig.registryEnvId }}
+      - name: registries
+        configMap:
+          name: {{ .Release.Name }}-cp-cloudguard-registries
+{{- end }}
+{{- if $config.featureConfig.registryPullSecret }}
+      - name: registry-pull-secret
+        secret:
+          secretName: {{ $config.featureConfig.registryPullSecret }}
+          items:
+          - key: .dockerconfigjson
+            path: config.json
+{{- end }}
 {{ include "fluentbit-metrics.volumes" $config | indent 6 }}
 {{- end -}}

@@ -22,11 +22,6 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
-{{- if ne (include "get.platform" $config) "openshift" }}
-      securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
-        runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
-{{- end }}
       containers:
 {{ include "telemetry.container" $config | indent 6 }}
       # Main container

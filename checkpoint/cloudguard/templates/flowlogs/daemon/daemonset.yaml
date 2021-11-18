@@ -33,6 +33,7 @@ spec:
 {{- if eq (include "get.platform" $config) "openshift" }}
           privileged: true
 {{- else }}
+          runAsUser: 0
           capabilities:
             add: [ "SYS_ADMIN", "SYS_RESOURCE", "NET_ADMIN" ]
 {{- end }}

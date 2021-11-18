@@ -33,6 +33,7 @@ spec:
 {{- if eq (include "get.platform" $config) "openshift" }}
           privileged: true
 {{- else }}
+          runAsUser: 0
           allowPrivilegeEscalation: false
           capabilities:
             add:
@@ -76,6 +77,7 @@ spec:
 {{- if eq $config.containerRuntime "cri-o" }}
           privileged: true
 {{- else }}
+          runAsUser: 0
           allowPrivilegeEscalation: false
           capabilities:
             add:
