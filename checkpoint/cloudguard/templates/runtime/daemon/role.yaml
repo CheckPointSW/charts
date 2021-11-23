@@ -18,4 +18,14 @@ rules:
   resourceNames:
   - {{ template "agent.resource.name" $config }}
 {{- end -}}
+{{- if eq (include "get.platform" $config) "openshift" }}
+- apiGroups:
+  - security.openshift.io 
+  resourceNames:
+  - privileged
+  resources:
+  - securitycontextconstraints 
+  verbs: 
+  - use
+{{- end -}}
 {{- end -}}

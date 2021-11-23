@@ -49,6 +49,10 @@ podAnnotations:
 proxy: {}
 
 containerRuntime:
+platform: kubernetes # kubernetes, openshift or tanzu
+
+seccompProfile:
+  type: RuntimeDefault
 
 ### Inventory agent settings
 inventory:
@@ -56,7 +60,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.3.0
+    tag: 1.3.1
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -81,6 +85,20 @@ inventory:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    fluentbit:
+      ## Specify image and tag
+      image: checkpoint/consec-fluentbit
+      tag: 1.6.9-cp
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        requests:
+          cpu: 100m
+          memory: 20Mi
+        limits:
+          cpu: 200m
+          memory: 30Mi
 
 ### Addons configuration
 ### Each addon may be disabled
@@ -93,7 +111,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 1.0.0
+      tag: 2.0.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -115,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 1.0.0
+        tag: 2.0.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -126,6 +144,15 @@ addons:
           limits:
             cpu: 200m
             memory: 50Mi
+          
+          ## resources for shim container for CRI-O are higher
+          crio:
+            requests:
+              cpu: 100m
+              memory: 150Mi
+            limits:
+              cpu: 200m
+              memory: 150Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -152,7 +179,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 1.0.0
+      tag: 2.0.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -198,7 +225,7 @@ addons:
     daemon:
       ## Specify image and tag
       image: checkpoint/consec-flowlogs-daemon
-      tag: 0.1.1
+      tag: 0.4.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -225,6 +252,21 @@ addons:
       tolerations:
       - operator: Exists
       affinity: {}
+    
+      fluentbit:
+        ## Specify image and tag
+        image: checkpoint/consec-fluentbit
+        tag: 1.6.9-cp
+      
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+        resources:
+          requests:
+            cpu: 100m
+            memory: 20Mi
+          limits:
+            cpu: 200m
+            memory: 30Mi
 
 
 ## Admission Control Add-on 
@@ -233,7 +275,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.0.0
+      tag: 1.0.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -275,7 +317,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 1.1.0
+      tag: 1.2.2
 
       failurePolicyIntervalHours: 24
 
@@ -291,16 +333,16 @@ addons:
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
       resources:
         requests:
-          cpu: 100m
-          memory: 30Mi
+          cpu: 200m
+          memory: 100Mi
         limits:
           cpu: 200m
-          memory: 50Mi 
+          memory: 100Mi
 
       gsl:
         ## Specify image and tag
         image: checkpoint/consec-admission-gsl
-        tag: 1.0.0
+        tag: 1.1.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -322,10 +364,10 @@ addons:
         resources:
           requests:
             cpu: 100m
-            memory: 20Mi
+            memory: 70Mi
           limits:
             cpu: 200m
-            memory: 30Mi 
+            memory: 70Mi 
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -395,7 +437,7 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
-        beta.kubernetes.io/os: linux        
+        kubernetes.io/os: linux        
       tolerations:
       - operator: Exists
       affinity: {}

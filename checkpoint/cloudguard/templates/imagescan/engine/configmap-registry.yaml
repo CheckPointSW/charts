@@ -1,0 +1,25 @@
+{{- $config := fromYaml (include "imagescan.engine.config" .) -}}
+{{- if $config.featureConfig.registryEnvId -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-cp-cloudguard-registries
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+data:
+  registries: |
+    {
+      "config": {
+         "requestMaxPages": {{ $config.featureConfig.registryRequestMaxPages | default 1000 }},
+         "requestMaxItemsPerPage": {{ $config.featureConfig.registryRequestMaxItemsPerPage | default 0 }}
+      },
+      "envs": [{
+         "url": "{{ $config.featureConfig.registryUrl }}",
+         "id": "{{ $config.featureConfig.registryEnvId }}",
+         "type": "{{ $config.featureConfig.registryType }}",
+         "clientId": "{{ $config.featureConfig.registryClientId }}",
+         "tenantId": "{{ $config.featureConfig.registryTenantId }}"
+      }]
+    }
+{{- end -}}

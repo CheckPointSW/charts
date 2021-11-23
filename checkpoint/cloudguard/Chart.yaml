@@ -1,8 +1,8 @@
 apiVersion: v2
-appVersion: 2.5.2
-version: 2.5.2
+appVersion: 2.8.0
 description: A Helm chart for Check Point CloudGuard Workload Security
-name: cloudguard
+home: https://portal.checkpoint.com
+icon: https://www.checkpoint.com/wp-content/uploads/icon-cloudguard-nav.png
 keywords:
 - check point
 - cloudguard
@@ -15,5 +15,7 @@ keywords:
 - threat intelligence
 - admission control
 - runtime protection
-home: https://portal.checkpoint.com
-icon: https://www.checkpoint.com/wp-content/uploads/icon-cloudguard-nav.png
+- registry scan
+- acr
+name: cloudguard
+version: 2.8.0
