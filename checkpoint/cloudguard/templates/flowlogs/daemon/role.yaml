@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "flowlogs.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- if $config.Values.rbac.pspEnabled -}}
+{{- if or $config.Values.rbac.pspEnabled (eq (include "get.platform" $config) "openshift") -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -9,10 +9,22 @@ metadata:
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 rules:
+{{- if $config.Values.rbac.pspEnabled }}
 - apiGroups: [ "policy" ]
   resources: [ "podsecuritypolicies" ]
   verbs: [ "use"]
   resourceNames: 
   - {{ template "agent.resource.name" $config }}
+{{- end }}
+{{- if eq (include "get.platform" $config) "openshift" }}
+- apiGroups:
+  - security.openshift.io 
+  resourceNames:
+  - privileged
+  resources:
+  - securitycontextconstraints 
+  verbs: 
+  - use
+{{- end -}}
 {{- end -}}
 {{- end -}}

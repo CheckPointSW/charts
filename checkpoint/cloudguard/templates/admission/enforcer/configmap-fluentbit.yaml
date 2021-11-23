@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "admission.enforcer.config" .) -}}
 {{ if $config.featureConfig.enabled }}
-{{ $params := dict "metricPath" "/metric" "agentVersion" $config.agentConfig.tag "metricTailPath" "/metric-tail/*/*" }}
+{{ $params := dict "metricPath" "/metric" "metricTailPath" "/metric-tail/*/*" }}
 {{ template "telemetry.configmap" dict "config" $config }}
 
     [INPUT]
@@ -12,12 +12,14 @@
         Buffer_Max_Size  1mb
         Skip_Long_Lines  true
 
-    [OUTPUT]
-        Match                       ac-alert
-        Uri                         ${CP_KUBERNETES_ADMISSION_CONTROLLER_ALERTS_URI}
-        storage.total_limit_size    100M
-        Retry_Limit                 False         
-{{ include "fluentbit-http-output-param.conf" $params | indent 8 }}
-        
+    [INPUT]
+        Name             tail
+        Path             admission/reviews/reviews.log
+        Tag              ac-reviews
+        storage.type     filesystem
+        Mem_Buf_Limit    1mb
+
+    @INCLUDE alert-output.conf
+    @INCLUDE review-output.conf    
 
 {{- end -}}

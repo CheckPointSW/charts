@@ -9,7 +9,7 @@ metadata:
 {{ include "common.labels.with.chart" .config | indent 4 }}
 data:
   fluent-bit.conf: |
-{{ $params := dict "metricPath" "/metric" "agentVersion" .config.agentConfig.tag "metricTailPath" "/metric-tail/*/*" }}
+{{ $params := dict "metricPath" "/metric" "metricTailPath" "/metric-tail/*/*" }}
 {{- include "fluentbit-metric.conf" $params | indent 4 }}
 {{- end -}}
 {{- end -}}

@@ -21,9 +21,8 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
-      securityContext:
-        runAsUser: {{ include "cloudguard.nonroot.user" $config }}
       containers:
+{{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -31,6 +30,10 @@ spec:
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume
+        - name: metrics
+          mountPath: /metric
+        - name: metrics-tail
+          mountPath: /metric-tail
         command: ["/inventory"]
         {{- if $config.agentConfig.resources }}
         resources:
@@ -45,3 +48,4 @@ spec:
       - name: secret-volume
         secret:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
+{{ include "fluentbit-metrics.volumes" $config | indent 6 }}

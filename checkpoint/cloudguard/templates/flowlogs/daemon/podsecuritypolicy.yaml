@@ -17,20 +17,14 @@ spec:
   privileged: false
   # Required to prevent escalations to root.
   allowPrivilegeEscalation: false
-  allowedHostPaths:
-  - pathPrefix: /var/run/docker.sock
-    readOnly: true
-  - pathPrefix: /var/run/docker/netns
-    readOnly: true
   allowedCapabilities:
   - SYS_ADMIN
   - SYS_RESOURCE
   - NET_ADMIN
   volumes:
   - 'secret'  
-  - 'configMap'
-  - 'hostPath'    
-  hostNetwork: false
+  - 'configMap' 
+  hostNetwork: true
   hostIPC: false
   hostPID: false
   runAsUser:
