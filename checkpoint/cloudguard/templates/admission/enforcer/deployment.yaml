@@ -149,10 +149,10 @@ spec:
       - name: logs
         emptyDir:
           medium: Memory
-          sizeLimit: 10Mi
+          sizeLimit: 15Mi
       - name: reviews
         emptyDir:
           medium: Memory
-          sizeLimit: 20Mi
+          sizeLimit: 25Mi
 {{- end -}}
 
