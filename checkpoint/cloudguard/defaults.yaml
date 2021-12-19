@@ -144,7 +144,7 @@ addons:
           limits:
             cpu: 200m
             memory: 50Mi
-          
+
           ## resources for shim container for CRI-O are higher
           crio:
             requests:
@@ -252,12 +252,12 @@ addons:
       tolerations:
       - operator: Exists
       affinity: {}
-    
+
       fluentbit:
         ## Specify image and tag
         image: checkpoint/consec-fluentbit
         tag: 1.6.9-cp
-      
+
       ## Configure resource requests and limits
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
         resources:
@@ -367,7 +367,7 @@ addons:
             memory: 70Mi
           limits:
             cpu: 200m
-            memory: 70Mi 
+            memory: 70Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -385,7 +385,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.489-1
+      tag: 0.0.645-nfq
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
