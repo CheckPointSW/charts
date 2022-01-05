@@ -28,6 +28,7 @@ spec:
   privileged: true
   allowPrivilegeEscalation: true
 {{- end }}
+  hostNetwork: true
   volumes:
   - 'secret'
   - 'configMap'

@@ -35,8 +35,7 @@ spec:
           mountPath: /metric
         - name: metrics-tail
           mountPath: /metric-tail
-        command: ["/bin/sh"]
-        args: ["-c", "/runtime-policy"]
+        command: ["/runtime-policy"]
         {{- if $config.agentConfig.resources }}
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
