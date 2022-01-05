@@ -138,6 +138,9 @@ imagePullSecrets:
   valueFrom:
     fieldRef:
       fieldPath: spec.nodeName
+- name: PLATFORM
+  value: {{ include "get.platform" . }}
+
 
 {{- template "user.defined.env" . -}}
 

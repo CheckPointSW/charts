@@ -60,7 +60,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.3.1
+    tag: 1.4.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -111,7 +111,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.0.0
+      tag: 2.4.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -133,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.0.0
+        tag: 2.4.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -144,7 +144,7 @@ addons:
           limits:
             cpu: 200m
             memory: 50Mi
-          
+
           ## resources for shim container for CRI-O are higher
           crio:
             requests:
@@ -179,7 +179,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.0.0
+      tag: 2.4.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -225,7 +225,7 @@ addons:
     daemon:
       ## Specify image and tag
       image: checkpoint/consec-flowlogs-daemon
-      tag: 0.4.0
+      tag: 0.5.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -252,12 +252,12 @@ addons:
       tolerations:
       - operator: Exists
       affinity: {}
-    
+
       fluentbit:
         ## Specify image and tag
         image: checkpoint/consec-fluentbit
         tag: 1.6.9-cp
-      
+
       ## Configure resource requests and limits
       ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
         resources:
@@ -317,7 +317,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 1.2.2
+      tag: 1.3.0
 
       failurePolicyIntervalHours: 24
 
@@ -342,7 +342,7 @@ addons:
       gsl:
         ## Specify image and tag
         image: checkpoint/consec-admission-gsl
-        tag: 1.1.1
+        tag: 1.3.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -367,7 +367,7 @@ addons:
             memory: 70Mi
           limits:
             cpu: 200m
-            memory: 70Mi 
+            memory: 70Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -385,7 +385,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.489-1
+      tag: 0.0.666
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -447,7 +447,7 @@ addons:
 
       ## Specify custom image ("" to use default)
       image: checkpoint/consec-runtime-policy
-      tag: 0.3.0
+      tag: 1.0.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
