@@ -1,0 +1,66 @@
+{{- $config := fromYaml (include "inventory.agent.config" .) -}}
+{{- if eq (include "get.platform" $config) "openshift"}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: openshift-kube-controller-manager
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "agent.resource.name" $config }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "agent.service.account.name" $config }}
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: openshift-kube-scheduler
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "agent.resource.name" $config }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "agent.service.account.name" $config }}
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: openshift-apiserver
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "agent.resource.name" $config }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "agent.service.account.name" $config }}
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: openshift-kube-apiserver
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "agent.resource.name" $config }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "agent.service.account.name" $config }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

@@ -22,6 +22,7 @@ spec:
 {{ include "common.labels" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
+      hostNetwork: true  # needed for DNS request listener
       initContainers:
       # probe (sysdig)
       - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
@@ -108,10 +109,10 @@ spec:
           subPath: alert-output.conf
         - name: fluentbit-profile-output
           mountPath: /fluent-bit/etc/profile-output.conf
-          subPath: profile-output.conf 
+          subPath: profile-output.conf
         - name: fluentbit-telemetry-output
           mountPath: /fluent-bit/etc/telemetry-output.conf
-          subPath: telemetry-output.conf           
+          subPath: telemetry-output.conf
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -140,13 +141,15 @@ spec:
         - name: SYSDIG_BPF_PROBE
           value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
         {{- end }}
+        - name: SBA_USE_NETFILTER_QUEUE
+          value: "1"
         securityContext:
         {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
           privileged: true
         {{- else }}
           runAsUser: 0
           capabilities:
-            add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT"]
+            add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT", "NET_ADMIN", "NET_RAW"]
 	    {{- end }}
         volumeMounts:
         - name: rp4c-alerts
@@ -193,6 +196,8 @@ spec:
         - name: sys-vol
           mountPath: /sys/kernel/debug/
           readOnly: true
+        - name: run-xtables-lock
+          mountPath: /run/xtables.lock
       volumes:
       - name: config-volume-fluentbit
         configMap:
@@ -272,4 +277,7 @@ spec:
       - name: host-etc-vol
         hostPath:
           path: /etc
+      - name: run-xtables-lock
+        hostPath:
+          path: /run/xtables.lock
 {{- end }}
