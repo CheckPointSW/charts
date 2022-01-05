@@ -47,14 +47,6 @@ spec:
           mountPath: /metric
         - name: metrics-tail
           mountPath: /metric-tail
-{{- if $config.featureConfig.registryEnvId }}
-        - name: registries
-          mountPath: /etc/registries
-{{- end }}
-{{- if $config.featureConfig.registryPullSecret }}
-        - name: registry-pull-secret
-          mountPath: /etc/pull-secret
-{{- end }}
         command: ["/central_agent"]
         env:
         - name: NODE_AGENT_SELECTOR
@@ -88,18 +80,5 @@ spec:
       - name: clientkey-volume
         secret:
           secretName: {{ template "agent.resource.name" $config }}
-{{- if $config.featureConfig.registryEnvId }}
-      - name: registries
-        configMap:
-          name: {{ .Release.Name }}-cp-cloudguard-registries
-{{- end }}
-{{- if $config.featureConfig.registryPullSecret }}
-      - name: registry-pull-secret
-        secret:
-          secretName: {{ $config.featureConfig.registryPullSecret }}
-          items:
-          - key: .dockerconfigjson
-            path: config.json
-{{- end }}
 {{ include "fluentbit-metrics.volumes" $config | indent 6 }}
 {{- end -}}
