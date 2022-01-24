@@ -1,0 +1,17 @@
+{{- $config := fromYaml (include "runtime.daemon.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+{{- if eq (include "get.platform" $config) "openshift" }}
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: "worker"
+  name: 99-worker-kernel-devel
+spec:
+  config:
+    ignition:
+      version: 3.1.0
+  extensions:
+    - kernel-devel
+{{- end }}
+{{- end }}

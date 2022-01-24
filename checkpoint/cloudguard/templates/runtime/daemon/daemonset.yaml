@@ -39,6 +39,10 @@ spec:
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
+        {{- if eq (include "get.platform" $config) "openshift" }}
+        - name: SYSDIG_WAIT_FOR_KERNEL_SOURCE_TIMEOUT  # given in seconds
+          value: "1800"
+        {{- end }}
         {{- end }}
         securityContext:
         {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
