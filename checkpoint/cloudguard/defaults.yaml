@@ -60,7 +60,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.4.0
+    tag: 1.4.3
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -111,7 +111,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.4.0
+      tag: 2.5.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -133,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.4.0
+        tag: 2.5.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -179,7 +179,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.4.0
+      tag: 2.5.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -275,7 +275,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.0.1
+      tag: 1.0.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -317,7 +317,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 1.3.0
+      tag: 1.3.1
 
       failurePolicyIntervalHours: 24
 
@@ -385,7 +385,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.666
+      tag: 0.0.677
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -407,7 +407,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.27.1-cp
+        tag: 0.27.1-cp-1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
