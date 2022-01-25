@@ -31,3 +31,18 @@ resources:
 {{- end }}
 {{- end -}}
 {{- end }}
+
+{{- define "imagescan.engine.list.resources" }}
+{{- if .agentConfig.resources }}
+{{- $resources := .agentConfig.resources.list }}
+{{- if $resources }}
+resources:
+  requests:
+    cpu: {{ $resources.requests.cpu }}
+    memory: {{ $resources.requests.memory }}
+  limits:
+    cpu: {{ $resources.limits.cpu }}
+    memory: {{ $resources.limits.memory }}
+{{- end }}
+{{- end }}
+{{- end }}

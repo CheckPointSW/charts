@@ -3,19 +3,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "agent.resource.name" $config }}
+  name: {{ template "agent.resource.name" $config }}-list
   namespace: {{ .Release.Namespace }}
   annotations:
     agentVersion: {{ $config.agentConfig.tag }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
-    imagescan-engine-type: scan
+    imagescan-engine-type: list
 spec:
   selector:
     matchLabels:
 {{ include "common.labels" $config | indent 6 }}
-      imagescan-engine-type: scan
-  replicas: 3
+      imagescan-engine-type: list
+  replicas: 1
   template:
     metadata:
       annotations:
@@ -24,7 +24,7 @@ spec:
         timestamp: {{ now | quote }}
       labels:
 {{ include "common.labels" $config | indent 8 }}
-        imagescan-engine-type: scan
+        imagescan-engine-type: list
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
@@ -33,7 +33,7 @@ spec:
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
-{{- include "imagescan.engine.resources" $config | indent 8 }}
+{{- include "imagescan.engine.list.resources" $config | indent 8 }}
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
@@ -53,7 +53,9 @@ spec:
         command: ["/central_agent"]
         env:
         - name: REGISTRY_AGENT_MODE
-          value: "scan"
+          value: "list"
+        - name: REGISTRY_LIST_REPORT_DELAY_SECONDS
+          value: "300"
         - name: NODE_AGENT_SELECTOR
           value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
           {{- /* TODO: investigate why $config instead of "." fails */}}

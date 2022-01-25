@@ -21,3 +21,19 @@ credentials:
   secret:
   user:
 
+addons:
+
+## Image Scan Add-on
+  imageScan:
+    enabled: true
+    engine:
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        list:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
