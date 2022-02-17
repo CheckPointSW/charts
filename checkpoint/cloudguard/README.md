@@ -134,7 +134,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
 | `addons.imageScan.maxImageSizeMb`                          | Specifies in MiBytes maximal image size to scan, its value + 500MB will be imageScan.engine main container memory limit | ``                                               |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
-| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`2.6.0`                                           |
+| `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`2.6.1`                                           |
 | `addons.imageScan.daemon.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.imageScan.daemon.env`                              | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.imageScan.daemon.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
@@ -142,11 +142,11 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
 | `addons.imageScan.daemon.shim.image`                       | Specify image for the shim container                            | `checkpoint/consec-imagescan-shim`               |
-| `addons.imageScan.daemon.shim.tag`                         | Specify image tag for the shim container                        |`2.6.0`                                           |
+| `addons.imageScan.daemon.shim.tag`                         | Specify image tag for the shim container                        |`2.6.1`                                           |
 | `addons.imageScan.daemon.shim.env`                         | Additional environmental variables for the shim container       | `{}`                                             |
 | `addons.imageScan.daemon.shim.resources`                   | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.imageScan.engine.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-engine`             |
-| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`2.6.0`                                           |
+| `addons.imageScan.engine.tag`                              | Specify image tag for the agent                                 |`2.6.1`                                           |
 | `addons.imageScan.engine.serviceAccountName`               | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.imageScan.engine.env`                              | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.imageScan.engine.resources`                        | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
