@@ -139,7 +139,7 @@ imagePullSecrets:
     fieldRef:
       fieldPath: spec.nodeName
 - name: PLATFORM
-  value: {{ include "get.platform" . }}
+  value: {{ include "get.platform" . | quote }}
 
 
 {{- template "user.defined.env" . -}}
@@ -391,10 +391,9 @@ openshift
 {{- else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
 tanzu
 {{- else -}}
-{{- .Values.platform | quote -}}
+{{- .Values.platform -}}
 {{- end -}}
 {{- end -}}
-
 
 {{/*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
