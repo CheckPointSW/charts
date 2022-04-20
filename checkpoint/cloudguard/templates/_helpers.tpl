@@ -138,8 +138,6 @@ imagePullSecrets:
   valueFrom:
     fieldRef:
       fieldPath: spec.nodeName
-- name: PLATFORM
-  value: {{ include "get.platform" . | quote }}
 
 
 {{- template "user.defined.env" . -}}
@@ -313,8 +311,10 @@ key: {{ $cert.Key | b64enc }}
 {{- printf "ap2" -}}
 {{- else if has $datacenter (list "ap3" "apso1") -}}
 {{- printf "ap3" -}}
+{{- else if has $datacenter (list "ca" "ca1" "cace1") -}}
+{{- printf "cace1" -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1')"  .Values.datacenter -}}
+{{- $err := printf "\n\nERROR: Invalid datacenter: %s (should be one of: 'usea1' [default], 'euwe1', 'apse1', 'apse2', 'apso1', 'cace1')"  .Values.datacenter -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -394,6 +394,15 @@ tanzu
 {{- .Values.platform -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "is.openshift.v4" -}}
+{{- if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
+openshift
+{{- else -}}
+{{- .Values.platform -}}
+{{- end -}}
+{{- end -}}
+
 
 {{/*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
