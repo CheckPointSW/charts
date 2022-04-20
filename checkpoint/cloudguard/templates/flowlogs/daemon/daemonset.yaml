@@ -52,6 +52,8 @@ spec:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
         {{- end }}
         env:
+        - name: CP_FLOW_LOGS_REPORT_PERIOD
+          value: {{ $config.agentConfig.flowlogsReportPeriod | quote }}
 {{ include "common.env" $config | indent 8 }}
       volumes:
       - name: secret-volume
