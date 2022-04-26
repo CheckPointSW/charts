@@ -44,6 +44,8 @@ spec:
           allowPrivilegeEscalation: false
         env:
 {{ include "common.env" $config | indent 8 }}    
+        - name: PLATFORM
+          value: {{ include "is.openshift.v4" . | quote }}
 {{- if and (has "extensions/v1beta1/Ingress" .Capabilities.APIVersions) (not (has "networking.k8s.io/v1/Ingress" .Capabilities.APIVersions)) }}
         - name: USE_INGRESS_BETA
           value: "true"
