@@ -1,0 +1,3 @@
+secret*.yaml
+_secret.yaml
+*-creds-secret.yaml
