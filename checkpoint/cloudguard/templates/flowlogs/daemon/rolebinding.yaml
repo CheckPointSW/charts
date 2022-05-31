@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "flowlogs.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- if or $config.Values.rbac.pspEnabled (eq (include "get.platform" $config) "openshift") -}}
+{{- if or $config.Values.rbac.pspEnabled (contains "openshift" (include "get.platform" $config)) -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

@@ -30,7 +30,7 @@ spec:
         image: {{ template "agent.main.image" $config }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         securityContext:
-{{- if eq (include "get.platform" $config) "openshift" }}
+{{- if contains "openshift" (include "get.platform" $config) }}
           privileged: true
 {{- else }}
           runAsUser: 0

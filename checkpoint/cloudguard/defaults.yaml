@@ -50,7 +50,7 @@ podAnnotations:
 proxy: {}
 
 containerRuntime:
-platform: kubernetes # kubernetes, openshift or tanzu
+platform: kubernetes # kubernetes, openshift, openshift.v3 or tanzu
 
 seccompProfile:
   type: RuntimeDefault
@@ -61,7 +61,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.4.5
+    tag: 1.5.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -112,7 +112,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.10.0
+      tag: 2.12.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -134,7 +134,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.10.0
+        tag: 2.12.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -162,25 +162,11 @@ addons:
       - operator: Exists
       affinity: {}
 
-      fluentbit:
-        ## Specify image and tag
-        image: checkpoint/consec-fluentbit
-        tag: 1.6.9-cp
-
-        ## Configure resource requests and limits
-        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-        resources:
-          requests:
-            cpu: 100m
-            memory: 20Mi
-          limits:
-            cpu: 200m
-            memory: 30Mi 
 
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.10.0
+      tag: 2.12.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -203,21 +189,7 @@ addons:
       nodeSelector: {}
       tolerations: []
       affinity: {}
-      
-      fluentbit:
-        ## Specify image and tag
-        image: checkpoint/consec-fluentbit
-        tag: 1.6.9-cp
 
-        ## Configure resource requests and limits
-        ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-        resources:
-          requests:
-            cpu: 100m
-            memory: 20Mi
-          limits:
-            cpu: 200m
-            memory: 30Mi 
 
 
 ## Flow Logs Add-on
@@ -344,7 +316,7 @@ addons:
       gsl:
         ## Specify image and tag
         image: checkpoint/consec-admission-gsl
-        tag: 1.3.2
+        tag: 1.3.3
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -387,7 +359,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.677
+      tag: 0.0.740
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -409,7 +381,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.27.1-cp-1
+        tag: 0.28.0-cp-2
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
