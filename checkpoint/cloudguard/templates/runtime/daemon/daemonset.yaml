@@ -23,6 +23,9 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       hostNetwork: true  # needed for DNS request listener
+      {{- if eq (include "get.platform" $config) "eks.bottlerocket" }}
+      hostPID: true
+      {{- end }}
       initContainers:
       # probe (sysdig)
       - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
@@ -39,13 +42,16 @@ spec:
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
-        {{- if eq (include "get.platform" $config) "openshift" }}
+        {{- if contains "openshift" (include "get.platform" $config) }}
         - name: SYSDIG_WAIT_FOR_KERNEL_SOURCE_TIMEOUT  # given in seconds
           value: "1800"
         {{- end }}
         {{- end }}
         securityContext:
-        {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
+        {{- if eq (include "get.platform" $config) "eks.bottlerocket" }}
+          privileged: true
+          runAsUser: 0
+        {{- else if or (not $config.featureConfig.BPF) (contains "openshift" (include "get.platform" $config)) }}
           privileged: true
         {{- else }}
           runAsUser: 0
@@ -143,18 +149,18 @@ spec:
           value: {{ include "get.container.runtime" . }}
         {{- if $config.featureConfig.BPF }}
         - name: SYSDIG_BPF_PROBE
-          value: "/sysdig/.sysdig/sysdig-probe-bpf.o"
+          value: "/sysdig/.scap/scap-bpf.o"
         {{- end }}
         - name: SBA_USE_NETFILTER_QUEUE
           value: "1"
         securityContext:
-        {{- if or (not $config.featureConfig.BPF) (eq (include "get.platform" $config) "openshift") }}
+        {{- if or (not $config.featureConfig.BPF) (contains "openshift" (include "get.platform" $config)) }}
           privileged: true
         {{- else }}
           runAsUser: 0
           capabilities:
             add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT", "NET_ADMIN", "NET_RAW"]
-	    {{- end }}
+        {{- end }}
         volumeMounts:
         - name: rp4c-alerts
           mountPath: /rp4c/alerts
@@ -245,7 +251,7 @@ spec:
       {{- if eq $config.containerRuntime "containerd" }}
       - name: containerd-sock
         hostPath:
-          path: /run/containerd/containerd.sock
+          path: {{ include "containerd.sock.path" $config }}
           type: Socket
       {{- end }}
       {{- if eq $config.containerRuntime "cri-o" }}

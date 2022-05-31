@@ -98,7 +98,7 @@ spec:
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
         securityContext:
           allowPrivilegeEscalation: false
-{{- if ne (include "get.platform" $config) "openshift" }}
+{{- if not (contains "openshift" (include "get.platform" $config)) }}
           runAsUser: {{ include "cloudguard.nonroot.user" $config }}
           runAsGroup: {{ include "cloudguard.nonroot.user" $config }}
 {{- end }}
