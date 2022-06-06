@@ -24,7 +24,7 @@ spec:
     readOnly: true
 {{- end }}
 {{- if eq $config.containerRuntime "containerd" }}
-  - pathPrefix: /run/containerd/containerd.sock
+  - pathPrefix: {{ include "containerd.sock.path" $config }}
     readOnly: true
 {{- end }}
 {{- if eq $config.containerRuntime "cri-o" }}
@@ -46,7 +46,7 @@ spec:
     readOnly: true
   - pathPrefix: /usr/bin/nsenter
     readOnly: true
-{{- if ne (include "get.platform" $config) "openshift" }}
+{{- if not (contains "openshift" (include "get.platform" $config)) }}
   - pathPrefix: /lib/x86_64-linux-gnu
     readOnly: true
   - pathPrefix: /usr/lib/x86_64-linux-gnu
@@ -59,7 +59,6 @@ spec:
   - 'hostPath'
   - 'secret'
   - 'configMap' 
-  - 'emptyDir'
   hostNetwork: false
   hostIPC: false
   hostPID: false

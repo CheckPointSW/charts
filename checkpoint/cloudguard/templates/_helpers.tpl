@@ -74,7 +74,7 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 agentVersion: {{ .agentConfig.tag }}
 {{- /* Openshift does not allow seccomp - So we don't add seccomp in openshift case */ -}}
 {{- /* From k8s 1.19 and up we use the seccomp in securityContext so no need for it here, in case of template we don't know the version so we fall back to annotation */ -}}
-{{- if and (ne (include "get.platform" .) "openshift") (or (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) (include "is.helm.template.command" .)) }}
+{{- if and (not (contains "openshift" (include "get.platform" .))) (or (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) (include "is.helm.template.command" .)) }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- end }}
 {{- if .Values.podAnnotations.apparmor }}
@@ -85,7 +85,7 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 
 {{- /* Pod properties commonly used in agents */ -}}
 {{- define "common.pod.properties" -}}
-{{- if ne (include "get.platform" .) "openshift" }}
+{{- if not (contains "openshift" (include "get.platform" .)) }}
 securityContext:
   runAsUser: {{ include "cloudguard.nonroot.user" . }}
   runAsGroup: {{ include "cloudguard.nonroot.user" . }}
@@ -138,7 +138,8 @@ imagePullSecrets:
   valueFrom:
     fieldRef:
       fieldPath: spec.nodeName
-
+- name: PLATFORM
+  value: {{ include "get.platform" . }}
 
 {{- template "user.defined.env" . -}}
 
@@ -386,23 +387,31 @@ key: {{ $cert.Key | b64enc }}
 {{- end -}}
 
 {{- define "get.platform" -}}
-{{- if has "security.openshift.io/v1" .Capabilities.APIVersions -}}
+{{- if (include "is.helm.template.command" .) -}}
+{{- include "validate.platform" . -}}
+{{- lower .Values.platform -}}
+{{- else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
 openshift
+{{- else if has "security.openshift.io/v1" .Capabilities.APIVersions -}}
+openshift.v3
 {{- else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
 tanzu
 {{- else -}}
-{{- .Values.platform -}}
-{{- end -}}
-{{- end -}}
-
-{{- define "is.openshift.v4" -}}
-{{- if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
-openshift
+{{- $nodes := lookup "v1" "Node" "" "" -}}
+{{/*
+  nodeInfo.osImage example values:
+  - "Bottlerocket OS 1.7.2 (aws-k8s-1.21)"
+  - "Container-Optimized OS from Google"
+*/}}
+{{- $osImage := (first $nodes.items).status.nodeInfo.osImage }}
+{{- if contains "Bottlerocket" $osImage -}}
+eks.bottlerocket
 {{- else -}}
-{{- .Values.platform -}}
+{{- include "validate.platform" . -}}
+{{- lower .Values.platform -}}
 {{- end -}}
 {{- end -}}
-
+{{- end -}}
 
 {{/*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
@@ -412,5 +421,21 @@ openshift
 {{- $namespace := lookup "v1" "Namespace" "" "" -}}
 {{- if eq (len $namespace) 0 -}}
 true
+{{- end -}}
+{{- end -}}
+
+{{- define "containerd.sock.path" -}}
+{{- if eq (include "get.platform" .) "eks.bottlerocket" -}}
+/run/dockershim.sock
+{{- else -}}
+/run/containerd/containerd.sock
+{{- end -}}
+{{- end -}}
+
+{{- define "validate.platform" -}}
+{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks.bottlerocket") -}}
+{{- else -}}
+{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks.bottlerocket')"  .Values.platform -}}
+{{- fail $err -}}
 {{- end -}}
 {{- end -}}

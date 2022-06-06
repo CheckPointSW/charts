@@ -1,6 +1,6 @@
 {{- $config := fromYaml (include "runtime.daemon.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
-{{- if eq (include "get.platform" $config) "openshift" }}
+{{- if contains "openshift" (include "get.platform" $config) }}
 apiVersion: machineconfiguration.openshift.io/v1
 kind: MachineConfig
 metadata:

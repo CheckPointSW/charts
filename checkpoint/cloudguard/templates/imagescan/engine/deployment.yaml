@@ -25,7 +25,6 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
-{{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -43,10 +42,6 @@ spec:
           mountPath: /etc/clientcert
         - name: clientkey-volume
           mountPath: /etc/clientkey
-        - name: metrics
-          mountPath: /metric
-        - name: metrics-tail
-          mountPath: /metric-tail
         command: ["/central_agent"]
         env:
         - name: NODE_AGENT_SELECTOR
@@ -80,5 +75,4 @@ spec:
       - name: clientkey-volume
         secret:
           secretName: {{ template "agent.resource.name" $config }}
-{{ include "fluentbit-metrics.volumes" $config | indent 6 }}
 {{- end -}}
