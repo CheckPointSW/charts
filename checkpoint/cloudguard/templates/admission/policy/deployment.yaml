@@ -30,10 +30,6 @@ spec:
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume
-        - name: metrics
-          mountPath: /metric
-        - name: metrics-tail
-          mountPath: /metric-tail
         command: ["/admission_rule_updater"]
         env:
 {{ include "common.env" $config | indent 8 }}
@@ -41,11 +37,9 @@ spec:
         resources:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
         {{- end }}
-{{ include "telemetry.container" $config | indent 6 }}
       volumes:
       - name: secret-volume
         secret:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
-{{ include "fluentbit-metrics.volumes" $config | indent 6 }}
 
 {{ end }}

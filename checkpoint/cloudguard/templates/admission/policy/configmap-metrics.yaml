@@ -1,5 +1,0 @@
-{{- $config := fromYaml (include "admission.policy.config" .) -}}
-{{ if $config.featureConfig.enabled }}
-{{ template "telemetry.configmap" dict "config" $config }}
-{{- end -}}
-

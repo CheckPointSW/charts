@@ -23,8 +23,6 @@ spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       hostNetwork: true
       containers:
-#fluentbit container
-{{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -42,10 +40,6 @@ spec:
           name: secret-volume
         - mountPath: /etc/cpconfig
           name: config-volume
-        - name: metrics
-          mountPath: /metric
-        - name: metrics-tail
-          mountPath: /metric-tail          
         command: ["/flow_logs_user"]
 {{- if $config.agentConfig.resources }}
         resources:
@@ -62,5 +56,4 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "agent.resource.name" $config }}
-{{ include "fluentbit-metrics.volumes" $config | indent 6 }}
 {{ end }}
