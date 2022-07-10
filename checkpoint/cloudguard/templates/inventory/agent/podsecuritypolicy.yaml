@@ -17,7 +17,6 @@ spec:
   requiredDropCapabilities:
   - ALL
   volumes:
-  - 'emptyDir'
   - 'secret'  
   - 'configMap'
   hostNetwork: false

@@ -1,4 +1,4 @@
-{{- $config := fromYaml (include "imagescan.engine.config" .) -}}
+{{- $config := fromYaml (include "imagescan.list.config" .) -}}
 {{- if $config.featureConfig.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -9,11 +9,13 @@ metadata:
     agentVersion: {{ $config.agentConfig.tag }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
+    imagescan-agent-type: list
 spec:
   selector:
     matchLabels:
 {{ include "common.labels" $config | indent 6 }}
-  replicas: {{ $config.agentConfig.replicaCount }}
+      imagescan-agent-type: list
+  replicas: 1
   template:
     metadata:
       annotations:
@@ -22,6 +24,7 @@ spec:
         timestamp: {{ now | quote }}
       labels:
 {{ include "common.labels" $config | indent 8 }}
+        imagescan-agent-type: list
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
@@ -29,7 +32,10 @@ spec:
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
-{{- include "imagescan.engine.resources" $config | indent 8 }}
+{{- if $config.agentConfig.resources }}
+        resources:
+{{ toYaml $config.agentConfig.resources | indent 10 }}
+{{- end }}
         securityContext:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
@@ -45,7 +51,7 @@ spec:
         command: ["/central_agent"]
         env:
         - name: REGISTRY_AGENT_MODE
-          value: "scan"
+          value: "list"
         - name: NODE_AGENT_SELECTOR
           value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
           {{- /* TODO: investigate why $config instead of "." fails */}}
@@ -53,14 +59,6 @@ spec:
           value: {{ .Release.Name }}
         - name: CLOUDGUARD_REGION
           value: {{ include "dome9.subdomain" $config | default "us" }}
-{{- if $config.featureConfig.maxImageSizeMb }}
-{{- if eq ( $config.featureConfig.maxImageSizeMb | int ) 0 }}
-{{- fail "\n\nimageScan: wrong value for maxImageSizeMb, should be integer" -}}
-{{- else }}
-        - name: MAX_SCAN_IMAGE_SIZE_MB
-          value: "{{ $config.featureConfig.maxImageSizeMb }}"
-{{- end }}
-{{- end }}
 {{- /* TODO: move user env. variables to the end for all agents */}}
 {{ include "common.env" $config | indent 8 }}
       volumes:

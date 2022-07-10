@@ -18,7 +18,7 @@ rules:
   resourceNames:
   - {{ template "agent.resource.name" $config }}
 {{- end -}}
-{{- if eq (include "get.platform" $config) "openshift" }}
+{{- if contains "openshift" (include "get.platform" $config) }}
 - apiGroups:
   - security.openshift.io 
   resourceNames:
