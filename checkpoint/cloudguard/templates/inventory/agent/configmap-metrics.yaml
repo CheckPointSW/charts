@@ -1,2 +1,0 @@
-{{- $config := fromYaml (include "inventory.agent.config" .) -}}
-{{ template "telemetry.configmap" dict "config" $config }}

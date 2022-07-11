@@ -22,7 +22,6 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
-{{ include "telemetry.container" $config | indent 6 }}
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -30,10 +29,6 @@ spec:
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume
-        - name: metrics
-          mountPath: /metric
-        - name: metrics-tail
-          mountPath: /metric-tail
         command: ["/inventory"]
         {{- if $config.agentConfig.resources }}
         resources:
@@ -43,9 +38,7 @@ spec:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
         env:
-{{ include "common.env" $config | indent 8 }}    
-        - name: PLATFORM
-          value: {{ include "is.openshift.v4" . | quote }}
+{{ include "common.env" $config | indent 8 }}
 {{- if and (has "extensions/v1beta1/Ingress" .Capabilities.APIVersions) (not (has "networking.k8s.io/v1/Ingress" .Capabilities.APIVersions)) }}
         - name: USE_INGRESS_BETA
           value: "true"
@@ -54,4 +47,3 @@ spec:
       - name: secret-volume
         secret:
           secretName: {{ .Release.Name }}-cp-cloudguard-creds
-{{ include "fluentbit-metrics.volumes" $config | indent 6 }}

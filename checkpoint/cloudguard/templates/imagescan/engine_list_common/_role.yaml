@@ -1,10 +1,11 @@
-{{- $config := fromYaml (include "imagescan.engine.config" .) -}}
+{{- define "imagescan.engine-list.role" -}}
+{{- $config := .config -}}
 {{- if $config.featureConfig.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ template "agent.resource.name" $config }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .config.Release.Namespace }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 rules:
@@ -17,5 +18,6 @@ rules:
   verbs: [ "use"]
   resourceNames: 
   - {{ template "agent.resource.name" $config }}
+{{- end -}}
 {{- end -}}
 {{- end -}}
