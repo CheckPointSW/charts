@@ -1,11 +1,12 @@
-{{- $config := fromYaml (include "imagescan.engine.config" .) -}}
+{{- define "imagescan.engine-list.podsecuritypolicy" -}}
+{{- $config := .config -}}
 {{- if $config.featureConfig.enabled -}}
 {{- if $config.Values.rbac.pspEnabled -}}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ template "agent.resource.name" $config }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .config.Release.Namespace }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
   annotations:
@@ -40,5 +41,6 @@ spec:
     - min: 1
       max: 65535
   readOnlyRootFilesystem: false
+{{- end -}}
 {{- end -}}
 {{- end -}}

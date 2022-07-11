@@ -62,14 +62,13 @@ spec:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
         env:
+{{ include "common.env" $config | indent 8 }}
 {{ include "user.defined.env" $config | indent 8 }}
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: FAILURE_POLICY_INTERVAL_HOURS
           value: {{ $config.agentConfig.failurePolicyIntervalHours | quote }}
         volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/secret-volume
         - name: webhook-certs
           mountPath: /etc/certs
           readOnly: true
@@ -136,6 +135,9 @@ spec:
         - name: metrics-tail
           mountPath: /metric-tail
       volumes:
+      - name: secret-volume
+        secret:
+          secretName: {{ .Release.Name }}-cp-cloudguard-creds
       - name: webhook-certs
         secret:
           secretName: {{ template "agent.resource.name" $config }}

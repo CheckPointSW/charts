@@ -43,6 +43,6 @@ webhooks:
     matchPolicy: Equivalent
     failurePolicy: Ignore
     sideEffects: None
-    timeoutSeconds: 5
+    timeoutSeconds: 10
 {{- end -}}
 
