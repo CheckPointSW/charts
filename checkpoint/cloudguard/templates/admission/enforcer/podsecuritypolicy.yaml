@@ -20,7 +20,6 @@ spec:
   volumes:
   - 'secret'  
   - 'configMap'
-  - 'emptyDir'
   hostNetwork: false
   hostIPC: false
   hostPID: false
