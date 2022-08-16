@@ -74,7 +74,7 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 agentVersion: {{ .agentConfig.tag }}
 {{- /* Openshift does not allow seccomp - So we don't add seccomp in openshift case */ -}}
 {{- /* From k8s 1.19 and up we use the seccomp in securityContext so no need for it here, in case of template we don't know the version so we fall back to annotation */ -}}
-{{- if and (not (contains "openshift" (include "get.platform" .))) (or (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) (include "is.helm.template.command" .)) }}
+{{- if and (not (contains "openshift" (include "get.platform" .))) (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- end }}
 {{- if .Values.podAnnotations.apparmor }}
@@ -89,7 +89,7 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 securityContext:
   runAsUser: {{ include "cloudguard.nonroot.user" . }}
   runAsGroup: {{ include "cloudguard.nonroot.user" . }}
-{{- if and (semverCompare ">=1.19-0" .Capabilities.KubeVersion.Version) (not (include "is.helm.template.command" .)) }}
+{{- if (semverCompare ">=1.19-0" .Capabilities.KubeVersion.Version) }}
   seccompProfile:
 {{ toYaml .Values.seccompProfile | indent 4 }}
 {{- end }}
