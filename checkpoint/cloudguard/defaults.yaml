@@ -275,7 +275,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.0.0
+      tag: 2.1.0
 
       failurePolicyIntervalHours: 24
 
