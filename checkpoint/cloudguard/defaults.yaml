@@ -99,7 +99,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.14.0-openshift
+      tag: 2.14.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -121,7 +121,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.14.0-openshift
+        tag: 2.14.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -149,11 +149,10 @@ addons:
       - operator: Exists
       affinity: {}
 
-
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.14.0-openshift
+      tag: 2.14.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -182,7 +181,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.14.0-openshift
+      tag: 2.14.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -275,7 +274,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.0.0
+      tag: 2.1.0
 
       failurePolicyIntervalHours: 24
 
@@ -309,12 +308,13 @@ addons:
   runtimeProtection:
     enabled: false
     BPF: true
-
+    autoKernelHeaders: false
+    
     daemon:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.740
+      tag: 0.0.769
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -327,16 +327,16 @@ addons:
       resources:
         requests:
           cpu: 200m
-          memory: 500Mi
+          memory: 300Mi
         limits:
-          cpu: 2000m
-          memory: 1Gi
+          cpu: 1200m
+          memory: 800Mi
 
       ## Sidecars
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.28.0-cp-2
+        tag: 0.28.0-cp-5
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -345,8 +345,8 @@ addons:
             cpu: 100m
             memory: 128Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 1200m
+            memory: 800Mi
 
       fluentbit:
         ## Specify image and tag

@@ -53,8 +53,6 @@ spec:
           value: {{ .Release.Name }}
         - name: CLOUDGUARD_REGION
           value: {{ include "dome9.subdomain" $config | default "us" }}
-        - name: USE_PODMAN_EXPORT
-          value: "both"
 {{- if $config.featureConfig.maxImageSizeMb }}
 {{- if eq ( $config.featureConfig.maxImageSizeMb | int ) 0 }}
 {{- fail "\n\nimageScan: wrong value for maxImageSizeMb, should be integer" -}}
