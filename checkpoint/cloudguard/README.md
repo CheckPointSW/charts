@@ -132,6 +132,7 @@ The following table list the configurable parameters of this chart and their def
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
+| `priorityClassName`                                        | Specifies custom priorityClassName                              | ``                                               |
 | `inventory.agent.image`                                    | Specify image for the agent                                     | `checkpoint/consec-inventory-agent`              |
 | `inventory.agent.tag`                                      | Specify image tag for the agent                                 | `1.6.1`                                          |
 | `inventory.agent.serviceAccountName`                       | Specify custom Service Account for the Inventory agent          | ``                                               |
@@ -141,7 +142,9 @@ The following table list the configurable parameters of this chart and their def
 | `inventory.agent.nodeSelector`                             | Node labels for pod assignment for Inventory agent              | `{}`                                             |
 | `inventory.agent.tolerations`                              | List of node taints to tolerate for Inventory agent             | `[]`                                             |
 | `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
+| `inventory.priorityClassName`                              | Specifies custom priorityClassName                              | ``                                               |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
+| `addons.imageScan.priorityClassName`                       | Specifies custom priorityClassName                              | ``                                               |
 | `addons.imageScan.maxImageSizeMb`                          | Specifies in MiBytes maximal image size to scan, its value + 500MB will be imageScan.engine main container memory limit | ``                                               |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
 | `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 |`2.14.0`                                           |
@@ -173,6 +176,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.list.tolerations`                        | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.imageScan.list.affinity`                           | Affinity setting                                                | `{}`                                             |
 | `addons.flowLogs.enabled`                                  | Specifies whether the Flow Logs addon should be installed       | `false`                                          |
+| `addons.flowLogs.priorityClassName`                        | Specifies custom priorityClassName                              | ``                                               |
 | `addons.flowLogs.daemon.image`                             | Specify image for the agent                                     | `checkpoint/consec-flowlogs-daemon`              |
 | `addons.flowLogs.daemon.tag`                               | Specify image tag for the agent                                 |`0.7.0`                                           |
 | `addons.flowLogs.daemon.serviceAccountName`                | Specify custom Service Account for the agent                    | ``                                               |
@@ -183,6 +187,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.flowLogs.daemon.tolerations`                       | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | `{}`                                             |
 | `addons.admissionControl.enabled`                          | Specify whether the Admission Control addon should be installed | `false`                                          |
+| `addons.admissionControl.priorityClassName`                | Specifies custom priorityClassName                              | ``                                               |
 | `addons.admissionControl.policy.image`                     | Specify image for the agent                                     | `checkpoint/consec-admission-policy`             |
 | `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 |`1.2.1`                                           |
 | `addons.admissionControl.policy.serviceAccountName`        | Specify custom Service Account for the agent                    | ``                                               |
@@ -192,7 +197,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.policy.tolerations`               | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | `{}`                                             |
 | `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
-| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`2.0.0`                                           |
+| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`2.1.0`                                           |
 | `addons.admissionControl.enforcer.serviceAccountName`      | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.admissionControl.enforcer.replicaCount`            | Number of Inventory agent instances to be deployed              | `2`                                              |
 | `addons.admissionControl.enforcer.env`                     | Additional environmental variables for the agent                | `{}`                                             |
@@ -202,8 +207,9 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.enforcer.tolerations`             | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.admissionControl.enforcer.affinity`                | Affinity setting                                                | `{}`                                             |
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be installed | `false`                                          |
+| `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | ``                                               |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.740`                                         |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.769`                                         |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |

@@ -85,6 +85,10 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 
 {{- /* Pod properties commonly used in agents */ -}}
 {{- define "common.pod.properties" -}}
+{{- $priorityClassName := .featureConfig.priorityClassName | default .Values.priorityClassName -}}
+{{- if $priorityClassName -}}
+priorityClassName: {{ $priorityClassName }}
+{{- end }}
 {{- if not (contains "openshift" (include "get.platform" .)) }}
 securityContext:
   runAsUser: {{ include "cloudguard.nonroot.user" . }}
@@ -141,14 +145,14 @@ imagePullSecrets:
 - name: PLATFORM
   value: {{ include "get.platform" . }}
 
-{{- template "user.defined.env" . -}}
-
 {{- if .Values.proxy }}
 - name: HTTPS_PROXY
   value: "{{ .Values.proxy }}"
 - name: NO_PROXY
   value: "kubernetes.default.svc"
 {{- end -}}
+
+{{- template "user.defined.env" . -}}
 {{- end -}}
 
 {{- /* Environment variables needed for fluentbit-based side-cars */ -}}
