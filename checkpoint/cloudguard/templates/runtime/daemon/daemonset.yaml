@@ -23,10 +23,24 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       hostNetwork: true  # needed for DNS request listener
-      {{- if eq (include "get.platform" $config) "eks.bottlerocket" }}
+      {{- if or $config.featureConfig.enableFileReputation (eq (include "get.platform" $config) "eks.bottlerocket") }}
       hostPID: true
       {{- end }}
       initContainers:
+      {{- if and $config.featureConfig.enableFileReputation (eq $config.containerRuntime "cri-o") }}
+      # cri-o folder which contains containers root fs is 'private' mount.
+      # So nested/sub mounts will not be propagated WS container.
+      # The following container changes mount type to 'shared' on host in a hacky way:
+      # Literally container escapes its mount's isolation by changing mount namespace
+      # to 'init' process namespace, then change type of required mount to 'shared'
+      - name: criofsfix
+        image: docker.io/library/alpine:3.16  # todo: use cpalpine-based special image
+        imagePullPolicy: IfNotPresent
+        command: [ "/bin/sh", "-c", "--" ]
+        securityContext:
+          privileged: true
+        args: [ "nsenter --mount=/proc/1/ns/mnt -- mount --make-shared /var/lib/containers/storage/overlay" ]
+      {{- end }}
       # probe (sysdig)
       - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
         name: {{ $containerConfig.containerName }}
@@ -36,17 +50,26 @@ spec:
         resources:
 {{ toYaml $config.agentConfig.probe.resources | indent 10}}
         {{- end }}
-        {{- if $config.featureConfig.BPF }}
         env:
+        {{- if $config.featureConfig.BPF }}
         - name: HOME
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
+        {{- if $config.featureConfig.autoKernelHeaders }}
+        - name: AMAZON_AUTO_KERNEL_HEADERS
+          value: "1"
+        {{- end }}
         {{- if contains "openshift" (include "get.platform" $config) }}
         - name: SYSDIG_WAIT_FOR_KERNEL_SOURCE_TIMEOUT  # given in seconds
           value: "1800"
         {{- end }}
         {{- end }}
+        {{- if .Values.proxy }}
+        - name: http_proxy
+          value: "{{ .Values.proxy }}"
+        {{- end }}
+{{ include "common.env" $config | indent 8 }}
         securityContext:
         {{- if eq (include "get.platform" $config) "eks.bottlerocket" }}
           privileged: true
@@ -75,6 +98,10 @@ spec:
         {{- else }}
         - name: host-dev-vol
           mountPath: /host/dev
+        {{- end }}
+        {{- if $config.featureConfig.autoKernelHeaders }}
+        - name: host-root-vol
+          mountPath: /host/root
         {{- end }}
       containers:
       # fluentbit
@@ -136,13 +163,8 @@ spec:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
         {{- end }}
         env:
-{{ include "user.defined.env" $config | indent 8 }}
         - name: LANG
           value: C.UTF-8
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: SBA_TELEMETRY_SAVE_TO_FILE
           value: "1"
         - name: SBA_CONTAINER_RUNTIME
@@ -153,14 +175,37 @@ spec:
         {{- end }}
         - name: SBA_USE_NETFILTER_QUEUE
           value: "1"
+      {{- if not $config.featureConfig.enableFileReputation }}
+        - name: SBA_REQUIRED_BLADES
+          value: "SBA,BG"
+      {{- end }}
+{{ include "common.env" $config | indent 8 }}
         securityContext:
         {{- if or (not $config.featureConfig.BPF) (contains "openshift" (include "get.platform" $config)) }}
           privileged: true
         {{- else }}
           runAsUser: 0
+          seLinuxOptions:
+            user: system_u
+            role: system_r
+            type: control_t
+            level: s0
           capabilities:
-            add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT", "NET_ADMIN", "NET_RAW"]
-        {{- end }}
+            add:
+            - SYS_RESOURCE
+            - SYS_ADMIN
+            - SYS_NICE
+            - SYS_PTRACE
+            - FOWNER
+            - SYS_PACCT
+            - NET_ADMIN
+            - NET_RAW
+          {{- if $config.featureConfig.enableFileReputation }}
+            - AUDIT_CONTROL # for fmon
+            - AUDIT_READ # for fmon
+            - AUDIT_WRITE # for fmon
+          {{- end }}
+	    {{- end }}
         volumeMounts:
         - name: rp4c-alerts
           mountPath: /rp4c/alerts
@@ -179,6 +224,7 @@ spec:
         {{- if ne (include "get.platform" $config) "tanzu" }}
         - name: varlibdocker-vol
           mountPath: /var/lib/docker
+          mountPropagation: HostToContainer
           readOnly: true
         {{- end }}
         {{- end }}
@@ -186,11 +232,22 @@ spec:
         - name: containerd-sock
           mountPath: /run/containerd/containerd.sock
           readOnly: true
+        - mountPath: /run/containerd/io.containerd.runtime.v2.task
+          name: runcontainerdfs-vol
+          mountPropagation: HostToContainer
+          readOnly: true
         {{- end }}
         {{- if eq $config.containerRuntime "cri-o" }}
         - name: crio-sock
           mountPath: /var/run/crio/crio.sock
           readOnly: true
+        - name: criofs-vol
+          mountPath: /var/lib/containers/storage
+          mountPropagation: HostToContainer
+          readOnly: true
+        - name: criohooks-vol
+          mountPath: /usr/share/containers/oci/hooks.d/
+          readOnly: false
         {{- end }}
         - name: host-proc-vol
           mountPath: /host/proc
@@ -208,6 +265,8 @@ spec:
           readOnly: true
         - name: run-xtables-lock
           mountPath: /run/xtables.lock
+        - name: crashdumps-vol
+          mountPath: /var/log/checkpoint/cpla/crashdumps
       volumes:
       - name: config-volume-fluentbit
         configMap:
@@ -253,12 +312,21 @@ spec:
         hostPath:
           path: {{ include "containerd.sock.path" $config }}
           type: Socket
+      - name: runcontainerdfs-vol
+        hostPath:
+          path: /run/containerd/io.containerd.runtime.v2.task
       {{- end }}
       {{- if eq $config.containerRuntime "cri-o" }}
       - name: crio-sock
         hostPath:
           path: /var/run/crio/crio.sock
           type: Socket
+      - name: criofs-vol
+        hostPath:
+          path: /var/lib/containers/storage
+      - name: criohooks-vol
+        hostPath:
+          path: /usr/share/containers/oci/hooks.d/
       {{- end }}
       - name: boot-vol
         hostPath:
@@ -275,7 +343,7 @@ spec:
       {{- if $config.featureConfig.BPF }}
       - name: sysdig-probe-vol
         hostPath:
-          path: /tmp
+          path: /var/local
       {{- else }}
       - name: host-dev-vol
         hostPath:
@@ -290,4 +358,12 @@ spec:
       - name: run-xtables-lock
         hostPath:
           path: /run/xtables.lock
+      - name: crashdumps-vol
+        hostPath:
+          path: /tmp/cpla-crashdumps
+      {{- if $config.featureConfig.autoKernelHeaders }}
+      - name: host-root-vol
+        hostPath:
+          path: /
+      {{- end }}
 {{- end }}

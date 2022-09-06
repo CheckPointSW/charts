@@ -149,7 +149,6 @@ addons:
       - operator: Exists
       affinity: {}
 
-
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
@@ -309,12 +308,14 @@ addons:
   runtimeProtection:
     enabled: false
     BPF: true
-
+    autoKernelHeaders: false
+    enableFileReputation: true 
+    
     daemon:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.740
+      tag: 0.0.773
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -327,16 +328,16 @@ addons:
       resources:
         requests:
           cpu: 200m
-          memory: 500Mi
+          memory: 300Mi
         limits:
-          cpu: 2000m
-          memory: 1Gi
+          cpu: 1200m
+          memory: 800Mi
 
       ## Sidecars
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.28.0-cp-2
+        tag: 0.28.0-cp-5
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -345,8 +346,8 @@ addons:
             cpu: 100m
             memory: 128Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 1200m
+            memory: 800Mi
 
       fluentbit:
         ## Specify image and tag
