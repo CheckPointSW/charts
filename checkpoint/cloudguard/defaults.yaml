@@ -315,7 +315,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.773
+      tag: 0.0.780
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -337,7 +337,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.28.0-cp-5
+        tag: 0.28.0-cp-6
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

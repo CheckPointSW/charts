@@ -209,7 +209,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be installed | `false`                                          |
 | `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | ``                                               |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.769`                                         |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.780`                                         |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
@@ -217,7 +217,7 @@ The following table list the configurable parameters of this chart and their def
 |                                                            |                                                                 | `limits.cpu: 2000m`                              |
 |                                                            |                                                                 | `limits.memory: 1Gi`                             |
 | `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
-| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.28.0-cp-2`                                       |
+| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.28.0-cp-6`                                       |
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
 | `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
