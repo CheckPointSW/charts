@@ -85,6 +85,10 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 
 {{- /* Pod properties commonly used in agents */ -}}
 {{- define "common.pod.properties" -}}
+{{- $priorityClassName :=  .featureConfig.priorityClassName  | default .Values.priorityClassName -}}
+{{- if $priorityClassName -}}
+priorityClassName: {{ $priorityClassName }}
+{{- end }}
 {{- if not (contains "openshift" (include "get.platform" .)) }}
 securityContext:
   runAsUser: {{ include "cloudguard.nonroot.user" . }}
