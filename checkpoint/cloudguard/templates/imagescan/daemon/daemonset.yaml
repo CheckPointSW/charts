@@ -61,7 +61,6 @@ spec:
         {{- end }}
         env: 
 {{ include "common.env" $config | indent 8 }}
-{{ include "user.defined.env" $config | indent 8 }}
 {{- if or (eq $config.containerRuntime "containerd") (eq $config.containerRuntime "cri-o") }}
         - name: USE_SHIM
           value: "true"
