@@ -46,6 +46,10 @@ spec:
         - name: USE_CRONJOB_BETA
           value: "true"
 {{- end }}
+{{- if or (has "policy/v1beta1/PodSecurityPolicy" .Capabilities.APIVersions) (semverCompare "<1.25-0" .Capabilities.KubeVersion.Version) }}
+        - name: USE_POD_SECURITY_POLICY
+          value: "true"
+{{- end }}
 {{ include "common.env" $config | indent 8 }}
       volumes:
       - name: secret-volume

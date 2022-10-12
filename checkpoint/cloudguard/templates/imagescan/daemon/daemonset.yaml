@@ -13,6 +13,7 @@ spec:
   selector:
     matchLabels:
 {{ include "common.labels" $config | indent 6 }}
+{{ include "daemonset.updateStrategy" $config | indent 2}}
   template:
     metadata:
       annotations:
