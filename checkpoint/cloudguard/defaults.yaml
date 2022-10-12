@@ -42,6 +42,7 @@ imagePullPolicy: Always
 podAnnotations: 
   seccomp: runtime/default
   apparmor: {}
+  custom: {}
 
 ## Proxy settings 
 ## Examples:
@@ -55,13 +56,17 @@ platform: kubernetes # kubernetes, openshift, openshift.v3 or tanzu
 seccompProfile:
   type: RuntimeDefault
 
+daemonSetStrategy:
+  rollingUpdate:
+    maxUnavailable: 50%
+
 ### Inventory agent settings
 inventory:
   agent:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.6.1
+    tag: 1.7.1
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -86,6 +91,8 @@ inventory:
     nodeSelector: {}
     tolerations: []
     affinity: {}
+    podAnnotations:
+      custom: {}
 
 ### Addons configuration
 ### Each addon may be disabled
@@ -148,6 +155,8 @@ addons:
       tolerations:
       - operator: Exists
       affinity: {}
+      podAnnotations:
+        custom: {}
 
 
     engine:
@@ -178,6 +187,8 @@ addons:
       nodeSelector: {}
       tolerations: []
       affinity: {}
+      podAnnotations:
+        custom: {}
 
     list:
       ## Specify image and tag
@@ -205,6 +216,8 @@ addons:
       nodeSelector: { }
       tolerations: [ ]
       affinity: { }
+      podAnnotations:
+        custom: {}
 
 
 ## Flow Logs Add-on
@@ -241,6 +254,8 @@ addons:
       tolerations:
       - operator: Exists
       affinity: {}
+      podAnnotations:
+        custom: {}
 
 ## Admission Control Add-on 
   admissionControl:
@@ -271,6 +286,8 @@ addons:
       nodeSelector: {}
       affinity: {}
       tolerations: []
+      podAnnotations:
+        custom: {}
  
     enforcer:
       ## Specify image and tag
@@ -301,6 +318,8 @@ addons:
       nodeSelector: {}
       tolerations: []
       affinity: {}
+      podAnnotations:
+        custom: {}
 
 
 ## Runtime Protection Add-on 
@@ -368,6 +387,8 @@ addons:
       tolerations:
       - operator: Exists
       affinity: {}
+      podAnnotations:
+        custom: {}
 
     policy:
       ## Main container settings
@@ -397,3 +418,5 @@ addons:
       nodeSelector: {}
       tolerations: []       
       affinity: {}
+      podAnnotations:
+        custom: {}
