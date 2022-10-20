@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 2.15.0-rp-ea.5
+appVersion: 2.15.0-rp-ea.6
 description: A Helm chart for Check Point CloudGuard Workload Security
 home: https://portal.checkpoint.com
 icon: https://www.checkpoint.com/wp-content/uploads/icon-cloudguard-nav.png
@@ -20,4 +20,4 @@ keywords:
 - ecr
 - ecs
 name: cloudguard
-version: 2.15.0-rp-ea.5
+version: 2.15.0-rp-ea.6

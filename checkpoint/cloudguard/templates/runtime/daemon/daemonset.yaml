@@ -246,7 +246,7 @@ spec:
           mountPropagation: HostToContainer
           readOnly: true
         - name: criohooks-vol
-          mountPath: /usr/share/containers/oci/hooks.d/
+          mountPath: /etc/containers/oci/hooks.d/
           readOnly: false
         {{- end }}
         - name: host-proc-vol
@@ -326,7 +326,7 @@ spec:
           path: /var/lib/containers/storage
       - name: criohooks-vol
         hostPath:
-          path: /usr/share/containers/oci/hooks.d/
+          path: /etc/containers/oci/hooks.d/
       {{- end }}
       - name: boot-vol
         hostPath:
