@@ -443,3 +443,14 @@ true
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "daemonset.updateStrategy" -}}
+updateStrategy:
+  rollingUpdate:
+    maxUnavailable: {{ .Values.daemonSetStrategy.rollingUpdate.maxUnavailable }}
+{{- end -}}
+
+{{- define "cg.creds.secret.name" -}}
+{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" .Release.Name }}
+{{-   printf "%s" (.Values.credentials.secretName | default $defaultSecretName) -}}
+{{- end -}}

@@ -118,8 +118,9 @@ The following table list the configurable parameters of this chart and their def
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
 | `datacenter`                                               | CloudGuard datacenter (usea1, euwe1 apse1, apse2, apso1)        | `usea1`                                          |
-| `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
-| `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
+| `credentials.secret`                                       | CloudGuard APISecret (Note: mandatory unless `credentials.secretName` is specified) | `CHANGEME`                                       |
+| `credentials.user`                                         | CloudGuard APIID  (Note: mandatory unless `credentials.secretName` is specified) | `CHANGEME`                                       |
+| `credentials.secretName`                                    | Name of an existing Kubernetes Secret that contains CloudGuard APIID (data.username) and APISecret (data.secret) | None                                       |
 | `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
 | `imageRegistry.url`                                        | Image registry                                                  | `quay.io`                                        |
 | `imageRegistry.authEnabled`                                | Whether or not Image Registry access is password-protected      | `true`                                           |
