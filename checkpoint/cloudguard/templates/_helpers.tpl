@@ -193,8 +193,8 @@ imagePullSecrets:
     Header                      Node-Name   ${NODE_NAME}
     Header                      Agent-Version   {{ .agentVersion }}
     Compress                    gzip
-    http_User                   {{ .credentials.user }}
-    http_Passwd                 {{ .credentials.secret }}
+    http_User                   ${USERNAME}
+    http_Passwd                 ${SECRET}
     Port                        443        
     tls                         On
     tls.verify                  On

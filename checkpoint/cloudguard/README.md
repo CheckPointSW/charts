@@ -120,7 +120,7 @@ The following table list the configurable parameters of this chart and their def
 | `datacenter`                                               | CloudGuard datacenter (usea1, euwe1 apse1, apse2, apso1)        | `usea1`                                          |
 | `credentials.secret`                                       | CloudGuard APISecret (Note: mandatory unless `credentials.secretName` is specified) | `CHANGEME`                                       |
 | `credentials.user`                                         | CloudGuard APIID  (Note: mandatory unless `credentials.secretName` is specified) | `CHANGEME`                                       |
-| `credentials.secretName`                                    | Name of an existing Kubernetes Secret that contains CloudGuard APIID (data.username) and APISecret (data.secret) | None                                       |
+| `credentials.secretName`                                   | Name of an existing Kubernetes Secret that contains CloudGuard APIID (data.username) and APISecret (data.secret) | None                                       |
 | `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
 | `imageRegistry.url`                                        | Image registry                                                  | `quay.io`                                        |
 | `imageRegistry.authEnabled`                                | Whether or not Image Registry access is password-protected      | `true`                                           |
@@ -218,10 +218,10 @@ The following table list the configurable parameters of this chart and their def
 |                                                            |                                                                 | `limits.cpu: 2000m`                              |
 |                                                            |                                                                 | `limits.memory: 1Gi`                             |
 | `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
-| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.28.0-cp-6`                                       |
+| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.28.0-cp-6`                                     |
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
-| `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
+| `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.6.9-cp2`                                      |
 | `addons.runtimeProtection.daemon.fluentbit.resources`      | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.nodeSelector`             | Node labels for pod assignment                                  | `beta.kubernetes.io/os: linux `                  |
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
