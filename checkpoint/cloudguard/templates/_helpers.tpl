@@ -193,8 +193,8 @@ imagePullSecrets:
     Header                      Node-Name   ${NODE_NAME}
     Header                      Agent-Version   {{ .agentVersion }}
     Compress                    gzip
-    http_User                   {{ .credentials.user }}
-    http_Passwd                 {{ .credentials.secret }}
+    http_User                   ${USERNAME}
+    http_Passwd                 ${SECRET}
     Port                        443        
     tls                         On
     tls.verify                  On
@@ -442,4 +442,15 @@ true
 {{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks.bottlerocket')"  .Values.platform -}}
 {{- fail $err -}}
 {{- end -}}
+{{- end -}}
+
+{{- define "daemonset.updateStrategy" -}}
+updateStrategy:
+  rollingUpdate:
+    maxUnavailable: {{ .Values.daemonSetStrategy.rollingUpdate.maxUnavailable }}
+{{- end -}}
+
+{{- define "cg.creds.secret.name" -}}
+{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" .Release.Name }}
+{{-   printf "%s" (.Values.credentials.secretName | default $defaultSecretName) -}}
 {{- end -}}

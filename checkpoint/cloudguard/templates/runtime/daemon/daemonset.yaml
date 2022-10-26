@@ -110,6 +110,7 @@ spec:
       - name: fluentbit
         image: {{ template "agent.fluentbit.image" $config }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
+        command: ["/fb_wrapper.sh"]
         env:
 {{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_RUNTIME_ALERT_URI
@@ -150,6 +151,8 @@ spec:
         - name: fluentbit-telemetry-output
           mountPath: /fluent-bit/etc/telemetry-output.conf
           subPath: telemetry-output.conf
+        - name: secret-volume
+          mountPath: /etc/secret-volume
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -366,4 +369,7 @@ spec:
         hostPath:
           path: /
       {{- end }}
+      - name: secret-volume
+        secret:
+          secretName: {{ template "cg.creds.secret.name" $config }}
 {{- end }}

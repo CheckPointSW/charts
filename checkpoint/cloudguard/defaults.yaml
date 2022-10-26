@@ -352,7 +352,7 @@ addons:
       fluentbit:
         ## Specify image and tag
         image: checkpoint/consec-fluentbit
-        tag: 1.6.9-cp
+        tag: 1.6.9-cp2
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
