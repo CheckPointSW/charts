@@ -13,6 +13,7 @@ spec:
   selector:
     matchLabels:
 {{ include "common.labels" $config | indent 6 }}
+{{ include "daemonset.updateStrategy" $config | indent 2}}
   template:
     metadata:
       annotations:
@@ -61,7 +62,6 @@ spec:
         {{- end }}
         env: 
 {{ include "common.env" $config | indent 8 }}
-{{ include "user.defined.env" $config | indent 8 }}
 {{- if or (eq $config.containerRuntime "containerd") (eq $config.containerRuntime "cri-o") }}
         - name: USE_SHIM
           value: "true"

@@ -81,6 +81,16 @@ seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name" . }}:
 {{ toYaml .Values.podAnnotations.apparmor | indent 2 }}
 {{- end }}
+{{- if .Values.podAnnotations }}
+{{- if .Values.podAnnotations.custom }}
+{{ toYaml .Values.podAnnotations.custom }}
+{{- end }}
+{{- end }}
+{{- if .agentConfig.podAnnotations }}
+{{- if .agentConfig.podAnnotations.custom }}
+{{ toYaml .agentConfig.podAnnotations.custom }}
+{{- end }}
+{{- end }}
 {{- end -}}
 
 {{- /* Pod properties commonly used in agents */ -}}
