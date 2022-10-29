@@ -49,9 +49,6 @@ spec:
           allowPrivilegeEscalation: false
         env:
 {{ include "common.env" $config | indent 8 }}
-{{ include "user.defined.env" $config | indent 8 }}
-        - name: FAILURE_POLICY_INTERVAL_HOURS
-          value: {{ $config.agentConfig.failurePolicyIntervalHours | quote }}
         volumeMounts:
         - name: secret-volume
           mountPath: /etc/secret-volume

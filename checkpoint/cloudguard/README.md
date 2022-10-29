@@ -83,6 +83,12 @@ Specify each parameter by adding `--set key=value[,key=value]` to the `helm inst
 $ helm install my-release checkpoint/cloudguard --set varname=value
 ```
 
+For parameters which are dictionaries or arrays, make sure to use the proper syntax, for example:
+
+```bash
+$ ... --set addons.admissionControl.enforcer.podAnnotations.custom."aa\.bb/cc-dd"="ee\.ff/gg-hh"
+```
+
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
@@ -133,9 +139,11 @@ The following table list the configurable parameters of this chart and their def
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
+| `podAnnotations.custom`                                    | Custom Pod annotations (for all agent Pods)                     | `{}`                                             |
 | `priorityClassName`                                        | Specifies custom priorityClassName                              | ``                                               |
+| `daemonSetStrategy.rollingUpdate.maxUnavailable`           | Maximum unavailabe daemonset pods during a rolling update                 | `50%`                                            |
 | `inventory.agent.image`                                    | Specify image for the agent                                     | `checkpoint/consec-inventory-agent`              |
-| `inventory.agent.tag`                                      | Specify image tag for the agent                                 | `1.6.1`                                          |
+| `inventory.agent.tag`                                      | Specify image tag for the agent                                 | `1.7.1`                                          |
 | `inventory.agent.serviceAccountName`                       | Specify custom Service Account for the Inventory agent          | ``                                               |
 | `inventory.agent.replicaCount`                             | Number of Inventory agent instances to be deployed              | `1`                                              |
 | `inventory.agent.env`                                      | Additional environmental variables for Inventory agent          | `{}`                                             |
@@ -143,6 +151,7 @@ The following table list the configurable parameters of this chart and their def
 | `inventory.agent.nodeSelector`                             | Node labels for pod assignment for Inventory agent              | `{}`                                             |
 | `inventory.agent.tolerations`                              | List of node taints to tolerate for Inventory agent             | `[]`                                             |
 | `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
+| `inventory.agent.podAnnotations.custom`                    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `inventory.priorityClassName`                              | Specifies custom priorityClassName                              | ``                                               |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
 | `addons.imageScan.priorityClassName`                       | Specifies custom priorityClassName                              | ``                                               |
@@ -155,6 +164,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.daemon.nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
+| `addons.imageScan.daemon.podAnnotations.custom`            | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.imageScan.daemon.shim.image`                       | Specify image for the shim container                            | `checkpoint/consec-imagescan-shim`               |
 | `addons.imageScan.daemon.shim.tag`                         | Specify image tag for the shim container                        |`2.15.0`                                           |
 | `addons.imageScan.daemon.shim.env`                         | Additional environmental variables for the shim container       | `{}`                                             |
@@ -168,6 +178,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.engine.nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageScan.engine.tolerations`                      | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.imageScan.engine.affinity`                         | Affinity setting                                                | `{}`                                             |
+| `addons.imageScan.engine.podAnnotations.custom`            | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.imageScan.list.image`                              | Specify image for the agent                                     | `checkpoint/consec-imagescan-engine`             |
 | `addons.imageScan.list.tag`                                | Specify image tag for the agent                                 |`2.15.0`                                          |
 | `addons.imageScan.list.serviceAccountName`                 | Specify custom Service Account for the agent                    | ``                                               |
@@ -176,6 +187,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.list.nodeSelector`                       | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.imageScan.list.tolerations`                        | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.imageScan.list.affinity`                           | Affinity setting                                                | `{}`                                             |
+| `addons.imageScan.list.podAnnotations.custom`              | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.flowLogs.enabled`                                  | Specifies whether the Flow Logs addon should be installed       | `false`                                          |
 | `addons.flowLogs.priorityClassName`                        | Specifies custom priorityClassName                              | ``                                               |
 | `addons.flowLogs.daemon.image`                             | Specify image for the agent                                     | `checkpoint/consec-flowlogs-daemon`              |
@@ -187,6 +199,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.flowLogs.daemon.nodeSelector`                      | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.flowLogs.daemon.tolerations`                       | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.daemon.podAnnotations.custom`             | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.admissionControl.enabled`                          | Specify whether the Admission Control addon should be installed | `false`                                          |
 | `addons.admissionControl.priorityClassName`                | Specifies custom priorityClassName                              | ``                                               |
 | `addons.admissionControl.policy.image`                     | Specify image for the agent                                     | `checkpoint/consec-admission-policy`             |
@@ -197,20 +210,21 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.policy.nodeSelector`              | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.admissionControl.policy.tolerations`               | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | `{}`                                             |
+| `addons.admissionControl.policy.podAnnotations.custom`     | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
-| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`2.1.0`                                           |
+| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`2.2.0`                                           |
 | `addons.admissionControl.enforcer.serviceAccountName`      | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.admissionControl.enforcer.replicaCount`            | Number of Inventory agent instances to be deployed              | `2`                                              |
 | `addons.admissionControl.enforcer.env`                     | Additional environmental variables for the agent                | `{}`                                             |
-| `addons.admissionControl.enforcer.failurePolicyIntervalHours`| If the agent is unable to synchronize it's policy, this is the number of hours it will wait before switching to a fail-open policy | `24`                                             |
 | `addons.admissionControl.enforcer.resources`               | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.admissionControl.enforcer.nodeSelector`            | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.admissionControl.enforcer.tolerations`             | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.admissionControl.enforcer.affinity`                | Affinity setting                                                | `{}`                                             |
+| `addons.admissionControl.enforcer.podAnnotations.custom`   | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be installed | `false`                                          |
 | `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | ``                                               |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.812`                                         |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.819`                                         |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
@@ -226,6 +240,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.daemon.nodeSelector`             | Node labels for pod assignment                                  | `beta.kubernetes.io/os: linux `                  |
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | `{}`                                             |
+| `addons.runtimeProtection.daemon.podAnnotations.custom`    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.policy.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-policy`               |
 | `addons.runtimeProtection.policy.tag`                      | Specify image tag for the agent                                 |`1.2.0`                                           |
 | `addons.runtimeProtection.policy.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
@@ -234,3 +249,4 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.policy.nodeSelector`             | Node labels for pod assignment                                  | `{}`                                             |
 | `addons.runtimeProtection.policy.tolerations`              | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.runtimeProtection.policy.affinity`                 | Affinity setting                                                | `{}`                                             |
+| `addons.runtimeProtection.policy.podAnnotations.custom`    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |

@@ -38,11 +38,19 @@ spec:
           runAsNonRoot: true
           allowPrivilegeEscalation: false
         env:
-{{ include "common.env" $config | indent 8 }}
 {{- if and (has "extensions/v1beta1/Ingress" .Capabilities.APIVersions) (not (has "networking.k8s.io/v1/Ingress" .Capabilities.APIVersions)) }}
         - name: USE_INGRESS_BETA
           value: "true"
 {{- end }}
+{{- if and (has "batch/v1beta1/CronJob" .Capabilities.APIVersions) (not (has "batch/v1/CronJob" .Capabilities.APIVersions)) }}
+        - name: USE_CRONJOB_BETA
+          value: "true"
+{{- end }}
+{{- if or (has "policy/v1beta1/PodSecurityPolicy" .Capabilities.APIVersions) (semverCompare "<1.25-0" .Capabilities.KubeVersion.Version) }}
+        - name: USE_POD_SECURITY_POLICY
+          value: "true"
+{{- end }}
+{{ include "common.env" $config | indent 8 }}
       volumes:
       - name: secret-volume
         secret:
