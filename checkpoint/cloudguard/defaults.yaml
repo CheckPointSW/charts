@@ -19,7 +19,7 @@ telemetryVersion: 0.0.4
 ## API ID: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 credentials:
   secret:
-  user: 
+  user:
 
 rbac:
   ## Specifies whether a custom PSP should be defined
@@ -39,12 +39,12 @@ imagePullPolicy: Always
 ## Pod annotations
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
-podAnnotations: 
+podAnnotations:
   seccomp: runtime/default
   apparmor: {}
   custom: {}
 
-## Proxy settings 
+## Proxy settings
 ## Examples:
 ## proxy: http://example.com:443
 ## proxy: $HTTPS_PROXY
@@ -257,13 +257,13 @@ addons:
       podAnnotations:
         custom: {}
 
-## Admission Control Add-on 
+## Admission Control Add-on
   admissionControl:
     enabled: false
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.2.1
+      tag: 1.2.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -279,7 +279,7 @@ addons:
           memory: 30Mi
         limits:
           cpu: 50m
-          memory: 50Mi 
+          memory: 50Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
@@ -288,11 +288,11 @@ addons:
       tolerations: []
       podAnnotations:
         custom: {}
- 
+
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.2.0
+      tag: 2.2.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -322,7 +322,7 @@ addons:
         custom: {}
 
 
-## Runtime Protection Add-on 
+## Runtime Protection Add-on
   runtimeProtection:
     enabled: false
     BPF: true
@@ -353,7 +353,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.28.0-cp-2
+        tag: 0.28.0-cp-6
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -378,12 +378,12 @@ addons:
             memory: 20Mi
           limits:
             cpu: 30m
-            memory: 30Mi 
+            memory: 30Mi
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
-        kubernetes.io/os: linux        
+        kubernetes.io/os: linux
       tolerations:
       - operator: Exists
       affinity: {}
@@ -416,7 +416,7 @@ addons:
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector: {}
-      tolerations: []       
+      tolerations: []
       affinity: {}
       podAnnotations:
         custom: {}
