@@ -224,7 +224,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be installed | `false`                                          |
 | `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | ``                                               |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
-| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.819`                                         |
+| `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 |`0.0.822`                                         |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.runtimeProtection.daemon.env`                      | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.runtimeProtection.daemon.resources`                | Resources restriction (e.g. CPU, memory)                        | `requests.cpu: 100m`                             |
