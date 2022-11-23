@@ -43,5 +43,5 @@ spec:
       volumes:
       - name: secret-volume
         secret:
-          secretName: {{ .Release.Name }}-cp-cloudguard-creds
+          secretName: {{ template "cg.creds.secret.name" $config }}
 {{- end }}
