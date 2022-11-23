@@ -43,6 +43,10 @@ spec:
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
           value: ""
+        {{- if eq "eks" (include "get.platform" $config) }}
+        - name: AMAZON_AUTO_KERNEL_HEADERS
+          value: "1"
+        {{- end }}
         {{- if contains "openshift" (include "get.platform" $config) }}
         - name: SYSDIG_WAIT_FOR_KERNEL_SOURCE_TIMEOUT  # given in seconds
           value: "1800"
@@ -76,6 +80,10 @@ spec:
         {{- else }}
         - name: host-dev-vol
           mountPath: /host/dev
+        {{- end }}
+        {{- if eq "eks" (include "get.platform" $config) }}
+        - name: host-root-vol
+          mountPath: /host/root
         {{- end }}
       containers:
       # fluentbit
@@ -291,4 +299,9 @@ spec:
       - name: run-xtables-lock
         hostPath:
           path: /run/xtables.lock
+      {{- if eq "eks" (include "get.platform" $config) }}
+      - name: host-root-vol
+        hostPath:
+          path: /
+      {{- end }}
 {{- end }}
