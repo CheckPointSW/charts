@@ -141,7 +141,7 @@ spec:
       volumes:
       - name: secret-volume
         secret:
-          secretName: {{ .Release.Name }}-cp-cloudguard-creds
+          secretName: {{ template "cg.creds.secret.name" $config }}
 {{- if eq $config.containerRuntime "docker" }}
       - name: docker-sock-volume
         hostPath:

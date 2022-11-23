@@ -417,9 +417,12 @@ tanzu
   - "Bottlerocket OS 1.7.2 (aws-k8s-1.21)"
   - "Container-Optimized OS from Google"
 */}}
-{{- $osImage := (first $nodes.items).status.nodeInfo.osImage }}
+{{- $firstNode :=  (first $nodes.items) -}}
+{{- $osImage := $firstNode.status.nodeInfo.osImage }}
 {{- if contains "Bottlerocket" $osImage -}}
 eks.bottlerocket
+{{- else if hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup"  -}}
+eks
 {{- else -}}
 {{- include "validate.platform" . -}}
 {{- lower .Values.platform -}}
@@ -441,21 +444,28 @@ true
 {{- define "containerd.sock.path" -}}
 {{- if eq (include "get.platform" .) "eks.bottlerocket" -}}
 /run/dockershim.sock
+{{- else if eq (include "get.platform" .) "k3s" -}}
+/run/k3s/containerd/containerd.sock
 {{- else -}}
 /run/containerd/containerd.sock
 {{- end -}}
 {{- end -}}
 
 {{- define "validate.platform" -}}
-{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks.bottlerocket") -}}
+{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "k3s") -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks.bottlerocket')"  .Values.platform -}}
+{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks', 'eks.bottlerocket', 'k3s')"  .Values.platform -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
 
-{{- define "daemonset.updateStrategy" }}
+{{- define "daemonset.updateStrategy" -}}
 updateStrategy:
   rollingUpdate:
     maxUnavailable: {{ .Values.daemonSetStrategy.rollingUpdate.maxUnavailable }}
+{{- end -}}
+
+{{- define "cg.creds.secret.name" -}}
+{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" .Release.Name }}
+{{-   printf "%s" (.Values.credentials.secretName | default $defaultSecretName) -}}
 {{- end -}}

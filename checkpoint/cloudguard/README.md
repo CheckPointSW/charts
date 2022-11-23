@@ -36,7 +36,7 @@ $ helm install my-release checkpoint/cloudguard --set credentials.user=[CloudGua
 These are the additional optional flags to enable add-ons:
 
 ```bash
-$ 
+$
 $ --set addons.imageScan.enabled=true 
 $ --set addons.flowLogs.enabled=true
 $ --set addons.admissionControl.enabled=true
@@ -124,8 +124,9 @@ The following table list the configurable parameters of this chart and their def
 | ---------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
 | `clusterID`                                                | Cluster Unique identifier in CloudGuard system                  | `CHANGEME`                                       |
 | `datacenter`                                               | CloudGuard datacenter (usea1, euwe1 apse1, apse2, apso1)        | `usea1`                                          |
-| `credentials.secret`                                       | CloudGuard APISecret                                            | `CHANGEME`                                       |
-| `credentials.user`                                         | CloudGuard APIID                                                | `CHANGEME`                                       |
+| `credentials.secret`                                       | CloudGuard APISecret (Note: mandatory unless `credentials.secretName` is specified) | `CHANGEME`                                       |
+| `credentials.user`                                         | CloudGuard APIID  (Note: mandatory unless `credentials.secretName` is specified) | `CHANGEME`                                       |
+| `credentials.secretName`                                    | Name of an existing Kubernetes Secret that contains CloudGuard APIID (data.username) and APISecret (data.secret) | None                                       |
 | `rbac.pspEnabled`                                          | Specifies whether PSP resources should be created               | `false`                                          |
 | `imageRegistry.url`                                        | Image registry                                                  | `quay.io`                                        |
 | `imageRegistry.authEnabled`                                | Whether or not Image Registry access is password-protected      | `true`                                           |
@@ -134,7 +135,7 @@ The following table list the configurable parameters of this chart and their def
 | `imagePullPolicy`                                          | Image pull policy                                               | `Always`                                         |
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `containerRuntime`                                         | Container runtime (docker/containerd/cri-o) overriding auto-detection | ``                                         |
-| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks.bottlerocket) overriding auto-detection | `kubernetes`                                |
+| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks/eks.bottlerocket/k3s) overriding auto-detection | `kubernetes`                                |
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
@@ -202,7 +203,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.enabled`                          | Specify whether the Admission Control addon should be installed | `false`                                          |
 | `addons.admissionControl.priorityClassName`                | Specifies custom priorityClassName                              | ``                                               |
 | `addons.admissionControl.policy.image`                     | Specify image for the agent                                     | `checkpoint/consec-admission-policy`             |
-| `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 |`1.2.1`                                           |
+| `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 |`1.2.2`                                           |
 | `addons.admissionControl.policy.serviceAccountName`        | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.admissionControl.policy.env`                       | Additional environmental variables for the agent                | `{}`                                             |
 | `addons.admissionControl.policy.resources`                 | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
@@ -211,7 +212,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | `{}`                                             |
 | `addons.admissionControl.policy.podAnnotations.custom`     | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
-| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`2.2.0`                                           |
+| `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 |`2.3.0`                                           |
 | `addons.admissionControl.enforcer.serviceAccountName`      | Specify custom Service Account for the agent                    | ``                                               |
 | `addons.admissionControl.enforcer.replicaCount`            | Number of Inventory agent instances to be deployed              | `2`                                              |
 | `addons.admissionControl.enforcer.env`                     | Additional environmental variables for the agent                | `{}`                                             |
@@ -231,7 +232,7 @@ The following table list the configurable parameters of this chart and their def
 |                                                            |                                                                 | `limits.cpu: 2000m`                              |
 |                                                            |                                                                 | `limits.memory: 1Gi`                             |
 | `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
-| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.28.0-cp-2`                                       |
+| `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 |`0.28.0-cp-6`                                       |
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
 | `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 |`1.6.9-cp`                                        |
