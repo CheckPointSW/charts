@@ -1,12 +1,12 @@
 {{- $config := fromYaml (include "runtime.daemon.config" .) }}
+{{- /* Make ".Files" of the chart accessible and properly formatted when accessed via $config' */ -}}
+{{- $_ := set $config "Files" .Files -}}
 {{- if $config.featureConfig.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ template "agent.resource.name" $config }}
   namespace: {{ .Release.Namespace }}
-  annotations:
-    agentVersion: {{ $config.agentConfig.tag }}
   labels:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 spec:
@@ -24,10 +24,24 @@ spec:
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       hostNetwork: true  # needed for DNS request listener
-      {{- if eq (include "get.platform" $config) "eks.bottlerocket" }}
+      {{- if or $config.featureConfig.enableFileReputation (eq (include "get.platform" $config) "eks.bottlerocket") }}
       hostPID: true
       {{- end }}
       initContainers:
+      {{- if and $config.featureConfig.enableFileReputation (eq $config.containerRuntime "cri-o") }}
+      # cri-o folder which contains containers root fs is 'private' mount.
+      # So nested/sub mounts will not be propagated to WorkloadSecurity container.
+      # The following container changes mount type to 'shared' on host in a hacky way:
+      # Literally container escapes its mount's isolation by changing mount namespace
+      # to 'init' process namespace, then changes the type of the required mount to 'shared'
+      - name: criofsfix
+        image: docker.io/library/alpine:3.16
+        imagePullPolicy: IfNotPresent
+        command: [ "/bin/sh", "-c", "--" ]
+        securityContext:
+          privileged: true
+        args: [ "nsenter --mount=/proc/1/ns/mnt -- mount --make-shared /var/lib/containers/storage/overlay" ]
+      {{- end }}
       # probe (sysdig)
       - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
         name: {{ $containerConfig.containerName }}
@@ -37,8 +51,8 @@ spec:
         resources:
 {{ toYaml $config.agentConfig.probe.resources | indent 10}}
         {{- end }}
-        {{- if $config.featureConfig.BPF }}
         env:
+        {{- if $config.featureConfig.BPF }}
         - name: HOME
           value: "/sysdig"
         - name: SYSDIG_BPF_PROBE
@@ -52,6 +66,11 @@ spec:
           value: "1800"
         {{- end }}
         {{- end }}
+        {{- if .Values.proxy }}
+        - name: http_proxy
+          value: "{{ .Values.proxy }}"
+        {{- end }}
+{{ include "common.env" $config | indent 8 }}
         securityContext:
         {{- if eq (include "get.platform" $config) "eks.bottlerocket" }}
           privileged: true
@@ -92,6 +111,7 @@ spec:
       - name: fluentbit
         image: {{ template "agent.fluentbit.image" $config }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
+        command: ["/fb_wrapper.sh"]
         env:
 {{ include "fluentbit.env" $config | indent 8 }}
         - name: CP_KUBERNETES_RUNTIME_ALERT_URI
@@ -132,6 +152,8 @@ spec:
         - name: fluentbit-telemetry-output
           mountPath: /fluent-bit/etc/telemetry-output.conf
           subPath: telemetry-output.conf
+        - name: secret-volume
+          mountPath: /etc/secret-volume
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -145,13 +167,8 @@ spec:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
         {{- end }}
         env:
-{{ include "user.defined.env" $config | indent 8 }}
         - name: LANG
           value: C.UTF-8
-        - name: NAMESPACE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
         - name: SBA_TELEMETRY_SAVE_TO_FILE
           value: "1"
         - name: SBA_CONTAINER_RUNTIME
@@ -162,14 +179,32 @@ spec:
         {{- end }}
         - name: SBA_USE_NETFILTER_QUEUE
           value: "1"
+      {{- if not $config.featureConfig.enableFileReputation }}
+        - name: SBA_REQUIRED_BLADES
+          value: "SBA,BG"
+      {{- end }}
+{{ include "common.env" $config | indent 8 }}
         securityContext:
         {{- if or (not $config.featureConfig.BPF) (contains "openshift" (include "get.platform" $config)) }}
           privileged: true
         {{- else }}
           runAsUser: 0
           capabilities:
-            add: ["SYS_RESOURCE", "SYS_ADMIN", "SYS_NICE", "SYS_PTRACE", "FOWNER", "SYS_PACCT", "NET_ADMIN", "NET_RAW"]
-        {{- end }}
+            add:
+            - SYS_RESOURCE
+            - SYS_ADMIN
+            - SYS_NICE
+            - SYS_PTRACE
+            - FOWNER
+            - SYS_PACCT
+            - NET_ADMIN
+            - NET_RAW
+          {{- if $config.featureConfig.enableFileReputation }}
+            - AUDIT_CONTROL # for fmon
+            - AUDIT_READ # for fmon
+            - AUDIT_WRITE # for fmon
+          {{- end }}
+	{{- end }}
         volumeMounts:
         - name: rp4c-alerts
           mountPath: /rp4c/alerts
@@ -188,6 +223,7 @@ spec:
         {{- if ne (include "get.platform" $config) "tanzu" }}
         - name: varlibdocker-vol
           mountPath: /var/lib/docker
+          mountPropagation: HostToContainer
           readOnly: true
         {{- end }}
         {{- end }}
@@ -195,11 +231,22 @@ spec:
         - name: containerd-sock
           mountPath: /run/containerd/containerd.sock
           readOnly: true
+        - mountPath: /run/containerd/io.containerd.runtime.v2.task
+          name: runcontainerdfs-vol
+          mountPropagation: HostToContainer
+          readOnly: true
         {{- end }}
         {{- if eq $config.containerRuntime "cri-o" }}
         - name: crio-sock
           mountPath: /var/run/crio/crio.sock
           readOnly: true
+        - name: criofs-vol
+          mountPath: /var/lib/containers/storage
+          mountPropagation: HostToContainer
+          readOnly: true
+        - name: criohooks-vol
+          mountPath: /etc/containers/oci/hooks.d/
+          readOnly: false
         {{- end }}
         - name: host-proc-vol
           mountPath: /host/proc
@@ -217,6 +264,8 @@ spec:
           readOnly: true
         - name: run-xtables-lock
           mountPath: /run/xtables.lock
+        - name: crashdumps-vol
+          mountPath: /var/log/checkpoint/cpla/crashdumps
       volumes:
       - name: config-volume-fluentbit
         configMap:
@@ -262,12 +311,21 @@ spec:
         hostPath:
           path: {{ include "containerd.sock.path" $config }}
           type: Socket
+      - name: runcontainerdfs-vol
+        hostPath:
+          path: /run/containerd/io.containerd.runtime.v2.task # TODO deal with other flavors like bottlerocket
       {{- end }}
       {{- if eq $config.containerRuntime "cri-o" }}
       - name: crio-sock
         hostPath:
           path: /var/run/crio/crio.sock
           type: Socket
+      - name: criofs-vol
+        hostPath:
+          path: /var/lib/containers/storage
+      - name: criohooks-vol
+        hostPath:
+          path: /etc/containers/oci/hooks.d/
       {{- end }}
       - name: boot-vol
         hostPath:
@@ -284,7 +342,7 @@ spec:
       {{- if $config.featureConfig.BPF }}
       - name: sysdig-probe-vol
         hostPath:
-          path: /tmp
+          path: /var/local
       {{- else }}
       - name: host-dev-vol
         hostPath:
@@ -299,9 +357,15 @@ spec:
       - name: run-xtables-lock
         hostPath:
           path: /run/xtables.lock
+      - name: crashdumps-vol
+        emptyDir: 
+          sizeLimit: 200Ki
       {{- if eq "eks" (include "get.platform" $config) }}
       - name: host-root-vol
         hostPath:
           path: /
       {{- end }}
+      - name: secret-volume
+        secret:
+          secretName: {{ template "cg.creds.secret.name" $config }}
 {{- end }}

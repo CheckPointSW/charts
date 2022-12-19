@@ -29,25 +29,31 @@
 {{- default (include "agent.resource.name" .) .agentConfig.serviceAccountName }}
 {{- end -}}
 
-{{- /* Full path to the image of the main container of the provided agent */ -}}
+{{- /* Full path to the image of the main container of the provided agent. in case of autoUpgrade enabled we use the version without the patch */ -}}
 {{- define "agent.main.image" -}}
-{{- $tag := .agentConfig.tag }}
-{{- if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages }}
-{{- $tag = printf "%s-debug" .agentConfig.tag }}
-{{- end }}
-{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image $tag }}
-{{- default $image .agentConfig.fullImage }}
+{{-     $tag := .agentConfig.tag }}
+{{-     if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages }}
+{{-         $tag = printf "%s-debug" .agentConfig.tag }}
+{{-     end }}
+{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne .agentConfig.image "checkpoint/consec-runtime-daemon") -}}
+{{-         $tag = regexFind "\\d+.\\d+" $tag }}
+{{-     end -}}
+{{-     $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image $tag }}
+{{-     default $image .agentConfig.fullImage }}
 {{- end -}}
 
-{{- /* Full path to the image of a provided side-car container */ -}}
+{{- /* Full path to the image of a provided side-car container. in case of autoUpgrade enabled we use the version without the patch */ -}}
 {{- define "agent.sidecar.image" -}}
-{{- $containerConfig := get .agentConfig .containerName }}
-{{- $tag := $containerConfig.tag }}
-{{- if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages $containerConfig.debugImage }}
-{{- $tag = printf "%s-debug" $containerConfig.tag }}
-{{- end }}
-{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $tag }}
-{{- default $image $containerConfig.fullImage }}
+{{-     $containerConfig := get .agentConfig .containerName }}
+{{-     $tag := $containerConfig.tag }}
+{{-     if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages $containerConfig.debugImage }}
+{{-         $tag = printf "%s-debug" $containerConfig.tag }}
+{{-     end }}
+{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne .agentConfig.image "checkpoint/consec-runtime-probe") -}}
+{{-         $tag = regexFind "\\d+.\\d+" $tag }}
+{{-     end -}}
+{{-     $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $tag }}
+{{-     default $image $containerConfig.fullImage }}
 {{- end -}}
 
 {{- /* Full path to the fluentbit image used in agent with provided config */ -}}
@@ -71,7 +77,6 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 
 {{- /* Pod annotations commonly used in agents */ -}}
 {{- define "common.pod.annotations" -}}
-agentVersion: {{ .agentConfig.tag }}
 {{- /* Openshift does not allow seccomp - So we don't add seccomp in openshift case */ -}}
 {{- /* From k8s 1.19 and up we use the seccomp in securityContext so no need for it here, in case of template we don't know the version so we fall back to annotation */ -}}
 {{- if and (not (contains "openshift" (include "get.platform" .))) (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) }}
@@ -154,7 +159,10 @@ imagePullSecrets:
       fieldPath: spec.nodeName
 - name: PLATFORM
   value: {{ include "get.platform" . }}
-
+{{- if eq (include "get.autoUpgrade" .) "true" }}
+- name: AUTO_UPGRADE_ENABLED
+  value: "true"
+{{- end -}}
 {{- template "user.defined.env" . -}}
 
 {{- if .Values.proxy }}
@@ -163,6 +171,8 @@ imagePullSecrets:
 - name: NO_PROXY
   value: "kubernetes.default.svc"
 {{- end -}}
+
+{{- template "user.defined.env" . -}}
 {{- end -}}
 
 {{- /* Environment variables needed for fluentbit-based side-cars */ -}}
@@ -203,8 +213,8 @@ imagePullSecrets:
     Header                      Node-Name   ${NODE_NAME}
     Header                      Agent-Version   {{ .agentVersion }}
     Compress                    gzip
-    http_User                   {{ .credentials.user }}
-    http_Passwd                 {{ .credentials.secret }}
+    http_User                   ${USERNAME}
+    http_Passwd                 ${SECRET}
     Port                        443        
     tls                         On
     tls.verify                  On
@@ -429,6 +439,19 @@ eks
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+if registry is not quay do not enable auto upgrade
+ */}}
+{{- define "get.autoUpgrade" -}}
+{{-     if ne .Values.imageRegistry.url "quay.io" -}}
+{{-         printf "false" -}}
+{{-     else -}}
+{{-         printf (.Values.autoUpgrade | toString) -}}
+{{-     end -}}
+{{- end -}}
+
 
 {{/*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
