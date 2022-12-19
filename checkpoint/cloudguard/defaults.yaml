@@ -56,6 +56,8 @@ platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bott
 seccompProfile:
   type: RuntimeDefault
 
+autoUpgrade: false # true or false
+
 daemonSetStrategy:
   rollingUpdate:
     maxUnavailable: 50%
@@ -66,7 +68,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.7.1
+    tag: 1.8.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -106,7 +108,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.15.0
+      tag: 2.18.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -128,7 +130,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.15.0
+        tag: 2.18.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -162,7 +164,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.15.0
+      tag: 2.18.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -193,7 +195,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.15.0
+      tag: 2.18.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -226,7 +228,7 @@ addons:
     daemon:
       ## Specify image and tag
       image: checkpoint/consec-flowlogs-daemon
-      tag: 0.7.0
+      tag: 0.8.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -263,7 +265,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.2.2
+      tag: 1.3.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -292,7 +294,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.3.0
+      tag: 2.4.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -326,12 +328,13 @@ addons:
   runtimeProtection:
     enabled: false
     BPF: true
-
+    enableFileReputation: true 
+    
     daemon:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.740
+      tag: 0.0.822
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -344,10 +347,10 @@ addons:
       resources:
         requests:
           cpu: 200m
-          memory: 500Mi
+          memory: 300Mi
         limits:
-          cpu: 2000m
-          memory: 1Gi
+          cpu: 400m
+          memory: 800Mi
 
       ## Sidecars
       probe:
@@ -362,13 +365,13 @@ addons:
             cpu: 100m
             memory: 128Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 400m
+            memory: 800Mi
 
       fluentbit:
         ## Specify image and tag
         image: checkpoint/consec-fluentbit
-        tag: 1.6.9-cp
+        tag: 1.6.9-cp2
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -395,7 +398,7 @@ addons:
 
       ## Specify custom image ("" to use default)
       image: checkpoint/consec-runtime-policy
-      tag: 1.2.0
+      tag: 1.3.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
