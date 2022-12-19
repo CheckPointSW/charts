@@ -10,7 +10,7 @@ metadata:
 {{ include "common.labels.with.chart" $config | indent 4 }}
 rules:
 - apiGroups: [ "" ]
-  resources: [ "pods", "secrets" ]
+  resources: [ "pods", "secrets", "configmaps" ]
   verbs: [ "list", "get"]
 {{- if $config.Values.rbac.pspEnabled }}
 - apiGroups: [ "policy" ]
