@@ -90,7 +90,9 @@ inventory:
 
     ## Configuration options for nodeSelector, tolerations and affinity for pod
     ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    nodeSelector: {}
+    nodeSelector:
+      kubernetes.io/os: linux
+      kubernetes.io/arch: amd64
     tolerations: []
     affinity: {}
     podAnnotations:
@@ -153,7 +155,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations:
       - operator: Exists
       affinity: {}
@@ -186,7 +190,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations: []
       affinity: {}
       podAnnotations:
@@ -215,7 +221,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: { }
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations: [ ]
       affinity: { }
       podAnnotations:
@@ -252,7 +260,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations:
       - operator: Exists
       affinity: {}
@@ -285,7 +295,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       affinity: {}
       tolerations: []
       podAnnotations:
@@ -317,7 +329,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations: []
       affinity: {}
       podAnnotations:
@@ -387,6 +401,7 @@ addons:
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
         kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations:
       - operator: Exists
       affinity: {}
@@ -418,7 +433,9 @@ addons:
 
       ## Configuration options for nodeSelector, tolerations and affinity for pod
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-      nodeSelector: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
       tolerations: []
       affinity: {}
       podAnnotations:
