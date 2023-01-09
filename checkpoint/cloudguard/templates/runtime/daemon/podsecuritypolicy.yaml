@@ -35,8 +35,20 @@ spec:
   - 'hostPath'
   - 'emptyDir'
   allowedHostPaths:
+{{- if eq $config.containerRuntime "docker" }}
+{{- if eq (include "get.platform" $config) "tanzu" }}
+  - pathPrefix: /var/vcap/sys/run/docker/docker.sock
+{{- else }}
   - pathPrefix: /var/run/docker.sock
+{{- end }}
     readOnly: true
+{{- else if eq $config.containerRuntime "containerd" }}
+  - pathPrefix: {{ include "containerd.sock.path" $config }}
+    readOnly: true
+{{- else if eq $config.containerRuntime "cri-o" }}
+  - pathPrefix: /run/crio/crio.sock
+    readOnly: true
+{{- end }}
   - pathPrefix: /boot
     readOnly: true
   - pathPrefix: /lib/modules

@@ -163,7 +163,6 @@ imagePullSecrets:
 - name: AUTO_UPGRADE_ENABLED
   value: "true"
 {{- end -}}
-{{- template "user.defined.env" . -}}
 
 {{- if .Values.proxy }}
 - name: HTTPS_PROXY
@@ -411,33 +410,35 @@ key: {{ $cert.Key | b64enc }}
 {{- end -}}
 
 {{- define "get.platform" -}}
-{{- if (include "is.helm.template.command" .) -}}
-{{- include "validate.platform" . -}}
-{{- lower .Values.platform -}}
-{{- else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
-openshift
-{{- else if has "security.openshift.io/v1" .Capabilities.APIVersions -}}
-openshift.v3
-{{- else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
-tanzu
-{{- else -}}
-{{- $nodes := lookup "v1" "Node" "" "" -}}
+{{-   if (include "is.helm.template.command" .) -}}
+{{-     include "validate.platform" . -}}
+{{-     lower .Values.platform -}}
+{{-   else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
+{{-     printf "openshift" -}}
+{{-   else if has "security.openshift.io/v1" .Capabilities.APIVersions -}}
+{{-     printf "openshift.v3" -}}
+{{-   else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
+{{-     printf "tanzu" -}}
+{{-   else -}}
+{{-     $nodes := lookup "v1" "Node" "" "" -}}
 {{/*
-  nodeInfo.osImage example values:
-  - "Bottlerocket OS 1.7.2 (aws-k8s-1.21)"
-  - "Container-Optimized OS from Google"
+        nodeInfo.osImage example values:
+        - "Bottlerocket OS 1.7.2 (aws-k8s-1.21)"
+        - "Container-Optimized OS from Google"
 */}}
-{{- $firstNode :=  (first $nodes.items) -}}
-{{- $osImage := $firstNode.status.nodeInfo.osImage }}
-{{- if contains "Bottlerocket" $osImage -}}
-eks.bottlerocket
-{{- else if hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup"  -}}
-eks
-{{- else -}}
-{{- include "validate.platform" . -}}
-{{- lower .Values.platform -}}
-{{- end -}}
-{{- end -}}
+{{-     $firstNode :=  (first $nodes.items) -}}
+{{-     $osImage := $firstNode.status.nodeInfo.osImage }}
+{{-     if contains "Bottlerocket" $osImage -}}
+{{-       printf "eks.bottlerocket" -}}
+{{-     else if hasKey $firstNode.metadata.annotations "k3s.io/hostname"  -}}
+{{-       printf "k3s" -}}
+{{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name")  -}}
+{{-       printf "eks" -}}
+{{-     else -}}
+{{-       include "validate.platform" . -}}
+{{-       lower .Values.platform -}}
+{{-     end -}}
+{{-   end -}}
 {{- end -}}
 
 
@@ -445,11 +446,11 @@ eks
 if registry is not quay do not enable auto upgrade
  */}}
 {{- define "get.autoUpgrade" -}}
-{{-     if ne .Values.imageRegistry.url "quay.io" -}}
-{{-         printf "false" -}}
-{{-     else -}}
-{{-         printf (.Values.autoUpgrade | toString) -}}
-{{-     end -}}
+{{-   if ne .Values.imageRegistry.url "quay.io" -}}
+{{-     printf "false" -}}
+{{-   else -}}
+{{-     printf (.Values.autoUpgrade | toString) -}}
+{{-   end -}}
 {{- end -}}
 
 
@@ -465,13 +466,20 @@ true
 {{- end -}}
 
 {{- define "containerd.sock.path" -}}
-{{- if eq (include "get.platform" .) "eks.bottlerocket" -}}
-/run/dockershim.sock
-{{- else if eq (include "get.platform" .) "k3s" -}}
-/run/k3s/containerd/containerd.sock
-{{- else -}}
-/run/containerd/containerd.sock
-{{- end -}}
+{{-   if .Values.containerRuntimeSocket -}}
+{{/*    container runtime socket path validation: should contain '/run/' substring and end with '.sock' */}}
+{{-     if or (not (contains "/run" .Values.containerRuntimeSocket)) (not (hasSuffix ".sock" .Values.containerRuntimeSocket)) -}}
+{{-       $err := printf "\n\nERROR: Invalid container runtime socket path: '%s' (should contain '/run' substring and end with '.sock'.)"  .Values.containerRuntimeSocket -}}
+{{-       fail $err -}} 
+{{-     end -}}
+{{      printf (.Values.containerRuntimeSocket | toString) }}
+{{-   else if eq (include "get.platform" .) "eks.bottlerocket" -}}
+{{-     printf "/run/dockershim.sock" -}}
+{{-   else if eq (include "get.platform" .) "k3s" -}}
+{{-     printf "/run/k3s/containerd/containerd.sock" -}}
+{{-   else -}}
+{{-     printf "/run/containerd/containerd.sock" -}}
+{{-   end -}}
 {{- end -}}
 
 {{- define "validate.platform" -}}
