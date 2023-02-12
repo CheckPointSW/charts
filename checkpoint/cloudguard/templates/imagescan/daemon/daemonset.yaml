@@ -102,6 +102,7 @@ spec:
         - name: var-lib-containers
           mountPath: /var/lib/containers
           readOnly: false
+{{- if $config.featureConfig.mountPodman }}
 {{- if not (contains "openshift" (include "get.platform" $config)) }}
         - name: lib-x86-64-linux-gnu
           mountPath: /lib/x86_64-linux-gnu
@@ -125,6 +126,7 @@ spec:
         - name: nsenter
           mountPath: /usr/bin/nsenter
           readOnly: true
+{{- end }}
 {{- end }}
         command: ["/shim"]
 {{- include "imagescan.daemon.shim.resources" $config | indent 8 }}
@@ -179,6 +181,7 @@ spec:
         hostPath:
           path: /var/lib/containers
           type: Directory
+{{- if $config.featureConfig.mountPodman }}
 {{- if not (contains "openshift" (include "get.platform" $config)) }}
       - name: lib-x86-64-linux-gnu
         hostPath:
@@ -209,6 +212,7 @@ spec:
         hostPath:
           path: /usr/bin/nsenter
           type: File
+{{- end }}
 {{- end }}
 {{- end }}
       - name: serverkey-volume
