@@ -105,12 +105,13 @@ addons:
 ## Image Scan Add-on
   imageScan:
     enabled: false
+    mountPodman : true
 
     daemon:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.18.1
+      tag: 2.20.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -132,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.18.1
+        tag: 2.20.1
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -168,7 +169,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.18.1
+      tag: 2.20.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -201,7 +202,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.18.1
+      tag: 2.20.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -348,7 +349,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 0.0.822
+      tag: 1.0.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -370,7 +371,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.28.0-cp-6
+        tag: 0.28.0-cp-7
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

@@ -156,6 +156,7 @@ The following table list the configurable parameters of this chart and their def
 | `inventory.agent.podAnnotations.custom`                    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `inventory.priorityClassName`                              | Specifies custom priorityClassName                              | ``                                               |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
+| `addons.imageScan.mountPodman`                             | Should be set to false if podman utility is not present on nodes | `true`                                           |
 | `addons.imageScan.priorityClassName`                       | Specifies custom priorityClassName                              | ``                                               |
 | `addons.imageScan.maxImageSizeMb`                          | Specifies in MiBytes maximal image size to scan, its value + 500MB will be imageScan.engine main container memory limit | ``                                               |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
