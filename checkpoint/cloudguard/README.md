@@ -136,7 +136,7 @@ The following table list the configurable parameters of this chart and their def
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `containerRuntime`                                         | Container runtime (docker/containerd/cri-o) overriding auto-detection | ``                                         |
 | `containerRuntimeSocket`                                   | Container runtime socket path overriding auto-detection         | ``                                               |
-| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks/eks.bottlerocket/k3s) overriding auto-detection | `kubernetes`                                |
+| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks/eks.bottlerocket/gke.cos/k3s) overriding auto-detection | `kubernetes`                                |
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
@@ -234,9 +234,6 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.daemon.probe.image`              | Specify image for the agent                                     | `checkpoint/consec-runtime-probe`                |
 | `addons.runtimeProtection.daemon.probe.tag`                | Specify image tag for the agent                                 | see defaults.yaml                                     |
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
-| `addons.runtimeProtection.daemon.fluentbit.image`          | Specify image for the agent                                     | `checkpoint/consec-fluentbit`                    |
-| `addons.runtimeProtection.daemon.fluentbit.tag`            | Specify image tag for the agent                                 | see defaults.yaml                                      |
-| `addons.runtimeProtection.daemon.fluentbit.resources`      | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
 | `addons.runtimeProtection.daemon.nodeSelector`             | Node labels for pod assignment                                  | see below                  |
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | `{}`                                             |
