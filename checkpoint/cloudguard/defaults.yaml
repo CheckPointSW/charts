@@ -51,7 +51,7 @@ podAnnotations:
 proxy: {}
 
 containerRuntime:
-platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bottlerocket or k3s
+platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bottlerocket, gke.cos or k3s
 
 seccompProfile:
   type: RuntimeDefault
@@ -111,7 +111,7 @@ addons:
 
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.20.1
+      tag: 2.21.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -133,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.20.1
+        tag: 2.21.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -169,7 +169,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.20.1
+      tag: 2.21.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -202,7 +202,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.20.1
+      tag: 2.21.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -349,7 +349,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 1.0.0
+      tag: 1.6.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -371,7 +371,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.28.0-cp-7
+        tag: 0.30.2-cp-3
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -382,11 +382,10 @@ addons:
           limits:
             cpu: 400m
             memory: 800Mi
-
-      fluentbit:
+      coscompat:
         ## Specify image and tag
-        image: checkpoint/consec-fluentbit
-        tag: 1.6.9-cp2
+        image: checkpoint/consec-runtime-cos-compat
+        tag: 0.0.9
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

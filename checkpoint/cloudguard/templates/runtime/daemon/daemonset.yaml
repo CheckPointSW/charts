@@ -104,56 +104,31 @@ spec:
         - name: host-root-vol
           mountPath: /host/root
         {{- end }}
-      containers:
-      # fluentbit
-      # the fluentbit container needs to be before the daemon container
-      # so the fluentbit will be up before the daemon to send message that daemon will send once it is up (like telemetry)
-      - name: fluentbit
-        image: {{ template "agent.fluentbit.image" $config }}
+      # coscompat
+      {{- if eq "gke.cos" (include "get.platform" $config) }}
+      - {{ $containerConfig := mergeOverwrite $config (dict "containerName" "coscompat") -}}
+        name: {{ $containerConfig.containerName }}
+        image: {{ template "agent.sidecar.image" $containerConfig }}
         imagePullPolicy: {{ $config.Values.imagePullPolicy }}
-        command: ["/fb_wrapper.sh"]
-        env:
-{{ include "fluentbit.env" $config | indent 8 }}
-        - name: CP_KUBERNETES_RUNTIME_ALERT_URI
-          value: {{ template "cloudguardURL_path" $config }}runtimeevent/alert
-        - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
-          value: {{ template "cloudguardURL_path" $config }}runtimeevent/profiling
-        - name: CP_KUBERNETES_METRIC_URI
-          value: {{ template "cloudguardURL_path" $config }}agenttelemetry
-        - name: CP_KUBERNETES_RUNTIME_TELEMETRY_URI
-          value: {{ template "cloudguardURL_path" $config }}runtimetelemetry
-        {{- if $config.agentConfig.fluentbit.resources }}
+
+        securityContext:
+          runAsUser: 0
+          capabilities:
+            add:
+            - AUDIT_CONTROL
+
+        {{- if $config.agentConfig.coscompat.resources }}
         resources:
-{{ toYaml $config.agentConfig.fluentbit.resources | indent 10}}
+{{ toYaml $config.agentConfig.coscompat.resources | indent 10}}
         {{- end }}
+
         volumeMounts:
-        - name: rp4c-alerts
-          mountPath: /rp4c/alerts
-        - name: rp4c-profiling
-          mountPath: /rp4c/profiling
-        - name: rp4c-metric
-          mountPath: /rp4c/metric
-        - name: metrics-tail
-          mountPath: /metric-tail
-        - name: rp4c-telemetry
-          mountPath: /rp4c/telemetry
-        - name: config-volume-fluentbit
-          mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf
-        - name: fluentbit-metric-output
-          mountPath: /fluent-bit/etc/metric-output.conf
-          subPath: metric-output.conf
-        - name: fluentbit-alert-output
-          mountPath: /fluent-bit/etc/alert-output.conf
-          subPath: alert-output.conf
-        - name: fluentbit-profile-output
-          mountPath: /fluent-bit/etc/profile-output.conf
-          subPath: profile-output.conf
-        - name: fluentbit-telemetry-output
-          mountPath: /fluent-bit/etc/telemetry-output.conf
-          subPath: telemetry-output.conf
-        - name: secret-volume
-          mountPath: /etc/secret-volume
+        - name: systemd
+          mountPath: /etc/systemd/system
+        - name: system-dbus-socket
+          mountPath: /var/run/dbus/system_bus_socket
+      {{- end }}
+      containers:
       # Main container
       - name: {{ $config.agentName }}
         image: {{ template "agent.main.image" $config }}
@@ -173,6 +148,26 @@ spec:
           value: "1"
         - name: SBA_CONTAINER_RUNTIME
           value: {{ include "get.container.runtime" . }}
+        - name: SBA_USE_DOME9_FORWARDER
+          value: "1"
+        - name: SBA_FORWARDER_AGENT_VERSION
+          value: {{ $config.agentConfig.tag }}
+        - name: TELEMETRY_VERSION
+          value: {{ $config.Values.telemetryVersion }}
+        - name: CP_KUBERNETES_DOME9_URL
+          value: {{ template "cloudguardURL_host" $config }}
+        - name: CP_KUBERNETES_RUNTIME_ALERT_URI
+          value: {{ template "cloudguardURL_path" $config }}runtimeevent/alert
+        - name: CP_KUBERNETES_RUNTIME_PROFILING_URI
+          value: {{ template "cloudguardURL_path" $config }}runtimeevent/profiling
+        - name: CP_KUBERNETES_METRIC_URI
+          value: {{ template "cloudguardURL_path" $config }}agenttelemetry
+        - name: CP_KUBERNETES_RUNTIME_TELEMETRY_URI
+          value: {{ template "cloudguardURL_path" $config }}runtimetelemetry        
+        - name: POD_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         {{- if $config.featureConfig.BPF }}
         - name: SYSDIG_BPF_PROBE
           value: "/sysdig/.scap/scap-bpf.o"
@@ -189,6 +184,13 @@ spec:
           privileged: true
         {{- else }}
           runAsUser: 0
+          {{- if and ($config.featureConfig.enableFileReputation) (eq (include "get.platform" $config) "eks.bottlerocket") }}
+          seLinuxOptions:
+            user: system_u
+            role: system_r
+            type: control_t
+            level: s0
+          {{- end }}
           capabilities:
             add:
             - SYS_RESOURCE
@@ -216,6 +218,8 @@ spec:
           mountPath: /metric-tail
         - name: rp4c-telemetry
           mountPath: /rp4c/telemetry
+        - name: secret-volume
+          mountPath: /etc/secret-volume
         {{- if eq $config.containerRuntime "docker" }}
         - name: docker-sock
           mountPath: /var/run/docker.sock
@@ -267,21 +271,15 @@ spec:
         - name: crashdumps-vol
           mountPath: /var/log/checkpoint/cpla/crashdumps
       volumes:
-      - name: config-volume-fluentbit
-        configMap:
-            name: {{ template "agent.resource.name" $config }}-fluentbit-metrics
-      - name: fluentbit-metric-output
-        secret:
-          secretName: {{ template "agent.resource.name" $config }}-fluentbit-metrics-output
-      - name: fluentbit-alert-output
-        secret:
-          secretName: {{ template "agent.resource.name" $config }}-fluentbit-alert-output
-      - name: fluentbit-profile-output
-        secret:
-          secretName: {{ template "agent.resource.name" $config }}-fluentbit-profile-output
-      - name: fluentbit-telemetry-output
-        secret:
-          secretName: {{ template "agent.resource.name" $config }}-fluentbit-telemetry-output
+      {{- if eq "gke.cos" (include "get.platform" $config) }}
+      - name: system-dbus-socket
+        hostPath:
+          path: /var/run/dbus/system_bus_socket
+          type: Socket
+      - name: systemd
+        hostPath:
+          path: /etc/systemd/system
+      {{- end }}
       - name: rp4c-alerts
         emptyDir: {}
       - name: rp4c-profiling
