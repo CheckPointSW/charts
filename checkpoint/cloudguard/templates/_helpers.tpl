@@ -56,13 +56,6 @@
 {{-     default $image $containerConfig.fullImage }}
 {{- end -}}
 
-{{- /* Full path to the fluentbit image used in agent with provided config */ -}}
-{{- define "agent.fluentbit.image" -}}
-{{- $containerConfig := .agentConfig.fluentbit }}
-{{- $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $containerConfig.tag }}
-{{- default $image $containerConfig.fullImage }}
-{{- end -}}
-
 {{- /* Labels commonly used in our k8s resources */ -}}
 {{- define "common.labels" -}}
 app.kubernetes.io/name: {{ template "agent.resource.name" . }}
@@ -174,139 +167,9 @@ imagePullSecrets:
 {{- template "user.defined.env" . -}}
 {{- end -}}
 
-{{- /* Environment variables needed for fluentbit-based side-cars */ -}}
-{{- define "fluentbit.env" -}}
-- name: CP_KUBERNETES_CLUSTER_ID
-  valueFrom:
-    configMapKeyRef:
-      name: {{ .Release.Name }}-cp-cloudguard-configmap
-      key: clusterID
-- name: CP_KUBERNETES_DOME9_URL
-  value: {{ template "cloudguardURL_host" . }}
-- name: NODE_NAME
-  valueFrom:
-    fieldRef:
-      fieldPath: spec.nodeName
-- name: TELEMETRY_VERSION
-  value: {{ .Values.telemetryVersion }}
-- name: POD_ID
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.uid
-
-{{- if .Values.proxy }}
-- name: HTTP_PROXY
-  value: "{{ .Values.proxy }}"
-- name: NO_PROXY
-  value: "kubernetes.default.svc"
-{{- end -}}
-{{- end -}}
-
-{{- /* fluentbit http output parametes */ -}}
-{{- define "fluentbit-http-output-param.conf" -}}
-[OUTPUT]
-    Name                        http
-    Format                      json_lines
-    Host                        ${CP_KUBERNETES_DOME9_URL}
-    Header                      Kubernetes-Account  ${CP_KUBERNETES_CLUSTER_ID}
-    Header                      Node-Name   ${NODE_NAME}
-    Header                      Agent-Version   {{ .agentVersion }}
-    Compress                    gzip
-    http_User                   ${USERNAME}
-    http_Passwd                 ${SECRET}
-    Port                        443        
-    tls                         On
-    tls.verify                  On
-    Match                       {{ .inputTag }}
-    Uri                         {{ .uriParameterName }}
-    storage.total_limit_size    100M
-    Retry_Limit                 {{ .retryLimit }}  
-{{- end -}}
- 
-{{- /* fluentbit configmap to send metric */ -}}
-{{- define "fluentbit-metric.conf" -}}   
-[SERVICE]
-    Flush                      5
-    Daemon                     Off
-    Log_Level                  info
-    storage.path               /tmp/fb-tmp
-    storage.sync               normal
-    storage.checksum           off
-    storage.backlog.mem_limit  1M   
-[INPUT]
-    Name            exec
-    Command         find {{ .metricPath }} -type f | xargs cat 
-    Tag             metrics
-    Buf_Size        8mb
-    Mem_Buf_Limit   1mb
-    Interval_Sec    300
-    Interval_NSec   0
-[INPUT]
-    Name             tail
-    Path             {{ .metricTailPath }}
-    Tag              metrics
-    Mem_Buf_Limit    1mb
-    Refresh_Interval 3
-    Read_from_Head   true
-    Buffer_Max_Size  1mb
-    Skip_Long_Lines  true
-@INCLUDE metric-output.conf
-{{- end -}}
-
-{{- /* fluentbit config output to send metrics */ -}}
-{{- define "fluentbit-metrics-output.conf" -}} 
-{{ include "fluentbit-http-output-param.conf" . }}
-    Header          Pod-Id    ${POD_ID}
-    Header          Telemetry-Version  ${TELEMETRY_VERSION}
-{{- end -}}
-
-
-{{- /* volumes needed for pods using fluentbit to send metrics */ -}}
-{{- define "fluentbit-metrics.volumes" -}}
-- name: config-volume-fluentbit
-  configMap:
-    name: {{ template "agent.resource.name" . }}-fluentbit-metrics
-- name: fluentbit-metric-output
-  secret:
-    secretName: {{ template "agent.resource.name" . }}-fluentbit-metrics-output
-- name: metrics
-  emptyDir: {}
-- name: metrics-tail
-  emptyDir: {}
-{{- end -}}
-
 {{- define "cloudguard.nonroot.user" -}}
 17112
 {{- end }}
-
-{{- /* fluentbit container for agents telemetry, do not use by agents sending alerts */ -}}
-{{- define "telemetry.container" -}}
-# fluentbit
-- name: fluentbit
-  image: {{ template "agent.fluentbit.image" . }}
-  imagePullPolicy: {{ .Values.imagePullPolicy }} 
-  securityContext:
-    allowPrivilegeEscalation: false
-  env:
-{{ include "fluentbit.env" . | indent 2 }}
-  - name: CP_KUBERNETES_METRIC_URI
-    value: {{ template "cloudguardURL_path" . }}agenttelemetry
-{{- if .agentConfig.fluentbit.resources }}
-  resources:
-{{ toYaml .agentConfig.fluentbit.resources | indent 4 }}
-{{- end }}
-  volumeMounts:
-  - name: config-volume-fluentbit
-    mountPath: /fluent-bit/etc/fluent-bit.conf
-    subPath: fluent-bit.conf
-  - name: fluentbit-metric-output
-    mountPath: /fluent-bit/etc/metric-output.conf
-    subPath: metric-output.conf  
-  - name: metrics
-    mountPath: /metric
-  - name: metrics-tail
-    mountPath: /metric-tail
-{{- end -}}
 
 {{/*
 Generate self-signed certificate with 'featureName-agentName.Namespace' structure
@@ -430,6 +293,8 @@ key: {{ $cert.Key | b64enc }}
 {{-     $osImage := $firstNode.status.nodeInfo.osImage }}
 {{-     if contains "Bottlerocket" $osImage -}}
 {{-       printf "eks.bottlerocket" -}}
+{{-     else if contains "Container-Optimized" $osImage -}}
+{{-       printf "gke.cos" -}}
 {{-     else if hasKey $firstNode.metadata.annotations "k3s.io/hostname"  -}}
 {{-       printf "k3s" -}}
 {{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name")  -}}
@@ -483,9 +348,9 @@ true
 {{- end -}}
 
 {{- define "validate.platform" -}}
-{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "k3s") -}}
+{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "k3s") -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks', 'eks.bottlerocket', 'k3s')"  .Values.platform -}}
+{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks', 'eks.bottlerocket', 'gke.cos', 'k3s')"  .Values.platform -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
