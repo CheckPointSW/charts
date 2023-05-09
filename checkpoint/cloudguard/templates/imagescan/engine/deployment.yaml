@@ -47,10 +47,10 @@ spec:
         - name: REGISTRY_AGENT_MODE
           value: "scan"
         - name: NODE_AGENT_SELECTOR
-          value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" . }}
-          {{- /* TODO: investigate why $config instead of "." fails */}}
+          value: app.kubernetes.io/name={{ template "imagescan.daemon.resource.name" $config }}
         - name: RELEASE_NAME
-          value: {{ .Release.Name }}
+          {{- /* TODO: change the env name in agent to name prefix rather than release name */}}
+          value: {{ include "name.prefix" $config }}
         - name: CLOUDGUARD_REGION
           value: {{ include "dome9.subdomain" $config | default "us" }}
 {{- if eq $config.containerRuntime "cri-o" }}

@@ -136,7 +136,7 @@ The following table list the configurable parameters of this chart and their def
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `containerRuntime`                                         | Container runtime (docker/containerd/cri-o) overriding auto-detection | ``                                         |
 | `containerRuntimeSocket`                                   | Container runtime socket path overriding auto-detection         | ``                                               |
-| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks/eks.bottlerocket/gke.cos/k3s) overriding auto-detection | `kubernetes`                                |
+| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks/eks.bottlerocket/gke.cos/gke.autopilot/k3s) overriding auto-detection | `kubernetes`                                |
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
@@ -154,10 +154,10 @@ The following table list the configurable parameters of this chart and their def
 | `inventory.agent.tolerations`                              | List of node taints to tolerate for Inventory agent             | `[]`                                             |
 | `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
 | `inventory.agent.podAnnotations.custom`                    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
-| `inventory.priorityClassName`                              | Specifies custom priorityClassName                              | ``                                               |
+| `inventory.priorityClassName`                              | Specifies custom priorityClassName                              | `system-cluster-critical`                                               |
 | `addons.imageScan.enabled`                                 | Specifies whether the Image Scan addon should be installed      | `false`                                          |
 | `addons.imageScan.mountPodman`                             | Should be set to false if podman utility is not present on nodes | `true`                                           |
-| `addons.imageScan.priorityClassName`                       | Specifies custom priorityClassName                              | ``                                               |
+| `addons.imageScan.priorityClassName`                       | Specifies custom priorityClassName                              | `system-cluster-critical`                        |
 | `addons.imageScan.maxImageSizeMb`                          | Specifies in MiBytes maximal image size to scan, its value + 500MB will be imageScan.engine main container memory limit | ``                                               |
 | `addons.imageScan.daemon.image`                            | Specify image for the agent                                     | `checkpoint/consec-imagescan-daemon`             |
 | `addons.imageScan.daemon.tag`                              | Specify image tag for the agent                                 | see defaults.yaml                                           |
@@ -168,6 +168,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
 | `addons.imageScan.daemon.podAnnotations.custom`            | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
+| `addons.imageScan.daemon.priorityClassName`                | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.imageScan.daemon.shim.image`                       | Specify image for the shim container                            | `checkpoint/consec-imagescan-shim`               |
 | `addons.imageScan.daemon.shim.tag`                         | Specify image tag for the shim container                        | see defaults.yaml                                           |
 | `addons.imageScan.daemon.shim.env`                         | Additional environmental variables for the shim container       | `{}`                                             |
@@ -192,7 +193,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.list.affinity`                           | Affinity setting                                                | `{}`                                             |
 | `addons.imageScan.list.podAnnotations.custom`              | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.flowLogs.enabled`                                  | Specifies whether the Flow Logs addon should be installed       | `false`                                          |
-| `addons.flowLogs.priorityClassName`                        | Specifies custom priorityClassName                              | ``                                               |
+| `addons.flowLogs.priorityClassName`                        | Specifies custom priorityClassName                              | `system-cluster-critical`                        |
 | `addons.flowLogs.daemon.image`                             | Specify image for the agent                                     | `checkpoint/consec-flowlogs-daemon`              |
 | `addons.flowLogs.daemon.tag`                               | Specify image tag for the agent                                 | see defaults.yaml                                           |
 | `addons.flowLogs.daemon.serviceAccountName`                | Specify custom Service Account for the agent                    | ``                                               |
@@ -203,8 +204,9 @@ The following table list the configurable parameters of this chart and their def
 | `addons.flowLogs.daemon.tolerations`                       | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | `{}`                                             |
 | `addons.flowLogs.daemon.podAnnotations.custom`             | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
+| `addons.flowLogs.daemon.priorityClassName`                 | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.admissionControl.enabled`                          | Specify whether the Admission Control addon should be installed | `false`                                          |
-| `addons.admissionControl.priorityClassName`                | Specifies custom priorityClassName                              | ``                                               |
+| `addons.admissionControl.priorityClassName`                | Specifies custom priorityClassName                              | `system-cluster-critical`                        |
 | `addons.admissionControl.policy.image`                     | Specify image for the agent                                     | `checkpoint/consec-admission-policy`             |
 | `addons.admissionControl.policy.tag`                       | Specify image tag for the agent                                 | see defaults.yaml                                           |
 | `addons.admissionControl.policy.serviceAccountName`        | Specify custom Service Account for the agent                    | ``                                               |
@@ -225,7 +227,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.enforcer.affinity`                | Affinity setting                                                | `{}`                                             |
 | `addons.admissionControl.enforcer.podAnnotations.custom`   | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be installed | `false`                                          |
-| `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | ``                                               |
+| `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | `system-cluster-critical`                        |
 | `addons.runtimeProtection.daemon.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-daemon`               |
 | `addons.runtimeProtection.daemon.tag`                      | Specify image tag for the agent                                 | see defaults.yaml                                         |
 | `addons.runtimeProtection.daemon.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |
@@ -238,6 +240,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
 | `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | `{}`                                             |
 | `addons.runtimeProtection.daemon.podAnnotations.custom`    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
+| `addons.runtimeProtection.daemon.priorityClassName`        | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.runtimeProtection.policy.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-policy`               |
 | `addons.runtimeProtection.policy.tag`                      | Specify image tag for the agent                                 | see defaults.yaml                                           |
 | `addons.runtimeProtection.policy.serviceAccountName`       | Specify custom Service Account for the agent                    | ``                                               |

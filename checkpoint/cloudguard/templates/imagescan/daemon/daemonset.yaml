@@ -223,6 +223,5 @@ spec:
           name: {{ template "agent.resource.name" $config }}
       - name: clientcert-volume
         configMap:
-          name: {{ template "imagescan.engineAndList.commonResource.name" . }}
-          {{/* TODO: investigate why $config instead of "." fails */}}
+          name: {{ template "imagescan.engineAndList.commonResource.name" $config }}
 {{- end -}}  

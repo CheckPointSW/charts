@@ -1,0 +1,17 @@
+{{- $config := fromYaml (include "inventory.agent.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
+{{/*to resolve Autopilot issue about insufficient quota to use the priority class*/}}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{ include "name.prefix" $config }}-priorityclass-quota
+  namespace: {{ .Release.Namespace }}
+spec:
+  scopeSelector:
+    matchExpressions:
+    - scopeName: PriorityClass
+      operator : In
+      values: 
+        - "system-cluster-critical" 
+        - "system-node-critical"
+{{- end -}}
