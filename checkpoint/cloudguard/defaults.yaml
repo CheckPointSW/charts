@@ -51,7 +51,7 @@ podAnnotations:
 proxy: {}
 
 containerRuntime:
-platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bottlerocket, gke.cos or k3s
+platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bottlerocket, gke.cos, gke.autopilot or k3s
 
 seccompProfile:
   type: RuntimeDefault
@@ -64,6 +64,7 @@ daemonSetStrategy:
 
 ### Inventory agent settings
 inventory:
+  priorityClassName: "system-cluster-critical"
   agent:
 
     ## Specify image and tag
@@ -106,9 +107,9 @@ addons:
   imageScan:
     enabled: false
     mountPodman : true
-
+    priorityClassName: "system-cluster-critical"
     daemon:
-
+      priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
       tag: 2.21.0
@@ -234,7 +235,9 @@ addons:
 ## Flow Logs Add-on
   flowLogs:
     enabled: false
+    priorityClassName: "system-cluster-critical"
     daemon:
+      priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-flowlogs-daemon
       tag: 0.8.0
@@ -273,6 +276,7 @@ addons:
 ## Admission Control Add-on
   admissionControl:
     enabled: false
+    priorityClassName: "system-cluster-critical"
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
@@ -344,8 +348,9 @@ addons:
     enabled: false
     BPF: true
     enableFileReputation: true 
-    
+    priorityClassName: "system-cluster-critical"
     daemon:
+      priorityClassName: "system-node-critical"
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon

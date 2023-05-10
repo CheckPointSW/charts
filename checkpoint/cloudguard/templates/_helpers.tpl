@@ -7,6 +7,18 @@
 {{- printf "%s/" (( include "dome9.url" . | urlParse ).path) -}}
 {{- end -}}
 
+{{- /* Return prefix for resource names. 
+       By default, helm release name is used. However, on GKE Autopilot, 
+       fixed prefix "cloudguard" is used (to enable whitelisting)
+    */ -}}
+{{- define "name.prefix" -}}
+{{-   if eq "gke.autopilot" ( include "get.platform" .) -}}
+{{-     printf "cloudguard" -}}
+{{-   else -}}
+{{-     printf "%s" .Release.Name -}}
+{{-   end -}}
+{{- end -}}
+
 {{- /* The following templates are invoked with a per-agent 'config' object, containing:
         - .featureName (e.g., imagescan)
         - .agentName (e.g., daemon)
@@ -21,7 +33,7 @@
 {{- /* Common resource for a given agent, following the naming convention */ -}}
 {{- define "agent.resource.name" -}}
 {{- $agentFullName := include "agent.full.name" . -}}
-{{ printf "%s-%s" $.Release.Name $agentFullName }}
+{{ printf "%s-%s" (include "name.prefix" .) $agentFullName }}
 {{- end -}}
 
 {{- /* Service account name of a given agent (provided in values.yaml or auto-generated */ -}}
@@ -91,9 +103,14 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 {{- end }}
 {{- end -}}
 
+{{- define "common.pod.priorityClassName" -}}
+{{- $priorityClassName := coalesce .agentConfig.priorityClassName .featureConfig.priorityClassName .Values.priorityClassName -}}
+{{- printf "%s" $priorityClassName -}}
+{{- end -}}
+
 {{- /* Pod properties commonly used in agents */ -}}
 {{- define "common.pod.properties" -}}
-{{- $priorityClassName :=  .featureConfig.priorityClassName  | default .Values.priorityClassName -}}
+{{- $priorityClassName :=  (include "common.pod.priorityClassName" . ) -}}
 {{- if $priorityClassName -}}
 priorityClassName: {{ $priorityClassName }}
 {{- end }}
@@ -121,7 +138,7 @@ tolerations:
 {{- end }}
 {{- if .Values.imageRegistry.authEnabled }}
 imagePullSecrets:
-- name: {{ .Release.Name }}-regcred
+- name: {{ include "name.prefix" . }}-regcred
 {{- end -}}
 {{- end -}}
 
@@ -140,7 +157,7 @@ imagePullSecrets:
 - name: CP_KUBERNETES_CLUSTER_ID
   valueFrom:
     configMapKeyRef:
-      name: {{ .Release.Name }}-cp-cloudguard-configmap
+      name: {{ include "name.prefix" . }}-cp-cloudguard-configmap
       key: clusterID
 - name: NAMESPACE_NAME
   valueFrom:
@@ -282,6 +299,8 @@ key: {{ $cert.Key | b64enc }}
 {{-     printf "openshift.v3" -}}
 {{-   else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
 {{-     printf "tanzu" -}}
+{{/*   else if has "auto.gke.io/v1" .Capabilities.APIVersions */}}
+{{/*     printf "gke.autopilot" */}}
 {{-   else -}}
 {{-     $nodes := lookup "v1" "Node" "" "" -}}
 {{/*
@@ -348,9 +367,9 @@ true
 {{- end -}}
 
 {{- define "validate.platform" -}}
-{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "k3s") -}}
+{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s") -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks', 'eks.bottlerocket', 'gke.cos', 'k3s')"  .Values.platform -}}
+{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks', 'eks.bottlerocket', 'gke.cos', 'gke.autopilot', 'k3s')"  .Values.platform -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -362,6 +381,6 @@ updateStrategy:
 {{- end -}}
 
 {{- define "cg.creds.secret.name" -}}
-{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" .Release.Name }}
+{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" (include "name.prefix" .) }}
 {{-   printf "%s" (.Values.credentials.secretName | default $defaultSecretName) -}}
 {{- end -}}
