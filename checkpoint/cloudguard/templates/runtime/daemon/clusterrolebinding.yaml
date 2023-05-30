@@ -1,5 +1,5 @@
-{{- $config := fromYaml (include "runtime.daemon.config" .) }}
-{{- if $config.featureConfig.enabled }}
+{{- $config := fromYaml (include "runtime.daemon.config" .) -}}
+{{- if $config.featureConfig.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -15,4 +15,4 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "agent.service.account.name" $config }}
   namespace: {{ .Release.Namespace }}
-{{- end }}
+{{- end -}}

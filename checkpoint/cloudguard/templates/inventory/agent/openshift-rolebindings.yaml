@@ -1,5 +1,5 @@
 {{- $config := fromYaml (include "inventory.agent.config" .) -}}
-{{- if eq "openshift" (include "get.platform" $config) }}
+{{- if eq "openshift" $config.platform }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

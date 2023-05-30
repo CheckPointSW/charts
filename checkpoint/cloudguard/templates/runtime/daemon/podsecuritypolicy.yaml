@@ -36,7 +36,7 @@ spec:
   - 'emptyDir'
   allowedHostPaths:
 {{- if eq $config.containerRuntime "docker" }}
-{{- if eq (include "get.platform" $config) "tanzu" }}
+{{- if eq $config.platform "tanzu" }}
   - pathPrefix: /var/vcap/sys/run/docker/docker.sock
 {{- else }}
   - pathPrefix: /var/run/docker.sock
