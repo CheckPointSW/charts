@@ -35,7 +35,7 @@ rules:
     resources: [ "cronjobs" ]
     verbs: [ "list", "get" ]
 
-{{- if eq "openshift" (include "get.platform" $config)}}
+{{- if eq "openshift" $config.platform}}
 
   - apiGroups: [ "config.openshift.io" ]
     resources: [ "clusteroperators" ]
