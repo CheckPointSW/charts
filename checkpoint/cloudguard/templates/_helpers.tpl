@@ -7,6 +7,18 @@
 {{- printf "%s/" (( include "dome9.url" . | urlParse ).path) -}}
 {{- end -}}
 
+{{- /* Return prefix for resource names. 
+       By default, helm release name is used. However, on GKE Autopilot, 
+       fixed prefix "cloudguard" is used (to enable whitelisting)
+    */ -}}
+{{- define "name.prefix" -}}
+{{-   if eq .platform "gke.autopilot" -}}
+{{-     printf "cloudguard" -}}
+{{-   else -}}
+{{-     printf "%s" .Release.Name -}}
+{{-   end -}}
+{{- end -}}
+
 {{- /* The following templates are invoked with a per-agent 'config' object, containing:
         - .featureName (e.g., imagescan)
         - .agentName (e.g., daemon)
@@ -21,7 +33,13 @@
 {{- /* Common resource for a given agent, following the naming convention */ -}}
 {{- define "agent.resource.name" -}}
 {{- $agentFullName := include "agent.full.name" . -}}
-{{ printf "%s-%s" $.Release.Name $agentFullName }}
+{{ printf "%s-%s" (include "name.prefix" .) $agentFullName }}
+{{- end -}}
+
+
+{{- /* special Case for daemonSet name following the naming convention */ -}}
+{{- define "daemonset.daemon.resource.name" -}}
+{{ printf "%s-%s-%s" $.Release.Name .featureName .daemonConfigName }}
 {{- end -}}
 
 {{- /* Service account name of a given agent (provided in values.yaml or auto-generated */ -}}
@@ -72,7 +90,7 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 {{- define "common.pod.annotations" -}}
 {{- /* Openshift does not allow seccomp - So we don't add seccomp in openshift case */ -}}
 {{- /* From k8s 1.19 and up we use the seccomp in securityContext so no need for it here, in case of template we don't know the version so we fall back to annotation */ -}}
-{{- if and (not (contains "openshift" (include "get.platform" .))) (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version ) }}
+{{- if and (not (contains "openshift" .platform)) (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version) }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- end }}
 {{- if .Values.podAnnotations.apparmor }}
@@ -91,13 +109,18 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 {{- end }}
 {{- end -}}
 
+{{- define "common.pod.priorityClassName" -}}
+{{- $priorityClassName := coalesce .agentConfig.priorityClassName .featureConfig.priorityClassName .Values.priorityClassName -}}
+{{- printf "%s" $priorityClassName -}}
+{{- end -}}
+
 {{- /* Pod properties commonly used in agents */ -}}
 {{- define "common.pod.properties" -}}
-{{- $priorityClassName :=  .featureConfig.priorityClassName  | default .Values.priorityClassName -}}
+{{- $priorityClassName :=  (include "common.pod.priorityClassName" . ) -}}
 {{- if $priorityClassName -}}
 priorityClassName: {{ $priorityClassName }}
 {{- end }}
-{{- if not (contains "openshift" (include "get.platform" .)) }}
+{{- if not (contains "openshift" .platform) }}
 securityContext:
   runAsUser: {{ include "cloudguard.nonroot.user" . }}
   runAsGroup: {{ include "cloudguard.nonroot.user" . }}
@@ -121,7 +144,7 @@ tolerations:
 {{- end }}
 {{- if .Values.imageRegistry.authEnabled }}
 imagePullSecrets:
-- name: {{ .Release.Name }}-regcred
+- name: {{ include "name.prefix" . }}-regcred
 {{- end -}}
 {{- end -}}
 
@@ -140,7 +163,7 @@ imagePullSecrets:
 - name: CP_KUBERNETES_CLUSTER_ID
   valueFrom:
     configMapKeyRef:
-      name: {{ .Release.Name }}-cp-cloudguard-configmap
+      name: {{ include "name.prefix" . }}-cp-cloudguard-configmap
       key: clusterID
 - name: NAMESPACE_NAME
   valueFrom:
@@ -151,12 +174,13 @@ imagePullSecrets:
     fieldRef:
       fieldPath: spec.nodeName
 - name: PLATFORM
-  value: {{ include "get.platform" . }}
+  value: {{ .platform }}
+- name: CONTAINER_RUNTIME
+  value: {{ .containerRuntime }}
 {{- if eq (include "get.autoUpgrade" .) "true" }}
 - name: AUTO_UPGRADE_ENABLED
   value: "true"
 {{- end -}}
-
 {{- if .Values.proxy }}
 - name: HTTPS_PROXY
   value: "{{ .Values.proxy }}"
@@ -169,7 +193,7 @@ imagePullSecrets:
 
 {{- define "cloudguard.nonroot.user" -}}
 17112
-{{- end }}
+{{- end -}}
 
 {{/*
 Generate self-signed certificate with 'featureName-agentName.Namespace' structure
@@ -225,17 +249,20 @@ key: {{ $cert.Key | b64enc }}
 {{/*
   Generate the .dockerconfigjson file unencoded.
 */}}
-{{- define "dockerconfigjson.b64enc" }}
+{{- define "dockerconfigjson.b64enc" -}}
     {{- $err := "Must disable .imageRegistry.authEnabled or specify .imageRegistry.user and .password" -}}
     {{- $user := required $err .Values.imageRegistry.user -}}
     {{- $pass := required $err .Values.imageRegistry.password -}}
-    {{- printf "{\"auths\":{\"%s\":{\"auth\":\"%s\"}}}" .Values.imageRegistry.url (printf "%s:%s" $user $pass | b64enc) | b64enc }}
-{{- end }}
+    {{- printf "{\"auths\":{\"%s\":{\"auth\":\"%s\"}}}" .Values.imageRegistry.url (printf "%s:%s" $user $pass | b64enc) | b64enc -}}
+{{- end -}}
 
+{{- /* validate containerRuntime is one of the allowed values. 
+takes a context (such as $config, .Values or (dict "containerRuntime" $containerRuntime)) that has a .containerRuntime field */ -}}
 {{- define "validate.container.runtime" -}}
-{{- if has .Values.containerRuntime (list "docker" "containerd" "cri-o") -}}
+{{- $allowedRuntimes := list "docker" "containerd" "cri-o" -}}
+{{- if has (.containerRuntime | lower) $allowedRuntimes -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: 'docker', 'containerd', 'cri-o')"  .Values.containerRuntime -}}
+{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: %s)" .containerRuntime $allowedRuntimes -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -244,28 +271,31 @@ key: {{ $cert.Key | b64enc }}
   Construct "root" context (dict) from defaults.yaml included in the chart and the effective .Values of the release (overriding defaults)
 */}}
 {{- define "get.root" -}}
-{{- $defaults := (.Files.Get "defaults.yaml" | fromYaml ) }}
-{{- $merged := deepCopy . | mustMergeOverwrite (dict "Values" $defaults) | toYaml }}
-{{- $merged }}
+{{- if not (hasKey .Values "rootCache") -}}
+{{- $defaults := (.Files.Get "defaults.yaml" | fromYaml ) -}}
+{{- $merged := deepCopy . | mustMergeOverwrite (dict "Values" $defaults) -}}
+{{- $_ := set $merged "containerRuntime" (include "get.container.runtime" $merged) -}}
+{{- $_ := set $merged "platform" (include "get.platform" $merged) -}}
+{{- /* Make ".Files" of the chart accessible and properly formatted when accessed via $config' */ -}}
+{{- $_ := set $merged "Files" .Files -}}
+{{- $_ := set .Values "rootCache" $merged -}}
+{{- end -}}
+{{- .Values.rootCache | toYaml -}}
 {{- end -}}
 
 
 {{- define "get.container.runtime" -}}
 {{- if .Values.containerRuntime -}}
-{{- include "validate.container.runtime" . -}}
-{{- .Values.containerRuntime -}}
+{{- include "validate.container.runtime" .Values -}}
+{{ .Values.containerRuntime | lower }}
 {{- else -}}
 {{- $nodes := lookup "v1" "Node" "" "" -}}
 {{- if ne (len $nodes) 0 -}}
 {{/* examples for runtime version: docker://19.3.3, containerd://1.3.3, cri-o://1.20.3 */}}
-{{- $containerRuntimeVersion := (first $nodes.items).status.nodeInfo.containerRuntimeVersion }}
-{{- $containerRuntime := first (regexSplit ":" $containerRuntimeVersion -1) }}
-{{- if has $containerRuntime (list "docker" "containerd" "cri-o") -}}
-{{- $containerRuntime }}
-{{- else -}}
-{{- $err := printf "\n\nERROR: Unsupported container runtime: %s" $containerRuntime -}}
-{{- fail $err -}}
-{{- end -}}
+{{- $containerRuntimeVersion := (first $nodes.items).status.nodeInfo.containerRuntimeVersion -}}
+{{- $containerRuntime := first (regexSplit ":" $containerRuntimeVersion -1) -}}
+{{- include "validate.container.runtime" (dict "containerRuntime" $containerRuntime) -}}
+{{ $containerRuntime | lower }}
 {{- else -}}
 {{- fail "\n\nERROR: No nodes found, cannot identify container runtime. Use '--set containerRuntime=docker' or '--set containerRuntime=containerd' or '--set containerRuntime=cri-o'" -}}
 {{- end -}}
@@ -274,7 +304,7 @@ key: {{ $cert.Key | b64enc }}
 
 {{- define "get.platform" -}}
 {{-   if (include "is.helm.template.command" .) -}}
-{{-     include "validate.platform" . -}}
+{{-     include "validate.platform" .Values -}}
 {{-     lower .Values.platform -}}
 {{-   else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
 {{-     printf "openshift" -}}
@@ -282,6 +312,8 @@ key: {{ $cert.Key | b64enc }}
 {{-     printf "openshift.v3" -}}
 {{-   else if has "nsx.vmware.com/v1" .Capabilities.APIVersions -}}
 {{-     printf "tanzu" -}}
+{{/*   else if has "auto.gke.io/v1" .Capabilities.APIVersions */}}
+{{/*     printf "gke.autopilot" */}}
 {{-   else -}}
 {{-     $nodes := lookup "v1" "Node" "" "" -}}
 {{/*
@@ -290,7 +322,7 @@ key: {{ $cert.Key | b64enc }}
         - "Container-Optimized OS from Google"
 */}}
 {{-     $firstNode :=  (first $nodes.items) -}}
-{{-     $osImage := $firstNode.status.nodeInfo.osImage }}
+{{-     $osImage := $firstNode.status.nodeInfo.osImage -}}
 {{-     if contains "Bottlerocket" $osImage -}}
 {{-       printf "eks.bottlerocket" -}}
 {{-     else if contains "Container-Optimized" $osImage -}}
@@ -300,7 +332,7 @@ key: {{ $cert.Key | b64enc }}
 {{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name")  -}}
 {{-       printf "eks" -}}
 {{-     else -}}
-{{-       include "validate.platform" . -}}
+{{-       include "validate.platform" .Values -}}
 {{-       lower .Values.platform -}}
 {{-     end -}}
 {{-   end -}}
@@ -338,19 +370,22 @@ true
 {{-       fail $err -}} 
 {{-     end -}}
 {{      printf (.Values.containerRuntimeSocket | toString) }}
-{{-   else if eq (include "get.platform" .) "eks.bottlerocket" -}}
+{{-   else if eq .platform "eks.bottlerocket" -}}
 {{-     printf "/run/dockershim.sock" -}}
-{{-   else if eq (include "get.platform" .) "k3s" -}}
+{{-   else if eq .platform "k3s" -}}
 {{-     printf "/run/k3s/containerd/containerd.sock" -}}
 {{-   else -}}
 {{-     printf "/run/containerd/containerd.sock" -}}
 {{-   end -}}
 {{- end -}}
 
+{{- /* validate platform is one of the allowed values. 
+takes a context (such as $config or .Values) that has a .platform field */ -}}
 {{- define "validate.platform" -}}
-{{- if has .Values.platform (list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "k3s") -}}
+{{- $allowedPlatforms := list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s" -}}
+{{- if has (.platform | lower) $allowedPlatforms -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: 'kubernetes', 'tanzu', 'openshift', 'openshift.v3', 'eks', 'eks.bottlerocket', 'gke.cos', 'k3s')"  .Values.platform -}}
+{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: %s)" .platform $allowedPlatforms -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -362,6 +397,42 @@ updateStrategy:
 {{- end -}}
 
 {{- define "cg.creds.secret.name" -}}
-{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" .Release.Name }}
+{{-   $defaultSecretName := printf "%s-cp-cloudguard-creds" (include "name.prefix" .) -}}
 {{-   printf "%s" (.Values.credentials.secretName | default $defaultSecretName) -}}
+{{- end -}}
+
+{{- /* extract multiple daemonset configurations if possible, otherwise, return the single one.
+returns a dictionary of configurations
+usage:
+`{{- include "common.daemonset.config.extract.multiple" (dict "config" $config) -}}`
+*/ -}}
+{{- define "common.daemonset.config.extract.multiple" -}}
+{{-   if empty .config.featureConfig.daemonConfigurationOverrides -}}
+{{-     $_ := set .config "daemonConfigName" "daemon" -}}
+{{-     dict "daemon" ( .config | toYaml ) | toYaml -}}
+{{-   else -}}
+{{-     $configs := dict -}}
+{{-     $config := .config -}}
+{{-     range $daemonConfigName, $currentConfiguration := $config.featureConfig.daemonConfigurationOverrides  -}}
+{{-       $_ := required (printf "configuration %s must have nodeSelector field" $daemonConfigName ) (get $currentConfiguration "nodeSelector") -}}
+{{-       $copyConfig:= deepCopy $config -}}
+{{-       $copyAgentConfig:= deepCopy $config.agentConfig -}}
+{{-       $mergedAgentConfig:= mergeOverwrite $copyAgentConfig $currentConfiguration -}}
+{{-       if hasKey $currentConfiguration "platform" -}}
+{{-         $platform := get $currentConfiguration "platform" -}}
+{{-         include "validate.platform" $currentConfiguration -}}
+{{-         $_ := set  $copyConfig "platform" ($platform | lower) -}}
+{{-       end -}}
+{{-       if hasKey $currentConfiguration "containerRuntime" -}}
+{{-         $containerRuntime := get $currentConfiguration "containerRuntime" -}}
+{{-         include "validate.container.runtime" $currentConfiguration -}}
+{{-         $_ := set  $copyConfig "containerRuntime" ($containerRuntime | lower) -}}
+{{-       end -}}
+{{-       $_ := set $mergedAgentConfig "env" ((concat (get $mergedAgentConfig "env") (get $copyAgentConfig "env") ) | uniq) -}}
+{{-       $_ := set $copyConfig "agentConfig" $mergedAgentConfig -}}
+{{-       $_ := set $copyConfig "daemonConfigName" ($daemonConfigName | lower) -}}
+{{-       $_ := set $configs $daemonConfigName ($copyConfig | toYaml) -}}
+{{-     end -}}
+{{-     $configs | toYaml -}}
+{{-   end -}}
 {{- end -}}
