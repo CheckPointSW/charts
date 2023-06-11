@@ -16,7 +16,7 @@ spec:
   allowPrivilegeEscalation: false
   allowedHostPaths:
 {{- if eq $config.containerRuntime "docker" }}
-{{- if eq (include "get.platform" $config) "tanzu" }}
+{{- if eq $config.platform "tanzu" }}
   - pathPrefix: /var/vcap/sys/run/docker/docker.sock
 {{- else }}
   - pathPrefix: /var/run/docker.sock
@@ -46,7 +46,7 @@ spec:
     readOnly: true
   - pathPrefix: /usr/bin/nsenter
     readOnly: true
-{{- if not (contains "openshift" (include "get.platform" $config)) }}
+{{- if not (contains "openshift" $config.platform) }}
   - pathPrefix: /lib/x86_64-linux-gnu
     readOnly: true
   - pathPrefix: /usr/lib/x86_64-linux-gnu
