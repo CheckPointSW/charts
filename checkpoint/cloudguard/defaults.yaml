@@ -354,7 +354,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 1.8.4
+      tag: 1.8.8
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
