@@ -53,7 +53,7 @@
 {{-     if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages }}
 {{-         $tag = printf "%s-debug" .agentConfig.tag }}
 {{-     end }}
-{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne .agentConfig.image "checkpoint/consec-runtime-daemon") -}}
+{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) -}}
 {{-         $tag = regexFind "\\d+.\\d+" $tag }}
 {{-     end -}}
 {{-     $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image $tag }}
@@ -175,8 +175,11 @@ imagePullSecrets:
       fieldPath: spec.nodeName
 - name: PLATFORM
   value: {{ .platform }}
+{{- /* having this in autopilot made some issues */ -}}
+{{- if and (eq .platform "gke.autopilot") (contains "daemon" .agentName) | not }}
 - name: CONTAINER_RUNTIME
   value: {{ .containerRuntime }}
+{{- end }}
 {{- if eq (include "get.autoUpgrade" .) "true" }}
 - name: AUTO_UPGRADE_ENABLED
   value: "true"
@@ -303,7 +306,8 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{- end -}}
 
 {{- define "get.platform" -}}
-{{-   if (include "is.helm.template.command" .) -}}
+{{- /* use platform value if it's a helm template command or when the provided value is not the default kubernetes */ -}}
+{{-   if or (include "is.helm.template.command" .) (and .Values.platform (ne .Values.platform "kubernetes")) -}}
 {{-     include "validate.platform" .Values -}}
 {{-     lower .Values.platform -}}
 {{-   else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
@@ -327,6 +331,8 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{-       printf "eks.bottlerocket" -}}
 {{-     else if contains "Container-Optimized" $osImage -}}
 {{-       printf "gke.cos" -}}
+{{-     else if contains "Fedora CoreOS" $osImage -}}
+{{-       printf "kubernetes.coreos" -}}
 {{-     else if hasKey $firstNode.metadata.annotations "k3s.io/hostname"  -}}
 {{-       printf "k3s" -}}
 {{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name")  -}}
@@ -351,10 +357,10 @@ if registry is not quay do not enable auto upgrade
 {{- end -}}
 
 
-{{/*
+{{- /*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
   if there is no namespace probably we are running template
-*/}}
+*/ -}}
 {{- define "is.helm.template.command" -}}
 {{- $namespace := lookup "v1" "Namespace" "" "" -}}
 {{- if eq (len $namespace) 0 -}}
@@ -382,7 +388,7 @@ true
 {{- /* validate platform is one of the allowed values. 
 takes a context (such as $config or .Values) that has a .platform field */ -}}
 {{- define "validate.platform" -}}
-{{- $allowedPlatforms := list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s" -}}
+{{- $allowedPlatforms := list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s" "kubernetes.coreos" -}}
 {{- if has (.platform | lower) $allowedPlatforms -}}
 {{- else -}}
 {{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: %s)" .platform $allowedPlatforms -}}
