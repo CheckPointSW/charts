@@ -39,7 +39,7 @@
 
 {{- /* special Case for daemonSet name following the naming convention */ -}}
 {{- define "daemonset.daemon.resource.name" -}}
-{{ printf "%s-%s-%s" $.Release.Name .featureName .daemonConfigName }}
+{{ printf "%s-%s-%s" (include "name.prefix" .) .featureName .daemonConfigName }}
 {{- end -}}
 
 {{- /* Service account name of a given agent (provided in values.yaml or auto-generated */ -}}
@@ -77,7 +77,7 @@
 {{- /* Labels commonly used in our k8s resources */ -}}
 {{- define "common.labels" -}}
 app.kubernetes.io/name: {{ template "agent.resource.name" . }}
-app.kubernetes.io/instance: {{ $.Release.Name }}
+app.kubernetes.io/instance: {{ include "name.prefix" . }}
 {{- end -}}
 
 {{- /* Labels commonly used in our "pod group" resources */ -}}
@@ -119,7 +119,7 @@ container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name"
 {{- $priorityClassName :=  (include "common.pod.priorityClassName" . ) -}}
 {{- if $priorityClassName -}}
 priorityClassName: {{ $priorityClassName }}
-{{- end }}
+{{- end -}}
 {{- if not (contains "openshift" .platform) }}
 securityContext:
   runAsUser: {{ include "cloudguard.nonroot.user" . }}
@@ -127,21 +127,25 @@ securityContext:
 {{- if (semverCompare ">=1.19-0" .Capabilities.KubeVersion.Version) }}
   seccompProfile:
 {{ toYaml .Values.seccompProfile | indent 4 }}
-{{- end }}
+{{- end -}}
 {{- end }}
 serviceAccountName: {{ template "agent.service.account.name" . }}
 {{- if .agentConfig.nodeSelector }}
 nodeSelector:
 {{ toYaml .agentConfig.nodeSelector | indent 2 }}
 {{- end }}
+{{- $allVirtualAffinities := (include "get.virtualNodesLabels" .) | fromYaml -}}
 {{- if .agentConfig.affinity }}
 affinity:
-{{ toYaml .agentConfig.affinity | indent 2 }}
+{{    .agentConfig.affinity | toYaml | indent 2 }}
+{{- else if and (contains "daemon" .agentName) (hasKey $allVirtualAffinities .platform) }}
+affinity:
+{{    include "daemonset.commonAffinity.labels" . | indent 2 }}
 {{- end }}
 {{- if .agentConfig.tolerations }}
 tolerations:
 {{ toYaml .agentConfig.tolerations | indent 2 }}
-{{- end }}
+{{- end -}}
 {{- if .Values.imageRegistry.authEnabled }}
 imagePullSecrets:
 - name: {{ include "name.prefix" . }}-regcred
@@ -175,8 +179,6 @@ imagePullSecrets:
       fieldPath: spec.nodeName
 - name: PLATFORM
   value: {{ .platform }}
-- name: CONTAINER_RUNTIME
-  value: {{ .containerRuntime }}
 {{- if eq (include "get.autoUpgrade" .) "true" }}
 - name: AUTO_UPGRADE_ENABLED
   value: "true"
@@ -303,7 +305,8 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{- end -}}
 
 {{- define "get.platform" -}}
-{{-   if (include "is.helm.template.command" .) -}}
+{{- /* use platform value if it's a helm template command or when the provided value is not the default kubernetes */ -}}
+{{-   if or (include "is.helm.template.command" .) (and .Values.platform (ne .Values.platform "kubernetes")) -}}
 {{-     include "validate.platform" .Values -}}
 {{-     lower .Values.platform -}}
 {{-   else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
@@ -327,9 +330,11 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{-       printf "eks.bottlerocket" -}}
 {{-     else if contains "Container-Optimized" $osImage -}}
 {{-       printf "gke.cos" -}}
+{{-     else if contains "Fedora CoreOS" $osImage -}}
+{{-       printf "kubernetes.coreos" -}}
 {{-     else if hasKey $firstNode.metadata.annotations "k3s.io/hostname"  -}}
 {{-       printf "k3s" -}}
-{{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name")  -}}
+{{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name") (hasKey $firstNode.metadata.labels "eks.amazonaws.com/compute-type") -}}
 {{-       printf "eks" -}}
 {{-     else -}}
 {{-       include "validate.platform" .Values -}}
@@ -351,10 +356,10 @@ if registry is not quay do not enable auto upgrade
 {{- end -}}
 
 
-{{/*
+{{- /*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
   if there is no namespace probably we are running template
-*/}}
+*/ -}}
 {{- define "is.helm.template.command" -}}
 {{- $namespace := lookup "v1" "Namespace" "" "" -}}
 {{- if eq (len $namespace) 0 -}}
@@ -382,7 +387,7 @@ true
 {{- /* validate platform is one of the allowed values. 
 takes a context (such as $config or .Values) that has a .platform field */ -}}
 {{- define "validate.platform" -}}
-{{- $allowedPlatforms := list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s" -}}
+{{- $allowedPlatforms := list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s" "kubernetes.coreos" -}}
 {{- if has (.platform | lower) $allowedPlatforms -}}
 {{- else -}}
 {{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: %s)" .platform $allowedPlatforms -}}
@@ -435,4 +440,45 @@ usage:
 {{-     end -}}
 {{-     $configs | toYaml -}}
 {{-   end -}}
+{{- end -}}
+
+{{- define "common.node.affinity.multiarch" -}}
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+              - arm64
+              - amd64
+{{- end -}}
+
+{{- /* virtual node labels, additions should keep the same format.
+usage:
+`{{- $virtualNodesLabels := get (include "get.virtualNodesLabels" . | fromYaml) .platform -}}`
+*/ -}}
+{{- define "get.virtualNodesLabels" -}}
+eks:
+  eks.amazonaws.com/compute-type: "fargate" 
+# example_platform:
+#   exampleLabelKey: "example_label_value"
+{{- end -}}
+
+{{- /* creating the affinity for DaemonSet to not run on virtual nodes
+usage: 
+`{{- $virtualAffinites := (include "daemonset.commonAffinity.labels" . ) | fromYaml -}}`
+*/ -}}
+{{- define "daemonset.commonAffinity.labels" -}}
+{{- $virtualNodesLabels := get (include "get.virtualNodesLabels" . | fromYaml) .platform -}}
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions:
+{{- range $labelKey, $labelValue := $virtualNodesLabels }} 
+        - key: {{$labelKey}}
+          operator: NotIn
+          values:
+            - {{$labelValue}}
+{{- end -}}
 {{- end -}}

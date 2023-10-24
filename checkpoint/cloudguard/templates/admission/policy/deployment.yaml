@@ -19,6 +19,8 @@ spec:
       labels:
 {{ include "common.labels" $config | indent 8 }}
     spec:
+      affinity:
+{{ include "common.node.affinity.multiarch" $config | indent 8 }}
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
       # Main container
