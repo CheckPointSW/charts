@@ -11,7 +11,11 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: {{ $config.Values.podAnnotations.seccomp }}
 spec:
+{{- if or $config.featureConfig.enableFileReputation (or (eq $config.platform "kubernetes.coreos") (eq $config.platform "eks.bottlerocket")) }}
+  hostPID: true
+{{- else }}
   hostPID: false
+{{- end}}
   hostIPC: false
   hostNetwork: false
 {{- if $config.featureConfig.BPF }}
@@ -24,6 +28,16 @@ spec:
   - SYS_PTRACE
   - FOWNER
   - SYS_PACCT
+  - NET_ADMIN
+  - NET_RAW
+{{- if $config.featureConfig.enableFileReputation }}
+  - AUDIT_CONTROL
+  - AUDIT_READ
+  - AUDIT_WRITE
+{{- end }}
+{{- if or (eq "gke.cos" $config.platform) (eq "gke.autopilot" $config.platform) }}
+  - AUDIT_CONTROL
+{{- end}}
 {{- else }}
   privileged: true
   allowPrivilegeEscalation: true
@@ -38,17 +52,37 @@ spec:
 {{- if eq $config.containerRuntime "docker" }}
 {{- if eq $config.platform "tanzu" }}
   - pathPrefix: /var/vcap/sys/run/docker/docker.sock
+    readOnly: true
 {{- else }}
   - pathPrefix: /var/run/docker.sock
-{{- end }}
     readOnly: true
+  - pathPrefix: /var/lib/docker
+    readOnly: true
+{{- end }}
 {{- else if eq $config.containerRuntime "containerd" }}
   - pathPrefix: {{ include "containerd.sock.path" $config }}
     readOnly: true
-{{- else if eq $config.containerRuntime "cri-o" }}
-  - pathPrefix: /run/crio/crio.sock
+  - pathPrefix: /run/containerd/io.containerd.runtime.v2.task
     readOnly: true
+{{- else if eq $config.containerRuntime "cri-o" }}
+  - pathPrefix: /var/run/crio/crio.sock
+    readOnly: true
+  - pathPrefix: /var/lib/containers/storage
+    readOnly: true
+  - pathPrefix: /etc/containers/oci/hooks.d/
 {{- end }}
+{{- if or (eq "gke.cos" $config.platform) (eq "gke.autopilot" $config.platform) }}
+  - pathPrefix: /var/run/dbus/system_bus_socket
+  - pathPrefix: /etc/systemd/system
+{{- else if or (eq $config.platform "kubernetes.coreos") (eq "eks" $config.platform) }}
+  - pathPrefix: /
+{{- end}}
+{{- if $config.featureConfig.BPF }}
+  - pathPrefix: /var/local
+{{- else}}
+  - pathPrefix: /dev
+{{- end }}
+  - pathPrefix: /run/xtables.lock
   - pathPrefix: /boot
     readOnly: true
   - pathPrefix: /lib/modules
