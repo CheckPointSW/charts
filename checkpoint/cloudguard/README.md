@@ -136,7 +136,7 @@ The following table list the configurable parameters of this chart and their def
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `containerRuntime`                                         | Container runtime (docker/containerd/cri-o) overriding auto-detection | ``                                         |
 | `containerRuntimeSocket`                                   | Container runtime socket path overriding auto-detection         | ``                                               |
-| `platform`                                                 | Kubernetes platform (kubernetes/tanzu/openshift/openshift.v3/eks/eks.bottlerocket/gke.cos/gke.autopilot/k3s) overriding auto-detection | `kubernetes`                                |
+| `platform`                                                 | Kubernetes platform (kubernetes/ tanzu/ openshift/ openshift.v3/ eks/ eks.bottlerocket/ gke.cos/ gke.autopilot/ k3s/ kubernetes.coreos) overriding auto-detection | `kubernetes`                                |
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
@@ -152,7 +152,7 @@ The following table list the configurable parameters of this chart and their def
 | `inventory.agent.resources`                                | Resources restriction (e.g. CPU, memory) for Inventory agent    | see defaults.yaml                                             |
 | `inventory.agent.nodeSelector`                             | Node labels for pod assignment for Inventory agent              | see below                                             |
 | `inventory.agent.tolerations`                              | List of node taints to tolerate for Inventory agent             | `[]`                                             |
-| `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | `{}`                                             |
+| `inventory.agent.affinity`                                 | Affinity settings for Inventory agent                           | see below                                             |
 | `inventory.agent.podAnnotations.custom`                    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `inventory.priorityClassName`                              | Specifies custom priorityClassName                              | `system-cluster-critical`                                               |
 | `addons.imageScan.enabled`                                 | Specifies whether the ImageScan addon should be installed      | `false`                                          |
@@ -166,7 +166,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.daemon.resources`                        | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
 | `addons.imageScan.daemon.nodeSelector`                     | Node labels for pod assignment                                  | see below                                             |
 | `addons.imageScan.daemon.tolerations`                      | List of node taints to tolerate                                 | `operator: Exists`                               |
-| `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | `{}`                                             |
+| `addons.imageScan.daemon.affinity`                         | Affinity setting                                                | see below                                             |
 | `addons.imageScan.daemon.podAnnotations.custom`            | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.imageScan.daemon.priorityClassName`                | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.imageScan.daemon.shim.image`                       | Specify image for the shim container                            | `checkpoint/consec-imagescan-shim`               |
@@ -203,7 +203,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.flowLogs.daemon.resources`                         | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
 | `addons.flowLogs.daemon.nodeSelector`                      | Node labels for pod assignment                                  | see below                                             |
 | `addons.flowLogs.daemon.tolerations`                       | List of node taints to tolerate                                 | `operator: Exists`                               |
-| `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | `{}`                                             |
+| `addons.flowLogs.daemon.affinity`                          | Affinity setting                                                | see below |
 | `addons.flowLogs.daemon.podAnnotations.custom`             | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.flowLogs.daemon.priorityClassName`                 | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.flowLogs.daemonConfigurationOverrides`    | Overrides for multiple daemonSets with different configuration values                | see below                                              |
@@ -216,7 +216,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.policy.resources`                 | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
 | `addons.admissionControl.policy.nodeSelector`              | Node labels for pod assignment                                  | see below                                             |
 | `addons.admissionControl.policy.tolerations`               | List of node taints to tolerate                                 | `[]`                                             |
-| `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | `{}`                                             |
+| `addons.admissionControl.policy.affinity`                  | Affinity setting                                                | see below                                             |
 | `addons.admissionControl.policy.podAnnotations.custom`     | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.admissionControl.enforcer.image`                   | Specify image for the agent                                     | `checkpoint/consec-admission-enforcer`           |
 | `addons.admissionControl.enforcer.tag`                     | Specify image tag for the agent                                 | see defaults.yaml                                           |
@@ -226,7 +226,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.admissionControl.enforcer.resources`               | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
 | `addons.admissionControl.enforcer.nodeSelector`            | Node labels for pod assignment                                  | see below                                             |
 | `addons.admissionControl.enforcer.tolerations`             | List of node taints to tolerate                                 | `[]`                                             |
-| `addons.admissionControl.enforcer.affinity`                | Affinity setting                                                | `{}`                                             |
+| `addons.admissionControl.enforcer.affinity`                | Affinity setting                                                | see below                                             |
 | `addons.admissionControl.enforcer.podAnnotations.custom`   | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.enabled`                         | Specifies whether the Runtime Protection addon should be installed | `false`                                          |
 | `addons.runtimeProtection.priorityClassName`               | Specifies custom priorityClassName                              | `system-cluster-critical`                        |
@@ -240,7 +240,7 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.daemon.probe.resources`          | Resources restriction (e.g. CPU, memory)                        | `{}`                                             |
 | `addons.runtimeProtection.daemon.nodeSelector`             | Node labels for pod assignment                                  | see below                  |
 | `addons.runtimeProtection.daemon.tolerations`              | List of node taints to tolerate                                 | `operator: Exists`                               |
-| `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | `{}`                                             |
+| `addons.runtimeProtection.daemon.affinity`                 | Affinity setting                                                | see below
 | `addons.runtimeProtection.daemon.podAnnotations.custom`    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.daemon.priorityClassName`        | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.runtimeProtection.policy.image`                    | Specify image for the agent                                     | `checkpoint/consec-runtime-policy`               |
@@ -250,13 +250,69 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.policy.resources`                | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
 | `addons.runtimeProtection.policy.nodeSelector`             | Node labels for pod assignment                                  | see below                                             |
 | `addons.runtimeProtection.policy.tolerations`              | List of node taints to tolerate                                 | `[]`                                             |
-| `addons.runtimeProtection.policy.affinity`                 | Affinity setting                                                | `{}`                                             |
+| `addons.runtimeProtection.policy.affinity`                 | Affinity setting                                                | see below                                             |
 | `addons.runtimeProtection.policy.podAnnotations.custom`    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.daemonConfigurationOverrides`    | Overrides for multiple daemonSets with different configuration values                | see below                                              |
 
-The default nodeSelector for all agents is:
- - kubernetes.io/os: "linux"
- - kubernetes.io/arch: "amd64"
+The default nodeSelector for Admission Control, Inventory and Runtime Protection policy agents is:
+ ```yaml
+nodeSelector:
+	kubernetes.io/os: linux
+```
+
+The default nodeSelector for other agents is:
+ ```yaml
+nodeSelector:
+	kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
+```
+
+The default node affinity for Admission Control, Inventory and Runtime Protection policy agents (deployment) 
+to support nodes with arm64 and amd64 architectures:
+ ```yaml
+ nodeAffinity:
+   requiredDuringSchedulingIgnoredDuringExecution:
+     nodeSelectorTerms:
+       - matchExpressions:
+           - key: kubernetes.io/arch
+             operator: In
+             values:
+               - arm64
+               - amd64
+ ```
+
+For Admission Control enforcer agent, it also has default inter-pod anti-affinity ensuring the pods are scheduled on different nodes :
+ ```yaml
+ podAntiAffinity:
+   preferredDuringSchedulingIgnoredDuringExecution:
+     - weight: 1
+       podAffinityTerm:
+         labelSelector:
+           matchExpressions:
+             - key: "kubernetes.io/name"
+               operator: In
+               values:
+                 - consec-admission-enforcer
+         topologyKey: "kubernetes.io/hostname"
+```
+
+On EKS, DaemonSets are configured with node affinity that prevents Pods from running on Fargate nodes:
+ 
+ ```yaml
+ addons:
+  imageScan:
+    enabled: true
+    daemon:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions: 
+                - key: eks.amazonaws.com/compute-type
+                  operator: NotIn
+                  values:
+                    - fargate
+ ```
 
 The `daemonConfigurationOverrides` object should have one or more objects with unique names (case insensitive), each object must then have a `nodeSelector` data and any additional overrides, such as resource limits and requests. The values defined in `daemon` object are used as a basis for the overrides.\
 In the following example, there are two configurations: "sizeNormalConfig" and "sizeLargeConfig". The two Configurations use different values of the "size" label on the nodes and have different resource limits.
