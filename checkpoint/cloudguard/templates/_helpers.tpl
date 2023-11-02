@@ -53,7 +53,7 @@
 {{-     if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages }}
 {{-         $tag = printf "%s-debug" .agentConfig.tag }}
 {{-     end }}
-{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne .agentConfig.image "checkpoint/consec-runtime-daemon") -}}
+{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) -}}
 {{-         $tag = regexFind "\\d+.\\d+" $tag }}
 {{-     end -}}
 {{-     $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image $tag }}
