@@ -53,14 +53,12 @@ spec:
           value: {{ include "name.prefix" $config }}
         - name: CLOUDGUARD_REGION
           value: {{ include "dome9.subdomain" $config | default "us" }}
-        - name: CP_RUNTIME
-          value: {{ $config.containerRuntime }}
 {{- if eq $config.containerRuntime "cri-o" }}
 {{- if $config.featureConfig.mountPodman }}
-        - name: CP_USE_PODMAN_EXPORT
+        - name: USE_PODMAN_EXPORT
           value: "both"
 {{- else }}
-        - name: CP_USE_PODMAN_EXPORT
+        - name: USE_PODMAN_EXPORT
           value: "false"
 {{- end }}
 {{- end }}
