@@ -53,7 +53,7 @@
 {{-     if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages }}
 {{-         $tag = printf "%s-debug" .agentConfig.tag }}
 {{-     end }}
-{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne .agentConfig.image "checkpoint/consec-runtime-daemon") -}}
+{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) -}}
 {{-         $tag = regexFind "\\d+.\\d+" $tag }}
 {{-     end -}}
 {{-     $image := printf "%s/%s:%s" .Values.imageRegistry.url .agentConfig.image $tag }}
@@ -67,7 +67,7 @@
 {{-     if or .Values.debugImages .featureConfig.debugImages .agentConfig.debugImages $containerConfig.debugImage }}
 {{-         $tag = printf "%s-debug" $containerConfig.tag }}
 {{-     end }}
-{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne .agentConfig.image "checkpoint/consec-runtime-probe") -}}
+{{-     if and (eq (include "get.autoUpgrade" .) "true") (regexMatch "^\\d+.\\d+.\\d+$" $tag) (ne $containerConfig.image "checkpoint/consec-runtime-probe") (ne $containerConfig.image "checkpoint/consec-runtime-cos-compat") -}}
 {{-         $tag = regexFind "\\d+.\\d+" $tag }}
 {{-     end -}}
 {{-     $image := printf "%s/%s:%s" .Values.imageRegistry.url $containerConfig.image $tag }}
@@ -179,10 +179,8 @@ imagePullSecrets:
       fieldPath: spec.nodeName
 - name: PLATFORM
   value: {{ .platform }}
-{{- if eq (include "get.autoUpgrade" .) "true" }}
 - name: AUTO_UPGRADE_ENABLED
-  value: "true"
-{{- end -}}
+  value: {{ (include "get.autoUpgrade" .) | quote }}
 {{- if .Values.proxy }}
 - name: HTTPS_PROXY
   value: "{{ .Values.proxy }}"
@@ -343,16 +341,50 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{-   end -}}
 {{- end -}}
 
+{{- define "inventory.resource.name" -}}
+    {{- $inventoryConfig := fromYaml (include "inventory.agent.config" .) -}}
+    {{ template "agent.resource.name" $inventoryConfig }}
+{{- end }}
 
 {{/*
-if registry is not quay do not enable auto upgrade
+If the registry is not "quay" do not enable automatic upgrades.
+If a user manually defines a value, that choice takes precedence.
+If a user opts for the default "preserve" option:
+	If there was no prior deployment, automatic upgrades are enabled.
+	If there was a previous deployment, we examine the value that deployment had and apply it.
+	If there was no previous value, automatic upgrades are enabled.
+	note: In the case of Helm templates, we won't have knowledge of the previous value, and unless a value is provided, "autoUpgrade" will default to "true"
  */}}
 {{- define "get.autoUpgrade" -}}
-{{-   if ne .Values.imageRegistry.url "quay.io" -}}
-{{-     printf "false" -}}
-{{-   else -}}
-{{-     printf (.Values.autoUpgrade | toString) -}}
-{{-   end -}}
+{{-     if ne .Values.imageRegistry.url "quay.io" -}}
+{{-         printf "false" -}}
+{{-     else -}}
+{{-         if eq (.Values.autoUpgrade | toString) "true" -}}
+{{-             printf "true" -}}
+{{-         else -}}
+{{-             if eq (.Values.autoUpgrade | toString) "false" -}}
+{{-                 printf "false" -}}
+{{-             else -}}
+{{/*            preserve */}}
+{{-                 $inventoryDeploymentName := trim (include "inventory.resource.name" .) -}}
+{{-                 $inventoryDeployment := lookup "apps/v1" "Deployment" .Release.Namespace $inventoryDeploymentName -}}
+{{-                 if not $inventoryDeployment -}}
+{{-                     printf "true" -}}
+{{-                 else -}}
+{{-                     $isAutoUpgradeEnv := true -}}
+{{-                     $firstContainer := first $inventoryDeployment.spec.template.spec.containers -}}
+{{-                     range $index, $env := $firstContainer.env -}}
+{{-                         if eq $env.name "AUTO_UPGRADE_ENABLED"}}
+{{-                             if eq $env.value "false" -}}
+{{-                                 $isAutoUpgradeEnv = false -}}
+{{-                             end -}}
+{{-                         end -}}
+{{-                     end -}}
+{{-                     printf ($isAutoUpgradeEnv | toString) -}}
+{{-                 end -}}
+{{-             end -}}
+{{-         end -}}
+{{-     end -}}
 {{- end -}}
 
 

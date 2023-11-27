@@ -56,7 +56,7 @@ platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bott
 seccompProfile:
   type: RuntimeDefault
 
-autoUpgrade: false # true or false
+autoUpgrade: preserve # true, false or preserve
 
 daemonSetStrategy:
   rollingUpdate:
@@ -111,7 +111,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.25.0
+      tag: 2.27.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -133,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.25.0
+        tag: 2.27.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -169,7 +169,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.25.0
+      tag: 2.27.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -202,7 +202,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.25.0
+      tag: 2.27.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -309,7 +309,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.9.0
+      tag: 2.10.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -351,7 +351,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 1.8.8
+      tag: 1.11.5
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -373,7 +373,7 @@ addons:
       probe:
         ## Specify image and tag
         image: checkpoint/consec-runtime-probe
-        tag: 0.30.2-cp-5
+        tag: 0.30.2-cp-6
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
