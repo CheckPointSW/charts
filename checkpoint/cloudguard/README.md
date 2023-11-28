@@ -140,7 +140,7 @@ The following table list the configurable parameters of this chart and their def
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
-| `autoUpgrade`                                              | Enable auto-upgrade (true or false). 'major.minor' tags will be set for images rather than 'major.minor.patch'" | `false`    |
+| `autoUpgrade`                                              | Enable auto-upgrade (preserve, true or false). 'major.minor' tags will be set for images rather than 'major.minor.patch'" | `preserve`    |
 | `podAnnotations.custom`                                    | Custom Pod annotations (for all agent Pods)                     | `{}`                                             |
 | `priorityClassName`                                        | Specifies custom priorityClassName                              | ``                                               |
 | `daemonSetStrategy.rollingUpdate.maxUnavailable`           | Maximum unavailable daemonset pods during a rolling update                 | `50%`                                            |
