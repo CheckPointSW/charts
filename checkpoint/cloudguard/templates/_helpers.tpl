@@ -179,8 +179,10 @@ imagePullSecrets:
       fieldPath: spec.nodeName
 - name: PLATFORM
   value: {{ .platform }}
+{{- if ne .platform "gke.autopilot" }}
 - name: AUTO_UPGRADE_ENABLED
   value: {{ (include "get.autoUpgrade" .) | quote }}
+{{- end -}}
 {{- if .Values.proxy }}
 - name: HTTPS_PROXY
   value: "{{ .Values.proxy }}"
@@ -348,6 +350,7 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 
 {{/*
 If the registry is not "quay" do not enable automatic upgrades.
+If platform is gke.autopilot do not enable automatic upgrades.
 If a user manually defines a value, that choice takes precedence.
 If a user opts for the default "preserve" option:
 	If there was no prior deployment, automatic upgrades are enabled.
@@ -359,11 +362,11 @@ If a user opts for the default "preserve" option:
 {{-     if ne .Values.imageRegistry.url "quay.io" -}}
 {{-         printf "false" -}}
 {{-     else -}}
-{{-         if eq (.Values.autoUpgrade | toString) "true" -}}
-{{-             printf "true" -}}
+{{-         if or (eq (.Values.autoUpgrade | toString) "false") (eq .platform "gke.autopilot") -}}
+{{-             printf "false" -}}
 {{-         else -}}
-{{-             if eq (.Values.autoUpgrade | toString) "false" -}}
-{{-                 printf "false" -}}
+{{-             if eq (.Values.autoUpgrade | toString) "true" -}}
+{{-                 printf "true" -}}
 {{-             else -}}
 {{/*            preserve */}}
 {{-                 $inventoryDeploymentName := trim (include "inventory.resource.name" .) -}}
