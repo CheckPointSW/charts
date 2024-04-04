@@ -1,0 +1,21 @@
+{{- $config := fromYaml (include "imagescan.armon.config" .) -}}
+{{- if and $config.featureConfig.enabled $config.agentConfig.enabled -}}
+{{- if (contains "openshift" $config.platform) -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+rules:
+- apiGroups:
+  - security.openshift.io 
+  resourceNames:
+  - {{ template "agent.resource.name" $config }}
+  resources:
+  - securitycontextconstraints 
+  verbs: 
+  - use
+{{- end -}}
+{{- end -}}
