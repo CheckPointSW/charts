@@ -1,0 +1,31 @@
+{{- $config := fromYaml (include "imagescan.armon.config" .) -}}
+{{- if and $config.featureConfig.enabled $config.agentConfig.enabled -}}
+{{- if (contains "openshift" $config.platform) -}}
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: {{ template "agent.resource.name" $config }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "common.labels.with.chart" $config | indent 4 }}
+allowPrivilegedContainer: false
+allowHostDirVolumePlugin: true
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+fsGroup:
+  type: RunAsAny
+supplementalGroups:
+  type: RunAsAny
+users:
+    - system:serviceaccount
+allowedCapabilities:
+    - SYS_RESOURCE  
+    - SYS_ADMIN  
+    - IPC_LOCK 
+volumes:
+    - hostPath
+    - secret
+{{- end -}}
+{{- end -}}
