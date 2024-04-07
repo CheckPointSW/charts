@@ -107,6 +107,7 @@ addons:
     enabled: false
     mountPodman : false
     priorityClassName: "system-cluster-critical"
+
     daemon:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
@@ -227,6 +228,42 @@ addons:
         kubernetes.io/arch: amd64
       tolerations: [ ]
       affinity: { }
+      podAnnotations:
+        custom: {}
+
+    # Image Access Runtime Monitor
+    armon:
+      enabled: false
+      priorityClassName: "system-node-critical"
+      ## Specify image and tag
+      image: checkpoint/consec-imagescan-armon
+      tag: 0.1.2
+
+      ## Specify existing service account name ("" to create)
+      serviceAccountName: ""
+
+
+      ## Extra environment variables passed to the container
+      env: []
+
+      ## Configure resource requests and limits
+      ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+      resources:
+        requests:
+          cpu: 100m
+          memory: 500Mi
+        limits:
+          cpu: 100m
+          memory: 500Mi
+      
+      ## Configuration options for nodeSelector, tolerations and affinity for pod
+      ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.io/arch: amd64
+      tolerations:
+      - operator: Exists
+      affinity: {}
       podAnnotations:
         custom: {}
 
@@ -351,7 +388,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 1.14.0
+      tag: 1.16.2
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""

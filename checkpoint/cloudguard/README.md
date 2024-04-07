@@ -192,6 +192,17 @@ The following table list the configurable parameters of this chart and their def
 | `addons.imageScan.list.tolerations`                        | List of node taints to tolerate                                 | `[]`                                             |
 | `addons.imageScan.list.affinity`                           | Affinity setting                                                | `{}`                                             |
 | `addons.imageScan.list.podAnnotations.custom`              | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
+| `addons.imageScan.armon.enabled`               | Specifies whether the Image Access Runtime Monitor addon should be installed        | `false`                                          |
+| `addons.imageScan.armon.image`                 | Specify image for the agent                                     | `checkpoint/consec-imagescan-armon`             |
+| `addons.imageScan.armon.tag`                   | Specify image tag for the agent                                 | see defaults.yaml                                           |
+| `addons.imageScan.armon.serviceAccountName`    | Specify custom Service Account for the agent                    | ``                                               |
+| `addons.imageScan.armon.env`                   | Additional environmental variables for the agent                | `{}`                                             |
+| `addons.imageScan.armon.resources`             | Resources restriction (e.g. CPU, memory)                        | see defaults.yaml                                             |
+| `addons.imageScan.armon.nodeSelector`          | Node labels for pod assignment                                  | see below                                             |
+| `addons.imageScan.armon.tolerations`           | List of node taints to tolerate                                 | `operator: Exists`                               |
+| `addons.imageScan.armon.affinity`              | Affinity setting                                                | see below                                             |
+| `addons.imageScan.armon.podAnnotations.custom` | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
+| `addons.imageScan.armon.priorityClassName`     | Specifies custom priorityClassName (for Pods of this daemonset) | `system-node-critical`                           |
 | `addons.imageScan.daemonConfigurationOverrides`            | Overrides for multiple daemonSets with different configuration values                | see below                                              |
 | `addons.flowLogs.enabled`                                  | Specifies whether the Flow Logs addon should be installed       | `false`                                          |
 | `addons.flowLogs.priorityClassName`                        | Specifies custom priorityClassName                              | `system-cluster-critical`                        |
