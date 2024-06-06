@@ -51,7 +51,7 @@ podAnnotations:
 proxy: {}
 
 containerRuntime:
-platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bottlerocket, gke.cos, gke.autopilot or k3s
+platform: kubernetes # kubernetes, openshift, openshift.v3, tanzu, eks, eks.bottlerocket, gke.cos, gke.autopilot, k3s or rke2
 
 seccompProfile:
   type: RuntimeDefault
@@ -112,7 +112,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.29.0
+      tag: 2.30.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -134,7 +134,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.29.0
+        tag: 2.30.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -170,7 +170,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.29.0
+      tag: 2.30.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -203,7 +203,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.29.0
+      tag: 2.30.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -346,7 +346,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.11.0
+      tag: 2.12.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""

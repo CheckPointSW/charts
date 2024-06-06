@@ -136,7 +136,7 @@ The following table list the configurable parameters of this chart and their def
 | `proxy`                                                    | Proxy settings (e.g. http://my-proxy.com:8080)                  | `{}`                                             |
 | `containerRuntime`                                         | Container runtime (docker/containerd/cri-o) overriding auto-detection | ``                                         |
 | `containerRuntimeSocket`                                   | Container runtime socket path overriding auto-detection         | ``                                               |
-| `platform`                                                 | Kubernetes platform (kubernetes/ tanzu/ openshift/ openshift.v3/ eks/ eks.bottlerocket/ gke.cos/ gke.autopilot/ k3s/ kubernetes.coreos) overriding auto-detection | `kubernetes`                                |
+| `platform`                                                 | Kubernetes platform (kubernetes/ tanzu/ openshift/ openshift.v3/ eks/ eks.bottlerocket/ gke.cos/ gke.autopilot/ k3s/ rke2/ kubernetes.coreos) overriding auto-detection | `kubernetes`                                |
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
 | `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
