@@ -62,7 +62,7 @@ spec:
 {{- else if eq $config.containerRuntime "containerd" }}
   - pathPrefix: {{ include "containerd.sock.path" $config }}
     readOnly: true
-  - pathPrefix: /run/containerd/io.containerd.runtime.v2.task
+  - pathPrefix: {{ include "containerd.runtime.v2.task" $config }}
     readOnly: true
 {{- else if eq $config.containerRuntime "cri-o" }}
   - pathPrefix: /var/run/crio/crio.sock

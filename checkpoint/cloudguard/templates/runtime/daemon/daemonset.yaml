@@ -31,13 +31,15 @@ spec:
       {{- end }}
       initContainers:
       {{- if and $config.featureConfig.enableFileReputation (eq $config.containerRuntime "cri-o") }}
-      # cri-o folder which contains containers root fs is 'private' mount.
+      # cri-o folder which contains containers root fs can be mounted privately.
+      # it depends on variable skip_mount_home in /etc/containers/storage.conf [storage.options.overlay]
+      # if skip_mount_home==false, private mount will be created.
       # So nested/sub mounts will not be propagated to WorkloadSecurity container.
       # The following container changes mount type to 'shared' on host in a hacky way:
       # Literally container escapes its mount's isolation by changing mount namespace
       # to 'init' process namespace, then changes the type of the required mount to 'shared'
       - name: criofsfix
-        image: docker.io/library/alpine:3.16
+        image: docker.io/library/busybox:1
         imagePullPolicy: IfNotPresent
         command: [ "/bin/sh", "-c", "--" ]
         securityContext:
@@ -45,7 +47,13 @@ spec:
           {{- if (eq $config.platform "kubernetes.coreos") }}
           runAsUser: 0
           {{- end }}
-        args: [ "nsenter --mount=/proc/1/ns/mnt -- mount --make-shared /var/lib/containers/storage/overlay" ]
+        args:
+        - |
+          # check that /var/lib/containers/storage/overlay is a mount point
+          if [ $(nsenter --mount=/proc/1/ns/mnt -- grep -Fc ' /var/lib/containers/storage/overlay ' /proc/self/mountinfo) -gt 0 ];
+          then
+            nsenter --mount=/proc/1/ns/mnt -- mount --make-shared /var/lib/containers/storage/overlay;
+          fi
       {{- end }}
       # probe (sysdig)
       - {{ $containerConfig := merge $config (dict "containerName" "probe") -}}
@@ -323,7 +331,7 @@ spec:
           type: Socket
       - name: runcontainerdfs-vol
         hostPath:
-          path: /run/containerd/io.containerd.runtime.v2.task # TODO deal with other flavors like bottlerocket
+          path: {{ include "containerd.runtime.v2.task" $config }}
       {{- end }}
       {{- if eq $config.containerRuntime "cri-o" }}
       - name: crio-sock
