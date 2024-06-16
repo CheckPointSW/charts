@@ -76,13 +76,16 @@
 
 {{- /* Labels commonly used in our k8s resources */ -}}
 {{- define "common.labels" -}}
-app.kubernetes.io/name: {{ template "agent.resource.name" . }}
+app.kubernetes.io/name: {{ include "agent.resource.name" . }}
 app.kubernetes.io/instance: {{ include "name.prefix" . }}
 {{- end -}}
 
 {{- /* Labels commonly used in our "pod group" resources */ -}}
 {{- define "common.labels.with.chart" -}}
 helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+app.kubernetes.io/managed-by: {{ $.Release.Service }}
+app.kubernetes.io/version: {{ $.Chart.appVersion }}
+app.created.by.template: {{ (include "is.helm.template.command" .) | quote }}
 {{ template "common.labels" . }}
 {{- end -}}
 
@@ -258,13 +261,13 @@ key: {{ $cert.Key | b64enc }}
     {{- printf "{\"auths\":{\"%s\":{\"auth\":\"%s\"}}}" .Values.imageRegistry.url (printf "%s:%s" $user $pass | b64enc) | b64enc -}}
 {{- end -}}
 
-{{- /* validate containerRuntime is one of the allowed values. 
+{{- /* validate containerRuntime is one of the supported values. 
 takes a context (such as $config, .Values or (dict "containerRuntime" $containerRuntime)) that has a .containerRuntime field */ -}}
 {{- define "validate.container.runtime" -}}
-{{- $allowedRuntimes := list "docker" "containerd" "cri-o" -}}
-{{- if has (.containerRuntime | lower) $allowedRuntimes -}}
+{{- $supportedRuntimes := (include "supported.containerRuntimes" .) | splitList " " -}}
+{{- if has (.containerRuntime | lower) $supportedRuntimes -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: %s)" .containerRuntime $allowedRuntimes -}}
+{{- $err := printf "\n\nERROR: Invalid containerRuntime: %s (should be one of: %s)" .containerRuntime $supportedRuntimes -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -286,27 +289,40 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{- end -}}
 
 
-{{- define "get.container.runtime" -}}
-{{- if .Values.containerRuntime -}}
-{{- include "validate.container.runtime" .Values -}}
-{{ .Values.containerRuntime | lower }}
-{{- else -}}
-{{- $nodes := lookup "v1" "Node" "" "" -}}
-{{- if ne (len $nodes) 0 -}}
-{{/* examples for runtime version: docker://19.3.3, containerd://1.3.3, cri-o://1.20.3 */}}
-{{- $containerRuntimeVersion := (first $nodes.items).status.nodeInfo.containerRuntimeVersion -}}
-{{- $containerRuntime := first (regexSplit ":" $containerRuntimeVersion -1) -}}
-{{- include "validate.container.runtime" (dict "containerRuntime" $containerRuntime) -}}
-{{ $containerRuntime | lower }}
-{{- else -}}
-{{- fail "\n\nERROR: No nodes found, cannot identify container runtime. Use '--set containerRuntime=docker' or '--set containerRuntime=containerd' or '--set containerRuntime=cri-o'" -}}
-{{- end -}}
-{{- end -}}
+{{- /* get the first node from the cluster */ -}}
+{{- define "get.first.node" -}}
+{{-   $nodes := lookup "v1" "Node" "" "" -}}
+{{-   if empty $nodes -}}
+{{-   else if eq (len $nodes.items) 0 -}}
+{{-   else -}}
+{{-     first $nodes.items | toYaml -}}
+{{-   end -}}
 {{- end -}}
 
+
+{{- define "get.container.runtime" -}}
+{{-   if .Values.containerRuntime -}}
+{{-     include "validate.container.runtime" .Values -}}
+{{      .Values.containerRuntime | lower }}
+{{-   else -}}
+{{-     $noRuntimeErr := "\n\nERROR: No nodes found, cannot identify container runtime. Use '--set containerRuntime=docker' or '--set containerRuntime=containerd' or '--set containerRuntime=cri-o'" -}}
+{{-     $firstNode :=  include "get.first.node" . | fromYaml -}}
+{{-     if empty $firstNode -}}
+{{-       fail $noRuntimeErr -}}
+{{-     end -}}
+{{/*    examples for runtime version: docker://19.3.3, containerd://1.3.3, cri-o://1.20.3 */}}
+{{-     $containerRuntimeVersion := $firstNode.status.nodeInfo.containerRuntimeVersion -}}
+{{-     $containerRuntime := first (regexSplit ":" $containerRuntimeVersion -1) -}}
+{{-     include "validate.container.runtime" (dict "containerRuntime" $containerRuntime) -}}
+{{ $containerRuntime | lower }}
+{{-   end -}}
+{{- end -}}
+
+
+{{- /* get platform value, if not provided, try to infer it from the first node */ -}}
 {{- define "get.platform" -}}
 {{- /* use platform value if it's a helm template command or when the provided value is not the default kubernetes */ -}}
-{{-   if or (include "is.helm.template.command" .) (and .Values.platform (ne .Values.platform "kubernetes")) -}}
+{{-   if or (eq (include "is.helm.template.command" .) "true") (and .Values.platform (ne .Values.platform "kubernetes")) -}}
 {{-     include "validate.platform" .Values -}}
 {{-     lower .Values.platform -}}
 {{-   else if has "config.openshift.io/v1" .Capabilities.APIVersions -}}
@@ -318,14 +334,18 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{/*   else if has "auto.gke.io/v1" .Capabilities.APIVersions */}}
 {{/*     printf "gke.autopilot" */}}
 {{-   else -}}
-{{-     $nodes := lookup "v1" "Node" "" "" -}}
+{{-     $supportedPlatforms := (include "supported.platforms" .) | splitList " " -}}
+{{-     $noPlatformErr := printf "\n\nERROR: No nodes found, cannot identify platform. Append '--set platform=<platform>', platform should be one of %s" $supportedPlatforms -}}
+{{-     $firstNode :=  include "get.first.node" . | fromYaml -}}
+{{-     if empty $firstNode -}}
+{{-       fail $noPlatformErr -}}
+{{-     end -}}
+{{-     $osImage := $firstNode.status.nodeInfo.osImage -}}
 {{/*
         nodeInfo.osImage example values:
         - "Bottlerocket OS 1.7.2 (aws-k8s-1.21)"
         - "Container-Optimized OS from Google"
 */}}
-{{-     $firstNode :=  (first $nodes.items) -}}
-{{-     $osImage := $firstNode.status.nodeInfo.osImage -}}
 {{-     if contains "Bottlerocket" $osImage -}}
 {{-       printf "eks.bottlerocket" -}}
 {{-     else if contains "Container-Optimized" $osImage -}}
@@ -334,6 +354,8 @@ takes a context (such as $config, .Values or (dict "containerRuntime" $container
 {{-       printf "kubernetes.coreos" -}}
 {{-     else if hasKey $firstNode.metadata.annotations "k3s.io/hostname"  -}}
 {{-       printf "k3s" -}}
+{{-     else if hasKey $firstNode.metadata.annotations "rke2.io/hostname"  -}}
+{{-       printf "rke2" -}}
 {{-     else if or (hasKey $firstNode.metadata.labels "eks.amazonaws.com/nodegroup") (hasKey $firstNode.metadata.labels "alpha.eksctl.io/nodegroup-name") (hasKey $firstNode.metadata.labels "eks.amazonaws.com/compute-type") -}}
 {{-       printf "eks" -}}
 {{-     else -}}
@@ -390,16 +412,19 @@ If a user opts for the default "preserve" option:
 {{-     end -}}
 {{- end -}}
 
-
 {{- /*
   use to know if we run from template (which mean wo have no connection to the cluster and cannot check Capabilities/nodes etc.)
   if there is no namespace probably we are running template
+  returns string value "true" or "false"
+  usage:
+  `{{- if eq (include "is.helm.template.command") "true" -}}`
 */ -}}
 {{- define "is.helm.template.command" -}}
+{{- if not (hasKey .Values "isHelmTemplateCache") -}}
 {{- $namespace := lookup "v1" "Namespace" "" "" -}}
-{{- if eq (len $namespace) 0 -}}
-true
+{{- $_ := set .Values "isHelmTemplateCache" (eq (len $namespace) 0) -}}
 {{- end -}}
+{{- .Values.isHelmTemplateCache | toYaml -}}
 {{- end -}}
 
 {{- define "containerd.sock.path" -}}
@@ -412,20 +437,28 @@ true
 {{      printf (.Values.containerRuntimeSocket | toString) }}
 {{-   else if eq .platform "eks.bottlerocket" -}}
 {{-     printf "/run/dockershim.sock" -}}
-{{-   else if eq .platform "k3s" -}}
+{{-   else if has .platform (list "k3s" "rke2") -}}
 {{-     printf "/run/k3s/containerd/containerd.sock" -}}
 {{-   else -}}
 {{-     printf "/run/containerd/containerd.sock" -}}
 {{-   end -}}
 {{- end -}}
 
-{{- /* validate platform is one of the allowed values. 
+{{- define "containerd.runtime.v2.task" -}}
+{{-   if has .platform (list "k3s" "rke2") -}}
+{{-     printf "/run/k3s/containerd/io.containerd.runtime.v2.task" -}}
+{{-   else -}}
+{{-     printf "/run/containerd/io.containerd.runtime.v2.task" -}}
+{{-   end -}}
+{{- end -}}
+
+{{- /* validate platform is one of the supported values. 
 takes a context (such as $config or .Values) that has a .platform field */ -}}
 {{- define "validate.platform" -}}
-{{- $allowedPlatforms := list "kubernetes" "tanzu" "openshift" "openshift.v3" "eks" "eks.bottlerocket" "gke.cos" "gke.autopilot" "k3s" "kubernetes.coreos" -}}
-{{- if has (.platform | lower) $allowedPlatforms -}}
+{{- $supportedPlatforms := (include "supported.platforms" .) | splitList " " -}}
+{{- if has (.platform | lower) $supportedPlatforms -}}
 {{- else -}}
-{{- $err := printf "\n\nERROR: Invalid platform: %s (should be one of: %s)" .platform $allowedPlatforms -}}
+{{- $err := printf "\n\nERROR: Invalid platform: %s, should be one of: %s" .platform $supportedPlatforms -}}
 {{- fail $err -}}
 {{- end -}}
 {{- end -}}
@@ -516,4 +549,21 @@ nodeAffinity:
           values:
             - {{$labelValue}}
 {{- end -}}
+{{- end -}}
+
+
+{{- /* list of supported platforms
+usage: 
+`{{- $supportedPlatforms := (include "supported.platforms" .) | splitList " " -}}`
+*/ -}}
+{{- define "supported.platforms" -}}
+kubernetes kubernetes.coreos tanzu openshift openshift.v3 eks eks.bottlerocket gke.cos gke.autopilot k3s rke2
+{{- end -}}
+
+{{- /* list of supported containter runtimes
+usage: 
+`{{- $supportedRuntimes := (include "supported.containerRuntimes" .) | splitList " " -}}`
+*/ -}}
+{{- define "supported.containerRuntimes" -}}
+docker containerd cri-o
 {{- end -}}
