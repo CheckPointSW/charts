@@ -237,7 +237,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-armon
-      tag: 0.1.2
+      tag: 0.6.1
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -388,7 +388,7 @@ addons:
       ## Main container settings
       ## Specify image and tag
       image: checkpoint/consec-runtime-daemon
-      tag: 1.16.2
+      tag: 1.16.3
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
