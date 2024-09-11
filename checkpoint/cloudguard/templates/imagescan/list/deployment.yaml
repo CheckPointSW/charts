@@ -13,7 +13,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-{{ include "common.labels" $config | indent 6 }}
+{{ include "common.selector.labels" $config | indent 6 }}
       imagescan-agent-type: list
   replicas: 1
   template:
@@ -23,9 +23,11 @@ spec:
         # adding it so workload will be restarted to be updated with certificates that were re-generated
         timestamp: {{ now | quote }}
       labels:
-{{ include "common.labels" $config | indent 8 }}
+{{ include "common.labels.with.chart" $config | indent 8 }}
         imagescan-agent-type: list
     spec:
+      affinity:
+{{ include "common.node.affinity.multiarch" $config | indent 8 }}
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
       # Main container

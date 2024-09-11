@@ -13,5 +13,5 @@ spec:
       port: 443
       targetPort: 8443
   selector:
-{{ include "common.labels" $config | indent 4 }}
+{{ include "common.selector.labels" $config | indent 4 }}
 {{ end }}

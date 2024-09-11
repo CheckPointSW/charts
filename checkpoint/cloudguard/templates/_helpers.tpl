@@ -74,8 +74,10 @@
 {{-     default $image $containerConfig.fullImage }}
 {{- end -}}
 
-{{- /* Labels commonly used in our k8s resources */ -}}
-{{- define "common.labels" -}}
+{{- /* Labels commonly used in our selectors - don't use anywhere else
+usage: `{{- include "common.selector.labels" $config -}}`
+*/ -}}
+{{- define "common.selector.labels" -}}
 app.kubernetes.io/name: {{ include "agent.resource.name" . }}
 app.kubernetes.io/instance: {{ include "name.prefix" . }}
 {{- end -}}
@@ -86,11 +88,13 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.name .Chart.version | replace "+" "_" | 
 app.kubernetes.io/managed-by: {{ $.Release.Service }}
 app.kubernetes.io/version: {{ $.Chart.appVersion }}
 app.created.by.template: {{ (include "is.helm.template.command" .) | quote }}
-{{ template "common.labels" . }}
+{{ include "common.selector.labels" . }}
 {{- end -}}
 
 {{- /* Pod annotations commonly used in agents */ -}}
 {{- define "common.pod.annotations" -}}
+{{- /* workloads would restart upon some configurations change */ -}}
+{{- include "annotations.sha256" . -}}
 {{- /* Openshift does not allow seccomp - So we don't add seccomp in openshift case */ -}}
 {{- /* From k8s 1.19 and up we use the seccomp in securityContext so no need for it here, in case of template we don't know the version so we fall back to annotation */ -}}
 {{- if and (not (contains "openshift" .platform)) (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version) }}
@@ -566,4 +570,19 @@ usage:
 */ -}}
 {{- define "supported.containerRuntimes" -}}
 docker containerd cri-o
+{{- end -}}
+
+{{- /* value for annotations to change so resources are triggered again
+usage: 
+{{- include "annotations.sha256" $config -}}`
+*/ -}}
+{{- define "annotations.sha256" -}}
+{{- if not (hasKey .Values "sha256annotations") -}}
+{{- $sha256AnnotationsDict := dict -}}
+{{- $_ := set $sha256AnnotationsDict "checksum/config" (include  (print .Template.BasePath "/cg-config.yaml") .  | sha256sum | trunc 63) -}}
+{{- $_ := set $sha256AnnotationsDict "checksum/cgsecret" (include  (print .Template.BasePath "/cg-creds-secret.yaml") .  | sha256sum | trunc 63) -}}
+{{- $_ := set $sha256AnnotationsDict "checksum/regsecret" (include  (print .Template.BasePath "/registry-creds-secret.yaml") .  | sha256sum | trunc 63) -}}
+{{- $_ := set .Values "sha256annotations" $sha256AnnotationsDict -}}
+{{- end -}}
+{{- .Values.sha256annotations | toYaml -}}
 {{- end -}}
