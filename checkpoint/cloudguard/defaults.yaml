@@ -69,7 +69,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.14.0
+    tag: 1.15.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -112,7 +112,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.30.0
+      tag: 2.36.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -134,7 +134,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.30.0
+        tag: 2.36.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -159,7 +159,6 @@ addons:
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
         kubernetes.io/os: linux
-        kubernetes.io/arch: amd64
       tolerations:
       - operator: Exists
       affinity: {}
@@ -170,7 +169,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.30.0
+      tag: 2.36.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -194,7 +193,6 @@ addons:
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
         kubernetes.io/os: linux
-        kubernetes.io/arch: amd64
       tolerations: []
       affinity: {}
       podAnnotations:
@@ -203,7 +201,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.30.0
+      tag: 2.36.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -225,7 +223,6 @@ addons:
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
         kubernetes.io/os: linux
-        kubernetes.io/arch: amd64
       tolerations: [ ]
       affinity: { }
       podAnnotations:
@@ -260,7 +257,6 @@ addons:
       ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
       nodeSelector:
         kubernetes.io/os: linux
-        kubernetes.io/arch: amd64
       tolerations:
       - operator: Exists
       affinity: {}
@@ -276,7 +272,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-flowlogs-daemon
-      tag: 0.14.0
+      tag: 0.15.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -316,7 +312,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.8.0
+      tag: 1.9.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -346,7 +342,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.12.0
+      tag: 2.13.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -452,7 +448,7 @@ addons:
 
       ## Specify custom image ("" to use default)
       image: checkpoint/consec-runtime-policy
-      tag: 1.8.0
+      tag: 1.9.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""

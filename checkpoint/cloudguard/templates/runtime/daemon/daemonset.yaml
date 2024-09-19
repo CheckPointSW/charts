@@ -14,7 +14,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-{{ include "common.labels" $config | indent 6 }}
+{{ include "common.selector.labels" $config | indent 6 }}
 {{ include "daemonset.updateStrategy" $config | indent 2}}
   template:
     metadata:
@@ -22,7 +22,7 @@ spec:
 {{ include "common.pod.annotations" $config | indent 8 }}
         container.apparmor.security.beta.kubernetes.io/daemon: unconfined
       labels:
-{{ include "common.labels" $config | indent 8 }}
+{{ include "common.labels.with.chart" $config | indent 8 }}
     spec:
 {{ include "common.pod.properties" $config | indent 6 }}
       hostNetwork: true  # needed for DNS request listener

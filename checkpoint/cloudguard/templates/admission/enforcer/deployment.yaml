@@ -13,7 +13,7 @@ spec:
   replicas: {{ $config.agentConfig.replicaCount }}
   selector:
     matchLabels:
-{{ include "common.labels" $config | indent 6 }}
+{{ include "common.selector.labels" $config | indent 6 }}
   template:
     metadata:
       annotations:
@@ -21,7 +21,7 @@ spec:
         # adding it so workload will be restarted to be updated with a certificate that was re-generated
         timestamp: {{ now | quote }}
       labels:
-{{ include "common.labels" $config | indent 8 }}
+{{ include "common.labels.with.chart" $config | indent 8 }}
     spec:
       # the affinity definition should be BEFORE include "common.pod.properties" .since in case the
       #user will add his own "affinity" we want to take his definition
