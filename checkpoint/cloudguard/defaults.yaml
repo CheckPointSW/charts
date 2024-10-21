@@ -112,7 +112,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.36.0
+      tag: 2.37.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -134,7 +134,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.36.0
+        tag: 2.37.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -169,7 +169,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.36.0
+      tag: 2.37.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -201,7 +201,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.36.0
+      tag: 2.37.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
