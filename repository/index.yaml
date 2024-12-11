@@ -2,8 +2,50 @@ apiVersion: v1
 entries:
   cloudguard:
   - apiVersion: v2
+    appVersion: 2.34.0-0
+    created: "2024-12-11T20:42:18.575590484Z"
+    description: A Helm chart for Check Point CloudGuard Workload Security
+    digest: ad9253999b3e98fd67dcceaef947454e464f5021980975b807fabba27c9c4fbe
+    home: https://portal.checkpoint.com
+    icon: https://www.checkpoint.com/wp-content/uploads/icon-cloudguard-nav.png
+    keywords:
+    - check point
+    - cloudguard
+    - workload security
+    - inventory
+    - posture management
+    - vulnerability assessment
+    - image assurance
+    - flow logs
+    - threat intelligence
+    - admission control
+    - runtime protection
+    - registry scan
+    - acr
+    - ecr
+    - gcr
+    - gar
+    - harbor
+    - jfrog artifactory
+    - sonatype nexus
+    - ghcr
+    - github container registry
+    - ecs
+    - tanzu
+    - k3s
+    - rke2
+    - openshift
+    - eks
+    - aks
+    - gke
+    - autopilot
+    name: cloudguard
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.34.0-0.tgz
+    version: 2.34.0-0
+  - apiVersion: v2
     appVersion: 2.33.1
-    created: "2024-11-13T09:10:55.689634706Z"
+    created: "2024-12-11T20:42:18.5733969Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 9c393eb806fe247e1d6aa9cfaf93f7e486d629ab635291904a64823a7474d9b0
     home: https://portal.checkpoint.com
@@ -41,11 +83,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.33.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.33.1.tgz
     version: 2.33.1
   - apiVersion: v2
     appVersion: 2.33.0
-    created: "2024-11-13T09:10:55.687953461Z"
+    created: "2024-12-11T20:42:18.571170655Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 422e888127d000b2a3945550328dbd211667cad601e09477fa5cf24c64caba94
     home: https://portal.checkpoint.com
@@ -83,11 +125,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.33.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.33.0.tgz
     version: 2.33.0
   - apiVersion: v2
     appVersion: 2.32.0
-    created: "2024-11-13T09:10:55.686247221Z"
+    created: "2024-12-11T20:42:18.568890059Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0faf719407dfc418b7a52ac035ab17602361e6fbefa7a38abdababfd1b5b4bc4
     home: https://portal.checkpoint.com
@@ -125,11 +167,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.32.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.32.0.tgz
     version: 2.32.0
   - apiVersion: v2
     appVersion: 2.31.0
-    created: "2024-11-13T09:10:55.684544577Z"
+    created: "2024-12-11T20:42:18.566274111Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 1401e3f88c3e58a7b61f79490a13b7fcf3ee368c8db00129e980397a78af3c99
     home: https://portal.checkpoint.com
@@ -167,11 +209,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.31.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.31.0.tgz
     version: 2.31.0
   - apiVersion: v2
     appVersion: 2.30.0
-    created: "2024-11-13T09:10:55.682824541Z"
+    created: "2024-12-11T20:42:18.564531134Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 16c65b6484f8aad51a2065ef23ed5c9392e4f913943cc701f2285c00b8033483
     home: https://portal.checkpoint.com
@@ -209,11 +251,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.30.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.30.0.tgz
     version: 2.30.0
   - apiVersion: v2
     appVersion: 2.30.0-rp.0
-    created: "2024-11-13T09:10:55.681093083Z"
+    created: "2024-12-11T20:42:18.562752371Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: c0360db29c8ca74cce6bc6bae2baa39b13e7472440127da185f29b483ca18cad
     home: https://portal.checkpoint.com
@@ -251,11 +293,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.30.0-rp.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.30.0-rp.0.tgz
     version: 2.30.0-rp.0
   - apiVersion: v2
     appVersion: 2.29.0
-    created: "2024-11-13T09:10:55.669808854Z"
+    created: "2024-12-11T20:42:18.552349791Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: e9607e5835ff4cdca93b5a2a2dd5b55d3040270536f757f6a8f58f7c46505c28
     home: https://portal.checkpoint.com
@@ -292,11 +334,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.29.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.29.0.tgz
     version: 2.29.0
   - apiVersion: v2
     appVersion: 2.29.0-rp.1
-    created: "2024-11-13T09:10:55.666494325Z"
+    created: "2024-12-11T20:42:18.550581076Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 60f18702354ba0b61d375b816b8f02747cf43ecfa3ec45bebdd8e8e78085a3d9
     home: https://portal.checkpoint.com
@@ -333,11 +375,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.29.0-rp.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.29.0-rp.1.tgz
     version: 2.29.0-rp.1
   - apiVersion: v2
     appVersion: 2.28.0
-    created: "2024-11-13T09:10:55.6649685Z"
+    created: "2024-12-11T20:42:18.548740929Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: d2e5ac2a321c7ab0ce1a2a10f0ea277a2d36aefcb24a52ef82bf00672e56e9f8
     home: https://portal.checkpoint.com
@@ -374,11 +416,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.28.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.28.0.tgz
     version: 2.28.0
   - apiVersion: v2
     appVersion: 2.27.1
-    created: "2024-11-13T09:10:55.663528775Z"
+    created: "2024-12-11T20:42:18.546986921Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: cadce80cf1b286df2e584bdb8bd33ab592f8292c16d9a9a44457339cdf6c6cd6
     home: https://portal.checkpoint.com
@@ -413,11 +455,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.27.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.27.1.tgz
     version: 2.27.1
   - apiVersion: v2
     appVersion: 2.27.0
-    created: "2024-11-13T09:10:55.662108615Z"
+    created: "2024-12-11T20:42:18.545227323Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 67eb92e2a8b4d7df1d9cba289395a5d8609d00226f5ac521e546cce49bf2b57a
     home: https://portal.checkpoint.com
@@ -452,11 +494,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.27.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.27.0.tgz
     version: 2.27.0
   - apiVersion: v2
     appVersion: 2.26.0
-    created: "2024-11-13T09:10:55.66064732Z"
+    created: "2024-12-11T20:42:18.542582551Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 40bb805906a9afd948bd867eb62254a243df3d1d69aa46cbb60dc8234e2a770d
     home: https://portal.checkpoint.com
@@ -491,11 +533,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.26.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.26.0.tgz
     version: 2.26.0
   - apiVersion: v2
     appVersion: 2.25.0
-    created: "2024-11-13T09:10:55.659152903Z"
+    created: "2024-12-11T20:42:18.541037291Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 4a01d5f08a2c32b7b08116f9dd0a2fc3719f2fe63048d0bd79442425b01ecd64
     home: https://portal.checkpoint.com
@@ -530,11 +572,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.25.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.25.0.tgz
     version: 2.25.0
   - apiVersion: v2
     appVersion: 2.24.3
-    created: "2024-11-13T09:10:55.656468545Z"
+    created: "2024-12-11T20:42:18.539464461Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: c0017cffd7a43f920636d6c59dffc48b2c075f824dc8b2f124d9cf95380e562c
     home: https://portal.checkpoint.com
@@ -569,11 +611,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.24.3.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.24.3.tgz
     version: 2.24.3
   - apiVersion: v2
     appVersion: 2.23.0
-    created: "2024-11-13T09:10:55.654772603Z"
+    created: "2024-12-11T20:42:18.537895847Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a206fa0dcd03857dc9806d0991a325989e03356f75c34d76891beae280c847ec
     home: https://portal.checkpoint.com
@@ -607,11 +649,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.23.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.23.0.tgz
     version: 2.23.0
   - apiVersion: v2
     appVersion: 2.22.0
-    created: "2024-11-13T09:10:55.653274048Z"
+    created: "2024-12-11T20:42:18.536059917Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0aab618cb7466eeca9a13bd5d27253fa466c91eadc71689833a20480286aa5b8
     home: https://portal.checkpoint.com
@@ -645,11 +687,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.22.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.22.0.tgz
     version: 2.22.0
   - apiVersion: v2
     appVersion: 2.21.0
-    created: "2024-11-13T09:10:55.651836056Z"
+    created: "2024-12-11T20:42:18.534134131Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 9a3e7e51abfc946d26719dc0a51b2d25cb76ac588e68b2369eed5c92772e74f4
     home: https://portal.checkpoint.com
@@ -683,11 +725,11 @@ entries:
     - autopilot
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.21.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.21.0.tgz
     version: 2.21.0
   - apiVersion: v2
     appVersion: 2.20.0
-    created: "2024-11-13T09:10:55.650437668Z"
+    created: "2024-12-11T20:42:18.532068986Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 3c14983786e940b675fdb23ae5eeb4489a76ec78d93e48f3943967394bd95e7f
     home: https://portal.checkpoint.com
@@ -717,11 +759,11 @@ entries:
     - openshift
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.20.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.20.0.tgz
     version: 2.20.0
   - apiVersion: v2
     appVersion: 2.19.1
-    created: "2024-11-13T09:10:55.64910446Z"
+    created: "2024-12-11T20:42:18.529600972Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: e06900fa593bfa8929fc0fc0b87c6f12de49125f7b95157ab3b50bd48954d060
     home: https://portal.checkpoint.com
@@ -751,11 +793,11 @@ entries:
     - openshift
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.19.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.19.1.tgz
     version: 2.19.1
   - apiVersion: v2
     appVersion: 2.18.0
-    created: "2024-11-13T09:10:55.647652683Z"
+    created: "2024-12-11T20:42:18.52794711Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 94d9f8ead188778c6c37fdf594aff9c057e5f7adc3a7f98a012a780e72d40ce0
     home: https://portal.checkpoint.com
@@ -785,11 +827,11 @@ entries:
     - openshift
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.18.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.18.0.tgz
     version: 2.18.0
   - apiVersion: v2
     appVersion: 2.17.0
-    created: "2024-11-13T09:10:55.646149079Z"
+    created: "2024-12-11T20:42:18.526269515Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: d03556e294650b4c655131c3c8fd4885ea173678441c0966e3eaace09b64973b
     home: https://portal.checkpoint.com
@@ -812,11 +854,11 @@ entries:
     - ecs
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.17.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.17.0.tgz
     version: 2.17.0
   - apiVersion: v2
     appVersion: 2.16.0
-    created: "2024-11-13T09:10:55.644225223Z"
+    created: "2024-12-11T20:42:18.524648264Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a6e08b3eddc8de558dbadf766ae159e4f303ab6c4280858b6943b607f73c4ac7
     home: https://portal.checkpoint.com
@@ -839,11 +881,11 @@ entries:
     - ecs
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.16.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.16.0.tgz
     version: 2.16.0
   - apiVersion: v2
     appVersion: 2.15.1
-    created: "2024-11-13T09:10:55.642428505Z"
+    created: "2024-12-11T20:42:18.522996336Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 095c93751144ae2369a107e9b7a66010ea2dccdc1bcd90a9d871a39d6765940e
     home: https://portal.checkpoint.com
@@ -866,11 +908,11 @@ entries:
     - ecs
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.15.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.15.1.tgz
     version: 2.15.1
   - apiVersion: v2
     appVersion: 2.15.0
-    created: "2024-11-13T09:10:55.640805088Z"
+    created: "2024-12-11T20:42:18.521325773Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 1ce7e7428b102a3d0d045757d21090ba9240c9cd3dce7bdce49297ffa450c7f9
     home: https://portal.checkpoint.com
@@ -893,11 +935,11 @@ entries:
     - ecs
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.15.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.15.0.tgz
     version: 2.15.0
   - apiVersion: v2
     appVersion: 2.14.1
-    created: "2024-11-13T09:10:55.638171404Z"
+    created: "2024-12-11T20:42:18.519257332Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 3011a8d3e68701633517fe681a1cd3db2179521ab142de3539187952399aafd9
     home: https://portal.checkpoint.com
@@ -920,11 +962,11 @@ entries:
     - ecs
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.14.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.14.1.tgz
     version: 2.14.1
   - apiVersion: v2
     appVersion: 2.13.0
-    created: "2024-11-13T09:10:55.636583794Z"
+    created: "2024-12-11T20:42:18.51679039Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 3a5d459726cf07b6bd4ffdbb8d2c1398c64f6ebf683607b6ee20b55317641e8c
     home: https://portal.checkpoint.com
@@ -947,11 +989,11 @@ entries:
     - ecs
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.13.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.13.0.tgz
     version: 2.13.0
   - apiVersion: v2
     appVersion: 2.11.1
-    created: "2024-11-13T09:10:55.63515568Z"
+    created: "2024-12-11T20:42:18.515073151Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a82065c05b0d37f94465afb5d817381012467884777ea72e8532fe7d3d82c191
     home: https://portal.checkpoint.com
@@ -972,11 +1014,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.11.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.11.1.tgz
     version: 2.11.1
   - apiVersion: v2
     appVersion: 2.10.2
-    created: "2024-11-13T09:10:55.633688814Z"
+    created: "2024-12-11T20:42:18.513469964Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a6a6319c0d0d3f2f2e82aab3b4816be230ccec6a09a8f5c5f12dd4c1b62c0c7b
     home: https://portal.checkpoint.com
@@ -997,11 +1039,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.10.2.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.10.2.tgz
     version: 2.10.2
   - apiVersion: v2
     appVersion: 2.10.1
-    created: "2024-11-13T09:10:55.632226517Z"
+    created: "2024-12-11T20:42:18.511932058Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 2cdae3abc9f2988a1fb426707f24ec0f459ddb7b8b780b6e8c2ab9ba6308d083
     home: https://portal.checkpoint.com
@@ -1022,11 +1064,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.10.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.10.1.tgz
     version: 2.10.1
   - apiVersion: v2
     appVersion: 2.10.0
-    created: "2024-11-13T09:10:55.630652613Z"
+    created: "2024-12-11T20:42:18.510333158Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 6360f519190507ee4f004a47e395416b514da4815b0f8f32ba52704b81da87c4
     home: https://portal.checkpoint.com
@@ -1047,11 +1089,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.10.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.10.0.tgz
     version: 2.10.0
   - apiVersion: v2
     appVersion: 2.9.0
-    created: "2024-11-13T09:10:55.699836884Z"
+    created: "2024-12-11T20:42:18.587927786Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0aa40700951df79c8eb3ba5fff812eeb608f1a1b5e77d6cdd5fb855b19579314
     home: https://portal.checkpoint.com
@@ -1072,11 +1114,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.9.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.9.0.tgz
     version: 2.9.0
   - apiVersion: v2
     appVersion: 2.8.1
-    created: "2024-11-13T09:10:55.698388382Z"
+    created: "2024-12-11T20:42:18.586058374Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: b3c53cf2771aeee0e46f97b71be765da2a762c6fc042d89c12a5f3ae8b436e82
     home: https://portal.checkpoint.com
@@ -1097,11 +1139,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.8.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.8.1.tgz
     version: 2.8.1
   - apiVersion: v2
     appVersion: 2.8.0
-    created: "2024-11-13T09:10:55.696971509Z"
+    created: "2024-12-11T20:42:18.58414469Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 2335d07e6aea36d4ac4c899566d45ea77c1c362684b07dbf18ed9069fa612b06
     home: https://portal.checkpoint.com
@@ -1122,11 +1164,11 @@ entries:
     - acr
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.8.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.8.0.tgz
     version: 2.8.0
   - apiVersion: v2
     appVersion: 2.5.2
-    created: "2024-11-13T09:10:55.695561118Z"
+    created: "2024-12-11T20:42:18.581552867Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: d070425b0eea904623b5ffa76094c4cea6e0fac63463245f6f62f3e964ff6294
     home: https://portal.checkpoint.com
@@ -1145,11 +1187,11 @@ entries:
     - runtime protection
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.5.2.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.5.2.tgz
     version: 2.5.2
   - apiVersion: v2
     appVersion: 2.5.1
-    created: "2024-11-13T09:10:55.694306126Z"
+    created: "2024-12-11T20:42:18.580147928Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 85b711c72dc3f8ba29fe9552b3bff97bf88a2ad8fc882c9df03e693caaf05dfe
     home: https://portal.checkpoint.com
@@ -1168,11 +1210,11 @@ entries:
     - runtime protection
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.5.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.5.1.tgz
     version: 2.5.1
   - apiVersion: v2
     appVersion: 2.5.0
-    created: "2024-11-13T09:10:55.692943183Z"
+    created: "2024-12-11T20:42:18.578841531Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 6528eb362aa01300ca43c695759df035b7d8657930ccc9472272cf55d76ef3ed
     home: https://portal.checkpoint.com
@@ -1191,11 +1233,11 @@ entries:
     - runtime protection
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.5.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.5.0.tgz
     version: 2.5.0
   - apiVersion: v2
     appVersion: 2.4.0
-    created: "2024-11-13T09:10:55.69137018Z"
+    created: "2024-12-11T20:42:18.577277066Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 766b3224138ad56b9825e52aa1c3a1d14d9fb37e0aa2ce4a962bb5846fb4eb44
     home: https://portal.checkpoint.com
@@ -1214,11 +1256,11 @@ entries:
     - runtime protection
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.4.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.4.0.tgz
     version: 2.4.0
   - apiVersion: v2
     appVersion: 2.3.5
-    created: "2024-11-13T09:10:55.678285936Z"
+    created: "2024-12-11T20:42:18.560906593Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 47195d99813fa84d1ff3b552dabc067183f354d4353a3c55bea8b4bf053750af
     home: https://secure.dome9.com/v2/
@@ -1240,11 +1282,11 @@ entries:
       name: Check Point
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.3.5.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.3.5.tgz
     version: 2.3.5
   - apiVersion: v2
     appVersion: 2.3.3
-    created: "2024-11-13T09:10:55.676840781Z"
+    created: "2024-12-11T20:42:18.559470716Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 7e8ecac90cc603f7e83507358b67647ebffbee078ce5c79e2d25bad4be69d78a
     home: https://secure.dome9.com/v2/
@@ -1266,11 +1308,11 @@ entries:
       name: Check Point
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.3.3.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.3.3.tgz
     version: 2.3.3
   - apiVersion: v2
     appVersion: 2.3.2
-    created: "2024-11-13T09:10:55.675258992Z"
+    created: "2024-12-11T20:42:18.558012077Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 81a7be75584877e4373be4fd2ef1dd11d111cc4d9964007c40ea610dc652a4d1
     home: https://secure.dome9.com/v2/
@@ -1292,11 +1334,11 @@ entries:
       name: Check Point
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.3.2.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.3.2.tgz
     version: 2.3.2
   - apiVersion: v2
     appVersion: 2.3.1
-    created: "2024-11-13T09:10:55.6736866Z"
+    created: "2024-12-11T20:42:18.555969744Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 91fbc7b612a6cf21abe69e40ac3b8459cb8eb46ebe4245a1c583b99515c9e5a4
     home: https://secure.dome9.com/v2/
@@ -1318,11 +1360,11 @@ entries:
       name: Check Point
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.3.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.3.1.tgz
     version: 2.3.1
   - apiVersion: v2
     appVersion: 2.3.0
-    created: "2024-11-13T09:10:55.672263906Z"
+    created: "2024-12-11T20:42:18.5545409Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 8be89cebf15b52831dab2c86495f61c1e11d8054a37d5dedb33cbedd5f18dcef
     home: https://secure.dome9.com/v2/
@@ -1344,12 +1386,12 @@ entries:
       name: Check Point
     name: cloudguard
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.3.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cloudguard-2.3.0.tgz
     version: 2.3.0
   cp-resource-management:
   - apiVersion: v1
     appVersion: 1.11.0
-    created: "2024-11-13T09:10:55.706070648Z"
+    created: "2024-12-11T20:42:18.593720705Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 194ba8d8578b0691900d3af3e51e71b5b9a679b9e8e250b9e07559638f1f5bf1
     home: https://secure.dome9.com/v2/
@@ -1366,11 +1408,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.11.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.11.0.tgz
     version: 1.11.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.705508313Z"
+    created: "2024-12-11T20:42:18.593221438Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: a0010f440f43895e2ed1268555663451b0185d3ad1147f7dfad2d5d6026065f4
     home: https://secure.dome9.com/v2/
@@ -1387,11 +1429,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.09.3.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.09.3.tgz
     version: 1.09.3
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.704994958Z"
+    created: "2024-12-11T20:42:18.592761884Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 123efdfe387e20ee7b97d537eb85d950c15bcc6814933fdb4ee9214067b4c27b
     home: https://secure.dome9.com/v2/
@@ -1408,11 +1450,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.09.2.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.09.2.tgz
     version: 1.09.2
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.70451156Z"
+    created: "2024-12-11T20:42:18.592282754Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 71b7b5c3928d7fc6e1c2625651311763710a50ccb970860da7f0de85c93b58ed
     home: https://secure.dome9.com/v2/
@@ -1430,11 +1472,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.09.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.09.1.tgz
     version: 1.09.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.703928026Z"
+    created: "2024-12-11T20:42:18.591655649Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 5e976c6fb56ed34ea76a60c71bce292a6769f885d0ddb80464b532a03c9c4b29
     home: https://secure.dome9.com/v2/
@@ -1452,11 +1494,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.09.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.09.0.tgz
     version: 1.09.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.703338941Z"
+    created: "2024-12-11T20:42:18.591005552Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 5e616877265d618bfd075fd1df8a58b9b929c0332cc61f6a28ac64f676566503
     home: https://secure.dome9.com/v2/
@@ -1474,11 +1516,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.07.1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.07.1.tgz
     version: 1.07.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.702737564Z"
+    created: "2024-12-11T20:42:18.590372977Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 8920c6606a6038ee4ed0b1e201fc28ea094b8a0d564b262435273907d7e65e82
     home: https://secure.dome9.com/v2/
@@ -1496,11 +1538,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.07.0.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.07.0.tgz
     version: 1.07.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.701898995Z"
+    created: "2024-12-11T20:42:18.589754379Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: bebb6e83ed371d2501879219a72540a2e7f45518f32ede0c64f7109b5b443033
     home: https://secure.dome9.com/v2/
@@ -1515,11 +1557,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.06.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.06.tgz
     version: "1.06"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.701124226Z"
+    created: "2024-12-11T20:42:18.589310594Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: ebaf4da8a836f017cb4cbd0012b063e293e3ae805ebddb92ce49d666fe328cf4
     home: https://secure.dome9.com/v2/
@@ -1534,11 +1576,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.05.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.05.tgz
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-11-13T09:10:55.700688907Z"
+    created: "2024-12-11T20:42:18.588882559Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -1553,11 +1595,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.03.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.03.tgz
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2024-11-13T09:10:55.700266011Z"
+    created: "2024-12-11T20:42:18.58843618Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -1572,11 +1614,11 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.02.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.02.tgz
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2024-11-13T09:10:55.706446166Z"
+    created: "2024-12-11T20:42:18.594285925Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -1591,6 +1633,6 @@ entries:
       name: Check Point
     name: cp-resource-management
     urls:
-    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.tgz
+    - https://raw.githubusercontent.com/CheckPointSW/charts/2.34.0-0-rc/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2024-11-13T09:10:55.628028997Z"
+generated: "2024-12-11T20:42:18.508391532Z"
