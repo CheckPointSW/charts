@@ -41,7 +41,6 @@ imagePullPolicy: Always
 ##
 podAnnotations:
   seccomp: runtime/default
-  apparmor: {}
   custom: {}
 
 ## Proxy settings
@@ -69,7 +68,7 @@ inventory:
 
     ## Specify image and tag
     image: checkpoint/consec-inventory-agent
-    tag: 1.15.0
+    tag: 1.16.0
 
     ## Specify existing service account name ("" to create)
     serviceAccountName: ""
@@ -112,7 +111,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-imagescan-daemon
-      tag: 2.37.0
+      tag: 2.38.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -134,7 +133,7 @@ addons:
       shim:
         ## Specify image and tag
         image: checkpoint/consec-imagescan-shim
-        tag: 2.37.0
+        tag: 2.38.0
 
         ## Configure resource requests and limits
         ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -169,7 +168,7 @@ addons:
     engine:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.37.0
+      tag: 2.38.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -201,7 +200,7 @@ addons:
     list:
       ## Specify image and tag
       image: checkpoint/consec-imagescan-engine
-      tag: 2.37.0
+      tag: 2.38.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -272,7 +271,7 @@ addons:
       priorityClassName: "system-node-critical"
       ## Specify image and tag
       image: checkpoint/consec-flowlogs-daemon
-      tag: 0.15.0
+      tag: 0.16.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -311,7 +310,7 @@ addons:
     policy:
       ## Specify image and tag
       image: checkpoint/consec-admission-policy
-      tag: 1.9.0
+      tag: 1.10.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
@@ -341,7 +340,7 @@ addons:
     enforcer:
       ## Specify image and tag
       image: checkpoint/consec-admission-enforcer
-      tag: 2.13.0
+      tag: 2.14.0
 
       ## Specify existing service account name ("" to create)
       serviceAccountName: ""
