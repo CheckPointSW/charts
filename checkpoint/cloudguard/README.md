@@ -139,7 +139,6 @@ The following table list the configurable parameters of this chart and their def
 | `platform`                                                 | Kubernetes platform (kubernetes/ tanzu/ openshift/ openshift.v3/ eks/ eks.bottlerocket/ gke.cos/ gke.autopilot/ k3s/ rke2/ kubernetes.coreos) overriding auto-detection | `kubernetes`                                |
 | `seccompProfile`                                           | Computer Security facility profile. (to be used in kubernetes 1.19 and up) | `RuntimeDefault`                                |
 | `podAnnotations.seccomp`                                   | Computer Security facility profile. (to be used in kubernetes below 1.19) | `runtime/default`                                |
-| `podAnnotations.apparmor`                                  | Apparmor Linux kernel security module profile.                  | `{}`                                             |
 | `autoUpgrade`                                              | Enable auto-upgrade (preserve, true or false). 'major.minor' tags will be set for images rather than 'major.minor.patch'" | `preserve`    |
 | `podAnnotations.custom`                                    | Custom Pod annotations (for all agent Pods)                     | `{}`                                             |
 | `priorityClassName`                                        | Specifies custom priorityClassName                              | ``                                               |
@@ -265,64 +264,63 @@ The following table list the configurable parameters of this chart and their def
 | `addons.runtimeProtection.policy.podAnnotations.custom`    | Custom Pod annotations (for Pods of this agent)                 | `{}`                                             |
 | `addons.runtimeProtection.daemonConfigurationOverrides`    | Overrides for multiple daemonSets with different configuration values                | see below                                              |
 
-The default nodeSelector for Admission Control, Inventory and Runtime Protection policy agents is:
+The default nodeSelector for the Runtime Protection daemon agent is:
  ```yaml
 nodeSelector:
-	kubernetes.io/os: linux
+  kubernetes.io/os: linux
+  kubernetes.io/arch: amd64
 ```
 
 The default nodeSelector for other agents is:
  ```yaml
 nodeSelector:
 	kubernetes.io/os: linux
-    kubernetes.io/arch: amd64
 ```
 
-The default node affinity for Admission Control, Inventory and Runtime Protection policy agents (deployment) 
-to support nodes with arm64 and amd64 architectures:
+The default affinity is configured to support nodes with arm64 and amd64 architectures:
  ```yaml
- nodeAffinity:
-   requiredDuringSchedulingIgnoredDuringExecution:
-     nodeSelectorTerms:
-       - matchExpressions:
-           - key: kubernetes.io/arch
-             operator: In
-             values:
-               - arm64
-               - amd64
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+              - arm64
+              - amd64
  ```
 
-For Admission Control enforcer agent, it also has default inter-pod anti-affinity ensuring the pods are scheduled on different nodes :
+For Admission Control enforcer agent, it also has default inter-pod anti-affinity ensuring the pods are scheduled on different nodes:
  ```yaml
- podAntiAffinity:
-   preferredDuringSchedulingIgnoredDuringExecution:
-     - weight: 1
-       podAffinityTerm:
-         labelSelector:
-           matchExpressions:
-             - key: "kubernetes.io/name"
-               operator: In
-               values:
-                 - consec-admission-enforcer
-         topologyKey: "kubernetes.io/hostname"
+podAntiAffinity:
+  preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+            - key: "kubernetes.io/name"
+              operator: In
+              values:
+                - consec-admission-enforcer
+        topologyKey: "kubernetes.io/hostname"
 ```
 
 On EKS, DaemonSets are configured with node affinity that prevents Pods from running on Fargate nodes:
  
  ```yaml
- addons:
-  imageScan:
-    enabled: true
-    daemon:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions: 
-                - key: eks.amazonaws.com/compute-type
-                  operator: NotIn
-                  values:
-                    - fargate
+addons:
+imageScan:
+  enabled: true
+  daemon:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions: 
+              - key: eks.amazonaws.com/compute-type
+                operator: NotIn
+                values:
+                  - fargate
  ```
 
 The `daemonConfigurationOverrides` object should have one or more objects with unique names (case insensitive), each object must then have a `nodeSelector` data and any additional overrides, such as resource limits and requests. The values defined in `daemon` object are used as a basis for the overrides.\

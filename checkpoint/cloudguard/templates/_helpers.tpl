@@ -42,7 +42,7 @@
 {{ printf "%s-%s-%s" (include "name.prefix" .) .featureName .daemonConfigName }}
 {{- end -}}
 
-{{- /* Service account name of a given agent (provided in values.yaml or auto-generated */ -}}
+{{- /* Service account name of a given agent (provided in values.yaml or auto-generated) */ -}}
 {{- define "agent.service.account.name" -}}
 {{- default (include "agent.resource.name" .) .agentConfig.serviceAccountName }}
 {{- end -}}
@@ -100,10 +100,6 @@ app.created.by.template: {{ (include "is.helm.template.command" .) | quote }}
 {{- if and (not (contains "openshift" .platform)) (semverCompare "<1.19-0" .Capabilities.KubeVersion.Version) }}
 seccomp.security.alpha.kubernetes.io/pod: {{ .Values.podAnnotations.seccomp }}
 {{- end }}
-{{- if .Values.podAnnotations.apparmor }}
-container.apparmor.security.beta.kubernetes.io/{{ template "agent.resource.name" . }}:
-{{ toYaml .Values.podAnnotations.apparmor | indent 2 }}
-{{- end }}
 {{- if .Values.podAnnotations }}
 {{- if .Values.podAnnotations.custom }}
 {{ toYaml .Values.podAnnotations.custom }}
@@ -141,14 +137,8 @@ serviceAccountName: {{ template "agent.service.account.name" . }}
 nodeSelector:
 {{ toYaml .agentConfig.nodeSelector | indent 2 }}
 {{- end }}
-{{- $allVirtualAffinities := (include "get.virtualNodesLabels" .) | fromYaml -}}
-{{- if .agentConfig.affinity }}
 affinity:
-{{    .agentConfig.affinity | toYaml | indent 2 }}
-{{- else if and (contains "daemon" .agentName) (hasKey $allVirtualAffinities .platform) }}
-affinity:
-{{    include "daemonset.commonAffinity.labels" . | indent 2 }}
-{{- end }}
+{{ include "common.pod.properties.affinity" . | indent 2 }}
 {{- if .agentConfig.tolerations }}
 tolerations:
 {{ toYaml .agentConfig.tolerations | indent 2 }}
@@ -503,7 +493,7 @@ usage:
 {{-       if hasKey $currentConfiguration "containerRuntime" -}}
 {{-         $containerRuntime := get $currentConfiguration "containerRuntime" -}}
 {{-         include "validate.container.runtime" $currentConfiguration -}}
-{{-         $_ := set  $copyConfig "containerRuntime" ($containerRuntime | lower) -}}
+{{-         $_ := set $copyConfig "containerRuntime" ($containerRuntime | lower) -}}
 {{-       end -}}
 {{-       $_ := set $mergedAgentConfig "env" ((concat (get $mergedAgentConfig "env") (get $copyAgentConfig "env") ) | uniq) -}}
 {{-       $_ := set $copyConfig "agentConfig" $mergedAgentConfig -}}
@@ -514,16 +504,37 @@ usage:
 {{-   end -}}
 {{- end -}}
 
-{{- define "common.node.affinity.multiarch" -}}
+{{- define "common.pod.properties.affinity" -}}
+{{- if .agentConfig.affinity }}
+{{-    .agentConfig.affinity | toYaml }}
+{{- else }}
+{{-   $allVirtualAffinities := (include "get.virtualNodesLabels" .) | fromYaml -}}
+{{-   $nodeAffinityMatchExpressions := list (include "common.node.affinity.multiarch" . | fromYaml) -}}
+{{-   if and (eq "DaemonSet" .resourceKind) (hasKey $allVirtualAffinities .platform) }}
+{{-     $virtualNodesLabels := get $allVirtualAffinities .platform -}}
+{{-     range $labelKey, $labelValue := $virtualNodesLabels -}}
+{{-       $generatedExpression := dict "key" $labelKey "operator" "NotIn" "values" (list $labelValue) -}}
+{{-       $nodeAffinityMatchExpressions = append $nodeAffinityMatchExpressions ( $generatedExpression ) -}}
+{{-     end -}}
+{{-   end -}}
 nodeAffinity:
   requiredDuringSchedulingIgnoredDuringExecution:
     nodeSelectorTerms:
-      - matchExpressions:
-          - key: kubernetes.io/arch
-            operator: In
-            values:
-              - arm64
-              - amd64
+    - matchExpressions:
+{{ $nodeAffinityMatchExpressions | toYaml | indent 10 }}
+{{- /* add pod anti affinity */ -}}
+{{-   if and (eq "Deployment" .resourceKind) (and (eq "enforcer" .agentName) (eq "admission" .featureName)) }}
+{{      include "deployment.common.affinity.labels" . }}
+{{-   end }}
+{{- end -}}
+{{- end -}}
+
+{{- define "common.node.affinity.multiarch" -}}
+key: kubernetes.io/arch
+operator: In
+values:
+  - arm64
+  - amd64
 {{- end -}}
 
 {{- /* virtual node labels, additions should keep the same format.
@@ -537,24 +548,19 @@ eks:
 #   exampleLabelKey: "example_label_value"
 {{- end -}}
 
-{{- /* creating the affinity for DaemonSet to not run on virtual nodes
-usage: 
-`{{- $virtualAffinites := (include "daemonset.commonAffinity.labels" . ) | fromYaml -}}`
-*/ -}}
-{{- define "daemonset.commonAffinity.labels" -}}
-{{- $virtualNodesLabels := get (include "get.virtualNodesLabels" . | fromYaml) .platform -}}
-nodeAffinity:
-  requiredDuringSchedulingIgnoredDuringExecution:
-    nodeSelectorTerms:
-      - matchExpressions:
-{{- range $labelKey, $labelValue := $virtualNodesLabels }} 
-        - key: {{$labelKey}}
-          operator: NotIn
-          values:
-            - {{$labelValue}}
+{{- define "deployment.common.affinity.labels" -}}
+podAntiAffinity:
+  preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+            - key: "kubernetes.io/name"
+              operator: In
+              values:
+                - {{ include "agent.resource.name" . }}
+        topologyKey: "kubernetes.io/hostname"
 {{- end -}}
-{{- end -}}
-
 
 {{- /* list of supported platforms
 usage: 
