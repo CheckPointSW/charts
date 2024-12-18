@@ -1,6 +1,8 @@
 {{- $config := fromYaml (include "runtime.policy.config" .) }}
 {{- /* Make ".Files" of the chart accessible and properly formatted when accessed via $config' */ -}}
 {{- $_ := set $config "Files" .Files -}}
+{{- /* Mark the config as holding a resource of type "Deployment" */ -}}
+{{- $_ := set $config "resourceKind" "Deployment" -}}
 {{- if $config.featureConfig.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -21,8 +23,6 @@ spec:
       labels:
 {{ include "common.labels.with.chart" $config | indent 8 }}
     spec:
-      affinity:
-{{ include "common.node.affinity.multiarch" $config | indent 8 }}
 {{ include "common.pod.properties" $config | indent 6 }}
       containers:
       # Main container
