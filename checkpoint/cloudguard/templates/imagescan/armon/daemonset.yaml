@@ -60,13 +60,9 @@ spec:
 {{ toYaml $config.agentConfig.resources | indent 10 }}
 {{- end }}
         env: 
-        - name: REPORT_USE_DOME9_AGENT_CFG
-          value: "1"
-        - name: "REPORT_POST_ENDPOINT"
-          value: "/imageaccessruntimemonitor" 
-        - name: "TELEMETRY_URL"
-          value: "https://eptelemetry.epmgmt.checkpoint.com/gwstats/services/antimalware/1_0_0/log"   
-        - name: "CONTAINERS_RUNTIME"
+        - name: CP_REPORT_USE_DOME9_AGENT_CFG
+          value: "1"  
+        - name: CP_CONTAINERS_RUNTIME
           value: {{ $config.containerRuntime }}
 
 {{ include "common.env" $config | indent 8 }}
