@@ -2,8 +2,52 @@ apiVersion: v1
 entries:
   cloudguard:
   - apiVersion: v2
+    appVersion: 2.35.1
+    created: "2025-02-03T13:11:32.95583731Z"
+    description: A Helm chart for Check Point CloudGuard Workload Security
+    digest: b0a6d8da2d96a94339167eed00c58baf4a9ed269662ccd2327fba01d446e32bb
+    home: https://portal.checkpoint.com
+    icon: https://www.checkpoint.com/wp-content/uploads/icon-cloudguard-nav.png
+    keywords:
+    - check point
+    - cloudguard
+    - workload security
+    - inventory
+    - posture management
+    - vulnerability assessment
+    - image assurance
+    - flow logs
+    - threat intelligence
+    - admission control
+    - runtime protection
+    - registry scan
+    - acr
+    - ecr
+    - gcr
+    - gar
+    - harbor
+    - jfrog artifactory
+    - sonatype nexus
+    - ghcr
+    - github container registry
+    - docker hub
+    - quay
+    - ecs
+    - tanzu
+    - k3s
+    - rke2
+    - openshift
+    - eks
+    - aks
+    - gke
+    - autopilot
+    name: cloudguard
+    urls:
+    - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cloudguard-2.35.1.tgz
+    version: 2.35.1
+  - apiVersion: v2
     appVersion: 2.34.0
-    created: "2024-12-18T15:51:45.650388304Z"
+    created: "2025-02-03T13:11:32.953111469Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: f71564edaedfd79dde5f69ac4ff1c313bb5f62f9ef38cd6be1568543a414f497
     home: https://portal.checkpoint.com
@@ -45,7 +89,7 @@ entries:
     version: 2.34.0
   - apiVersion: v2
     appVersion: 2.34.0-1
-    created: "2024-12-18T15:51:45.647013439Z"
+    created: "2025-02-03T13:11:32.951297541Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 41b7ff3cb8f4911d531baef081c9ea56b999fa99211b3ff46491f53d8dc2e77b
     home: https://portal.checkpoint.com
@@ -87,7 +131,7 @@ entries:
     version: 2.34.0-1
   - apiVersion: v2
     appVersion: 2.34.0-0
-    created: "2024-12-18T15:51:45.645158932Z"
+    created: "2025-02-03T13:11:32.948935025Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 06042a2c80d02817a8032f192549e48a410393339d6d603bbab82a5b6849ba23
     home: https://portal.checkpoint.com
@@ -129,7 +173,7 @@ entries:
     version: 2.34.0-0
   - apiVersion: v2
     appVersion: 2.33.1
-    created: "2024-12-18T15:51:45.643307631Z"
+    created: "2025-02-03T13:11:32.947106591Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 9c393eb806fe247e1d6aa9cfaf93f7e486d629ab635291904a64823a7474d9b0
     home: https://portal.checkpoint.com
@@ -171,7 +215,7 @@ entries:
     version: 2.33.1
   - apiVersion: v2
     appVersion: 2.33.0
-    created: "2024-12-18T15:51:45.641327952Z"
+    created: "2025-02-03T13:11:32.945159817Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 422e888127d000b2a3945550328dbd211667cad601e09477fa5cf24c64caba94
     home: https://portal.checkpoint.com
@@ -213,7 +257,7 @@ entries:
     version: 2.33.0
   - apiVersion: v2
     appVersion: 2.32.0
-    created: "2024-12-18T15:51:45.639378138Z"
+    created: "2025-02-03T13:11:32.943180232Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0faf719407dfc418b7a52ac035ab17602361e6fbefa7a38abdababfd1b5b4bc4
     home: https://portal.checkpoint.com
@@ -255,7 +299,7 @@ entries:
     version: 2.32.0
   - apiVersion: v2
     appVersion: 2.31.0
-    created: "2024-12-18T15:51:45.637469451Z"
+    created: "2025-02-03T13:11:32.940967955Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 1401e3f88c3e58a7b61f79490a13b7fcf3ee368c8db00129e980397a78af3c99
     home: https://portal.checkpoint.com
@@ -297,7 +341,7 @@ entries:
     version: 2.31.0
   - apiVersion: v2
     appVersion: 2.30.0
-    created: "2024-12-18T15:51:45.635265355Z"
+    created: "2025-02-03T13:11:32.938500755Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 16c65b6484f8aad51a2065ef23ed5c9392e4f913943cc701f2285c00b8033483
     home: https://portal.checkpoint.com
@@ -339,7 +383,7 @@ entries:
     version: 2.30.0
   - apiVersion: v2
     appVersion: 2.30.0-rp.0
-    created: "2024-12-18T15:51:45.632095511Z"
+    created: "2025-02-03T13:11:32.936778617Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: c0360db29c8ca74cce6bc6bae2baa39b13e7472440127da185f29b483ca18cad
     home: https://portal.checkpoint.com
@@ -381,7 +425,7 @@ entries:
     version: 2.30.0-rp.0
   - apiVersion: v2
     appVersion: 2.29.0
-    created: "2024-12-18T15:51:45.619814509Z"
+    created: "2025-02-03T13:11:32.926380143Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: e9607e5835ff4cdca93b5a2a2dd5b55d3040270536f757f6a8f58f7c46505c28
     home: https://portal.checkpoint.com
@@ -422,7 +466,7 @@ entries:
     version: 2.29.0
   - apiVersion: v2
     appVersion: 2.29.0-rp.1
-    created: "2024-12-18T15:51:45.615853968Z"
+    created: "2025-02-03T13:11:32.924634822Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 60f18702354ba0b61d375b816b8f02747cf43ecfa3ec45bebdd8e8e78085a3d9
     home: https://portal.checkpoint.com
@@ -463,7 +507,7 @@ entries:
     version: 2.29.0-rp.1
   - apiVersion: v2
     appVersion: 2.28.0
-    created: "2024-12-18T15:51:45.61405779Z"
+    created: "2025-02-03T13:11:32.922831535Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: d2e5ac2a321c7ab0ce1a2a10f0ea277a2d36aefcb24a52ef82bf00672e56e9f8
     home: https://portal.checkpoint.com
@@ -504,7 +548,7 @@ entries:
     version: 2.28.0
   - apiVersion: v2
     appVersion: 2.27.1
-    created: "2024-12-18T15:51:45.610756381Z"
+    created: "2025-02-03T13:11:32.921157467Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: cadce80cf1b286df2e584bdb8bd33ab592f8292c16d9a9a44457339cdf6c6cd6
     home: https://portal.checkpoint.com
@@ -543,7 +587,7 @@ entries:
     version: 2.27.1
   - apiVersion: v2
     appVersion: 2.27.0
-    created: "2024-12-18T15:51:45.607143985Z"
+    created: "2025-02-03T13:11:32.919459415Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 67eb92e2a8b4d7df1d9cba289395a5d8609d00226f5ac521e546cce49bf2b57a
     home: https://portal.checkpoint.com
@@ -582,7 +626,7 @@ entries:
     version: 2.27.0
   - apiVersion: v2
     appVersion: 2.26.0
-    created: "2024-12-18T15:51:45.603470828Z"
+    created: "2025-02-03T13:11:32.917714335Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 40bb805906a9afd948bd867eb62254a243df3d1d69aa46cbb60dc8234e2a770d
     home: https://portal.checkpoint.com
@@ -621,7 +665,7 @@ entries:
     version: 2.26.0
   - apiVersion: v2
     appVersion: 2.25.0
-    created: "2024-12-18T15:51:45.599688427Z"
+    created: "2025-02-03T13:11:32.915598306Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 4a01d5f08a2c32b7b08116f9dd0a2fc3719f2fe63048d0bd79442425b01ecd64
     home: https://portal.checkpoint.com
@@ -660,7 +704,7 @@ entries:
     version: 2.25.0
   - apiVersion: v2
     appVersion: 2.24.3
-    created: "2024-12-18T15:51:45.594965694Z"
+    created: "2025-02-03T13:11:32.913363267Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: c0017cffd7a43f920636d6c59dffc48b2c075f824dc8b2f124d9cf95380e562c
     home: https://portal.checkpoint.com
@@ -699,7 +743,7 @@ entries:
     version: 2.24.3
   - apiVersion: v2
     appVersion: 2.23.0
-    created: "2024-12-18T15:51:45.593332657Z"
+    created: "2025-02-03T13:11:32.911614Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a206fa0dcd03857dc9806d0991a325989e03356f75c34d76891beae280c847ec
     home: https://portal.checkpoint.com
@@ -737,7 +781,7 @@ entries:
     version: 2.23.0
   - apiVersion: v2
     appVersion: 2.22.0
-    created: "2024-12-18T15:51:45.591582023Z"
+    created: "2025-02-03T13:11:32.909881644Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0aab618cb7466eeca9a13bd5d27253fa466c91eadc71689833a20480286aa5b8
     home: https://portal.checkpoint.com
@@ -775,7 +819,7 @@ entries:
     version: 2.22.0
   - apiVersion: v2
     appVersion: 2.21.0
-    created: "2024-12-18T15:51:45.588183875Z"
+    created: "2025-02-03T13:11:32.90810192Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 9a3e7e51abfc946d26719dc0a51b2d25cb76ac588e68b2369eed5c92772e74f4
     home: https://portal.checkpoint.com
@@ -813,7 +857,7 @@ entries:
     version: 2.21.0
   - apiVersion: v2
     appVersion: 2.20.0
-    created: "2024-12-18T15:51:45.584625249Z"
+    created: "2025-02-03T13:11:32.906378019Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 3c14983786e940b675fdb23ae5eeb4489a76ec78d93e48f3943967394bd95e7f
     home: https://portal.checkpoint.com
@@ -847,7 +891,7 @@ entries:
     version: 2.20.0
   - apiVersion: v2
     appVersion: 2.19.1
-    created: "2024-12-18T15:51:45.581088574Z"
+    created: "2025-02-03T13:11:32.904480757Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: e06900fa593bfa8929fc0fc0b87c6f12de49125f7b95157ab3b50bd48954d060
     home: https://portal.checkpoint.com
@@ -881,7 +925,7 @@ entries:
     version: 2.19.1
   - apiVersion: v2
     appVersion: 2.18.0
-    created: "2024-12-18T15:51:45.576863153Z"
+    created: "2025-02-03T13:11:32.902064401Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 94d9f8ead188778c6c37fdf594aff9c057e5f7adc3a7f98a012a780e72d40ce0
     home: https://portal.checkpoint.com
@@ -915,7 +959,7 @@ entries:
     version: 2.18.0
   - apiVersion: v2
     appVersion: 2.17.0
-    created: "2024-12-18T15:51:45.575018234Z"
+    created: "2025-02-03T13:11:32.900468719Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: d03556e294650b4c655131c3c8fd4885ea173678441c0966e3eaace09b64973b
     home: https://portal.checkpoint.com
@@ -942,7 +986,7 @@ entries:
     version: 2.17.0
   - apiVersion: v2
     appVersion: 2.16.0
-    created: "2024-12-18T15:51:45.573154499Z"
+    created: "2025-02-03T13:11:32.898917279Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a6e08b3eddc8de558dbadf766ae159e4f303ab6c4280858b6943b607f73c4ac7
     home: https://portal.checkpoint.com
@@ -969,7 +1013,7 @@ entries:
     version: 2.16.0
   - apiVersion: v2
     appVersion: 2.15.1
-    created: "2024-12-18T15:51:45.570243965Z"
+    created: "2025-02-03T13:11:32.897384573Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 095c93751144ae2369a107e9b7a66010ea2dccdc1bcd90a9d871a39d6765940e
     home: https://portal.checkpoint.com
@@ -996,7 +1040,7 @@ entries:
     version: 2.15.1
   - apiVersion: v2
     appVersion: 2.15.0
-    created: "2024-12-18T15:51:45.566545009Z"
+    created: "2025-02-03T13:11:32.895860884Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 1ce7e7428b102a3d0d045757d21090ba9240c9cd3dce7bdce49297ffa450c7f9
     home: https://portal.checkpoint.com
@@ -1023,7 +1067,7 @@ entries:
     version: 2.15.0
   - apiVersion: v2
     appVersion: 2.14.1
-    created: "2024-12-18T15:51:45.562890085Z"
+    created: "2025-02-03T13:11:32.894230247Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 3011a8d3e68701633517fe681a1cd3db2179521ab142de3539187952399aafd9
     home: https://portal.checkpoint.com
@@ -1050,7 +1094,7 @@ entries:
     version: 2.14.1
   - apiVersion: v2
     appVersion: 2.13.0
-    created: "2024-12-18T15:51:45.55777212Z"
+    created: "2025-02-03T13:11:32.89145249Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 3a5d459726cf07b6bd4ffdbb8d2c1398c64f6ebf683607b6ee20b55317641e8c
     home: https://portal.checkpoint.com
@@ -1077,7 +1121,7 @@ entries:
     version: 2.13.0
   - apiVersion: v2
     appVersion: 2.11.1
-    created: "2024-12-18T15:51:45.556105641Z"
+    created: "2025-02-03T13:11:32.889747475Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a82065c05b0d37f94465afb5d817381012467884777ea72e8532fe7d3d82c191
     home: https://portal.checkpoint.com
@@ -1102,7 +1146,7 @@ entries:
     version: 2.11.1
   - apiVersion: v2
     appVersion: 2.10.2
-    created: "2024-12-18T15:51:45.554513891Z"
+    created: "2025-02-03T13:11:32.888034084Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: a6a6319c0d0d3f2f2e82aab3b4816be230ccec6a09a8f5c5f12dd4c1b62c0c7b
     home: https://portal.checkpoint.com
@@ -1127,7 +1171,7 @@ entries:
     version: 2.10.2
   - apiVersion: v2
     appVersion: 2.10.1
-    created: "2024-12-18T15:51:45.552877538Z"
+    created: "2025-02-03T13:11:32.886456095Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 2cdae3abc9f2988a1fb426707f24ec0f459ddb7b8b780b6e8c2ab9ba6308d083
     home: https://portal.checkpoint.com
@@ -1152,7 +1196,7 @@ entries:
     version: 2.10.1
   - apiVersion: v2
     appVersion: 2.10.0
-    created: "2024-12-18T15:51:45.551077191Z"
+    created: "2025-02-03T13:11:32.884790773Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 6360f519190507ee4f004a47e395416b514da4815b0f8f32ba52704b81da87c4
     home: https://portal.checkpoint.com
@@ -1177,7 +1221,7 @@ entries:
     version: 2.10.0
   - apiVersion: v2
     appVersion: 2.9.0
-    created: "2024-12-18T15:51:45.661399112Z"
+    created: "2025-02-03T13:11:32.966522086Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 0aa40700951df79c8eb3ba5fff812eeb608f1a1b5e77d6cdd5fb855b19579314
     home: https://portal.checkpoint.com
@@ -1202,7 +1246,7 @@ entries:
     version: 2.9.0
   - apiVersion: v2
     appVersion: 2.8.1
-    created: "2024-12-18T15:51:45.65983875Z"
+    created: "2025-02-03T13:11:32.964602131Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: b3c53cf2771aeee0e46f97b71be765da2a762c6fc042d89c12a5f3ae8b436e82
     home: https://portal.checkpoint.com
@@ -1227,7 +1271,7 @@ entries:
     version: 2.8.1
   - apiVersion: v2
     appVersion: 2.8.0
-    created: "2024-12-18T15:51:45.658173213Z"
+    created: "2025-02-03T13:11:32.963016327Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 2335d07e6aea36d4ac4c899566d45ea77c1c362684b07dbf18ed9069fa612b06
     home: https://portal.checkpoint.com
@@ -1252,7 +1296,7 @@ entries:
     version: 2.8.0
   - apiVersion: v2
     appVersion: 2.5.2
-    created: "2024-12-18T15:51:45.656492939Z"
+    created: "2025-02-03T13:11:32.961445241Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: d070425b0eea904623b5ffa76094c4cea6e0fac63463245f6f62f3e964ff6294
     home: https://portal.checkpoint.com
@@ -1275,7 +1319,7 @@ entries:
     version: 2.5.2
   - apiVersion: v2
     appVersion: 2.5.1
-    created: "2024-12-18T15:51:45.654983962Z"
+    created: "2025-02-03T13:11:32.960081509Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 85b711c72dc3f8ba29fe9552b3bff97bf88a2ad8fc882c9df03e693caaf05dfe
     home: https://portal.checkpoint.com
@@ -1298,7 +1342,7 @@ entries:
     version: 2.5.1
   - apiVersion: v2
     appVersion: 2.5.0
-    created: "2024-12-18T15:51:45.65350458Z"
+    created: "2025-02-03T13:11:32.958701737Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 6528eb362aa01300ca43c695759df035b7d8657930ccc9472272cf55d76ef3ed
     home: https://portal.checkpoint.com
@@ -1321,7 +1365,7 @@ entries:
     version: 2.5.0
   - apiVersion: v2
     appVersion: 2.4.0
-    created: "2024-12-18T15:51:45.651981998Z"
+    created: "2025-02-03T13:11:32.95724867Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 766b3224138ad56b9825e52aa1c3a1d14d9fb37e0aa2ce4a962bb5846fb4eb44
     home: https://portal.checkpoint.com
@@ -1344,7 +1388,7 @@ entries:
     version: 2.4.0
   - apiVersion: v2
     appVersion: 2.3.5
-    created: "2024-12-18T15:51:45.630092538Z"
+    created: "2025-02-03T13:11:32.934974819Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 47195d99813fa84d1ff3b552dabc067183f354d4353a3c55bea8b4bf053750af
     home: https://secure.dome9.com/v2/
@@ -1370,7 +1414,7 @@ entries:
     version: 2.3.5
   - apiVersion: v2
     appVersion: 2.3.3
-    created: "2024-12-18T15:51:45.628537797Z"
+    created: "2025-02-03T13:11:32.933670738Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 7e8ecac90cc603f7e83507358b67647ebffbee078ce5c79e2d25bad4be69d78a
     home: https://secure.dome9.com/v2/
@@ -1396,7 +1440,7 @@ entries:
     version: 2.3.3
   - apiVersion: v2
     appVersion: 2.3.2
-    created: "2024-12-18T15:51:45.627031044Z"
+    created: "2025-02-03T13:11:32.932284424Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 81a7be75584877e4373be4fd2ef1dd11d111cc4d9964007c40ea610dc652a4d1
     home: https://secure.dome9.com/v2/
@@ -1422,7 +1466,7 @@ entries:
     version: 2.3.2
   - apiVersion: v2
     appVersion: 2.3.1
-    created: "2024-12-18T15:51:45.62552909Z"
+    created: "2025-02-03T13:11:32.930912858Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 91fbc7b612a6cf21abe69e40ac3b8459cb8eb46ebe4245a1c583b99515c9e5a4
     home: https://secure.dome9.com/v2/
@@ -1448,7 +1492,7 @@ entries:
     version: 2.3.1
   - apiVersion: v2
     appVersion: 2.3.0
-    created: "2024-12-18T15:51:45.623851711Z"
+    created: "2025-02-03T13:11:32.929506998Z"
     description: A Helm chart for Check Point CloudGuard Workload Security
     digest: 8be89cebf15b52831dab2c86495f61c1e11d8054a37d5dedb33cbedd5f18dcef
     home: https://secure.dome9.com/v2/
@@ -1475,7 +1519,7 @@ entries:
   cp-resource-management:
   - apiVersion: v1
     appVersion: 1.11.0
-    created: "2024-12-18T15:51:45.669485078Z"
+    created: "2025-02-03T13:11:32.973252861Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 194ba8d8578b0691900d3af3e51e71b5b9a679b9e8e250b9e07559638f1f5bf1
     home: https://secure.dome9.com/v2/
@@ -1496,7 +1540,7 @@ entries:
     version: 1.11.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.668934868Z"
+    created: "2025-02-03T13:11:32.97274066Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: a0010f440f43895e2ed1268555663451b0185d3ad1147f7dfad2d5d6026065f4
     home: https://secure.dome9.com/v2/
@@ -1517,7 +1561,7 @@ entries:
     version: 1.09.3
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.66839087Z"
+    created: "2025-02-03T13:11:32.972226325Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 123efdfe387e20ee7b97d537eb85d950c15bcc6814933fdb4ee9214067b4c27b
     home: https://secure.dome9.com/v2/
@@ -1538,7 +1582,7 @@ entries:
     version: 1.09.2
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.667838226Z"
+    created: "2025-02-03T13:11:32.971738389Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 71b7b5c3928d7fc6e1c2625651311763710a50ccb970860da7f0de85c93b58ed
     home: https://secure.dome9.com/v2/
@@ -1560,7 +1604,7 @@ entries:
     version: 1.09.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.667108684Z"
+    created: "2025-02-03T13:11:32.971072944Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 5e976c6fb56ed34ea76a60c71bce292a6769f885d0ddb80464b532a03c9c4b29
     home: https://secure.dome9.com/v2/
@@ -1582,7 +1626,7 @@ entries:
     version: 1.09.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.666347303Z"
+    created: "2025-02-03T13:11:32.970446752Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 5e616877265d618bfd075fd1df8a58b9b929c0332cc61f6a28ac64f676566503
     home: https://secure.dome9.com/v2/
@@ -1604,7 +1648,7 @@ entries:
     version: 1.07.1
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.665596051Z"
+    created: "2025-02-03T13:11:32.969817644Z"
     description: A Helm chart for CloudGuard Workload Security
     digest: 8920c6606a6038ee4ed0b1e201fc28ea094b8a0d564b262435273907d7e65e82
     home: https://secure.dome9.com/v2/
@@ -1626,7 +1670,7 @@ entries:
     version: 1.07.0
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.664727791Z"
+    created: "2025-02-03T13:11:32.969126651Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: bebb6e83ed371d2501879219a72540a2e7f45518f32ede0c64f7109b5b443033
     home: https://secure.dome9.com/v2/
@@ -1645,7 +1689,7 @@ entries:
     version: "1.06"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.663444042Z"
+    created: "2025-02-03T13:11:32.968665084Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: ebaf4da8a836f017cb4cbd0012b063e293e3ae805ebddb92ce49d666fe328cf4
     home: https://secure.dome9.com/v2/
@@ -1664,7 +1708,7 @@ entries:
     version: "1.05"
   - apiVersion: v1
     appVersion: v1.1.0
-    created: "2024-12-18T15:51:45.662487689Z"
+    created: "2025-02-03T13:11:32.967984811Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: 54fa558ffa87cd41617ce2422b643680ff975ae4e76252dd9dc0a6bde483af38
     home: https://secure.dome9.com/v2/
@@ -1683,7 +1727,7 @@ entries:
     version: "1.03"
   - apiVersion: v1
     appVersion: "1.01"
-    created: "2024-12-18T15:51:45.661951526Z"
+    created: "2025-02-03T13:11:32.967397711Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: c2514f34c7d80d704d13e7233f660ad55cd56895f671ad68128affe47ada14a5
     home: https://secure.dome9.com/v2/
@@ -1702,7 +1746,7 @@ entries:
     version: "1.02"
   - apiVersion: v1
     appVersion: "1"
-    created: "2024-12-18T15:51:45.669948257Z"
+    created: "2025-02-03T13:11:32.973669445Z"
     description: A Helm chart for Dome9 inventory uploader
     digest: ee75a01ae09e8ceec83cda0d16621198ebb2139b87c323966e65ba6ca65024f0
     home: https://secure.dome9.com/v2/
@@ -1719,4 +1763,4 @@ entries:
     urls:
     - https://raw.githubusercontent.com/CheckPointSW/charts/master/repository/cp-resource-management-1.tgz
     version: "1"
-generated: "2024-12-18T15:51:45.549130884Z"
+generated: "2025-02-03T13:11:32.882837707Z"
